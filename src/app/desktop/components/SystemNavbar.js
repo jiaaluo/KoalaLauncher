@@ -18,8 +18,7 @@ import {
   updateUpdateAvailable,
   getAppLatestVersion
 } from '../../../common/reducers/actions';
-import BisectHosting from '../../../ui/BisectHosting';
-import Logo from '../../../ui/Logo';
+import Logo from '../../../ui/Logo.png';
 
 const SystemNavbar = () => {
   const dispatch = useDispatch();
@@ -170,29 +169,23 @@ const SystemNavbar = () => {
             `}
           >
             <a
-              href="https://gdevs.io/"
+              href="https://koala.crankysupertoon.live/"
               rel="noopener noreferrer"
               css={`
                 margin-top: 5px;
                 -webkit-app-region: no-drag;
               `}
             >
-              <Logo size={35} pointerCursor />
+              <img
+                src={Logo}
+                height="35px"
+                width="35px"
+                alt="Logo"
+                draggable="false"
+                pointerCursor
+              />
             </a>
             <DevtoolButton />
-          </div>
-          <div
-            css={`
-              display: flex;
-              height: 100%;
-            `}
-          >
-            Partnered with &nbsp;&nbsp;
-            <BisectHosting
-              showPointerCursor
-              onClick={() => dispatch(openModal('BisectHosting'))}
-            />
-            {/* <PulsatingCircle /> */}
           </div>
         </>
       )}
@@ -269,30 +262,24 @@ const SystemNavbar = () => {
       </Container>
       {isOsx && (
         <>
-          <div
-            css={`
-              display: flex;
-              height: 100%;
-            `}
-          >
-            Partnered with &nbsp;&nbsp;
-            <BisectHosting
-              showPointerCursor
-              onClick={() => dispatch(openModal('BisectHosting'))}
-            />
-            {/* <PulsatingCircle /> */}
-          </div>
           <div>
             <DevtoolButton />
             <a
-              href="https://gdevs.io/"
+              href="https://koala.crankysupertoon.live/"
               rel="noopener noreferrer"
               css={`
                 margin-top: 5px;
                 -webkit-app-region: no-drag;
               `}
             >
-              <Logo size={35} pointerCursor />
+              <img
+                src={Logo}
+                height="32px"
+                width="32px"
+                alt="Logo"
+                draggable="false"
+                pointerCursor
+              />
             </a>
           </div>
         </>

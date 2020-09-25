@@ -1,7 +1,7 @@
 {
   "name": "gdlauncher",
   "version": "1.0.9",
-  "description": "GDLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
+  "description": "KoalaLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
   "keywords": [
     "minecraft",
     "launcher",
@@ -14,17 +14,17 @@
     "webpack"
   ],
   "bugs": {
-    "url": "https://github.com/gorilla-devs/GDLauncher/issues"
+    "url": "https://github.com/KoalaDevs/KoalaLauncher/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gorilla-devs/GDLauncher.git"
+    "url": "git+https://github.com/KoalaDevs/KoalaLauncher.git"
   },
   "license": "GPL-3.0",
   "author": {
-    "name": "GorillaDevs",
-    "email": "davide@gdevs.io",
-    "url": "https://gdevs.io"
+    "name": "KoalaDevs",
+    "email": "davide@koala.crankysupertoon.live",
+    "url": "https://koala.crankysupertoon.live"
   },
   "private": false,
   "homepage": "./",
@@ -155,7 +155,7 @@
     "7zip-bin": "^5.0.3",
     "@loadable/babel-plugin": "^5.13.0",
     "antd": "4.3.5",
-    "axios": "https://github.com/gorilla-devs/axios.git#62786f2b6c4c813d4dc0159744bcdce7342e365d",
+    "axios": "https://github.com/KoalaDevs/axios.git#62786f2b6c4c813d4dc0159744bcdce7342e365d",
     "base64-stream": "^1.0.0",
     "connected-react-router": "^6.8.0",
     "craco-antd": "^1.18.1",
@@ -175,7 +175,7 @@
     "lodash": "^4.17.20",
     "make-dir": "^3.1.0",
     "memoize-one": "^5.1.1",
-    "murmur2-calculator": "https://github.com/gorilla-devs/murmur2-calculator",
+    "murmur2-calculator": "https://github.com/KoalaDevs/murmur2-calculator",
     "node-7z": "^2.1.1",
     "node-machine-id": "^1.1.12",
     "nsfw": "^2.0.0",

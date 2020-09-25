@@ -27,7 +27,7 @@ import * as ActionTypes from './actionTypes';
 import {
   NEWS_URL,
   MC_RESOURCES_URL,
-  GDL_LEGACYJAVAFIXER_MOD_URL,
+  LEGACYJAVAFIXER_URL,
   FORGE,
   FABRIC,
   FMLLIBS_OUR_BASE_URL,
@@ -334,7 +334,7 @@ export function downloadJavaLegacyFixer() {
     const state = getState();
     await downloadFile(
       path.join(_getDataStorePath(state), '__JLF__.jar'),
-      GDL_LEGACYJAVAFIXER_MOD_URL
+      LEGACYJAVAFIXER_URL
     );
   };
 }
@@ -2338,7 +2338,7 @@ export const initLatestMods = instanceName => {
 export const getAppLatestVersion = () => {
   return async () => {
     const { data: latestReleases } = await axios.get(
-      'https://api.github.com/repos/gorilla-devs/GDLauncher/releases'
+      'https://api.github.com/repos/KoalaDevs/KoalaLauncher/releases'
     );
 
     const latestPrerelease = latestReleases.find(v => v.prerelease);
@@ -2382,7 +2382,7 @@ export const checkForPortableUpdates = () => {
     // Latest version has a value only if the user is not using the latest
     if (latestVersion) {
       // eslint-disable-next-line
-      const baseAssetUrl = `https://github.com/gorilla-devs/GDLauncher/releases/download/${latestVersion?.tag_name}`;
+      const baseAssetUrl = `https://github.com/KoalaDevs/KoalaLauncher/releases/download/${latestVersion?.tag_name}`;
       const { data: latestManifest } = await axios.get(
         `${baseAssetUrl}/${process.platform}_latest.json`
       );

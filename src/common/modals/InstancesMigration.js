@@ -17,7 +17,7 @@ import {
 } from '../utils/selectors';
 import { addToQueue } from '../reducers/actions';
 import { closeModal } from '../reducers/modals/actions';
-import Logo from '../../ui/Logo';
+import Logo from '../../ui/Logo.png';
 
 const InstancesMigration = () => {
   const dispatch = useDispatch();
@@ -221,7 +221,7 @@ const InstancesMigration = () => {
             color: ${props => props.theme.palette.text.secondary};
           `}
         >
-          Please, do NOT close GDLauncher.
+          Please, do NOT close KoalaLauncher.
         </div>
         <div
           css={`

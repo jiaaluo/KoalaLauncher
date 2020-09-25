@@ -8,11 +8,11 @@ exports.initRPC = () => {
   client = new Client({ transport: 'ipc' });
 
   activity = {
-    details: 'Playing GDLauncher',
+    details: 'Playing KoalaLauncher',
     state: 'Idle',
     startTimestamp: Math.floor(Date.now() / 1000),
     largeImageKey: 'default_big',
-    largeImageText: 'GDLauncher - A Custom Minecraft Launcher',
+    largeImageText: 'KoalaLauncher - A Custom Minecraft Launcher',
     instance: false
   };
 
