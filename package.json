@@ -1,6 +1,6 @@
 {
-  "name": "gdlauncher",
-  "version": "1.0.9",
+  "name": "koalalauncher",
+  "version": "1.0.0",
   "description": "KoalaLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
   "keywords": [
     "minecraft",
@@ -23,7 +23,7 @@
   "license": "GPL-3.0",
   "author": {
     "name": "KoalaDevs",
-    "email": "davide@koala.crankysupertoon.live",
+    "email": "crankysupertoon@gmail.com",
     "url": "https://koala.crankysupertoon.live"
   },
   "private": false,
