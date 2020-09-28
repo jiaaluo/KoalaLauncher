@@ -2251,6 +2251,7 @@ export function installMod(
         { concurrency: 2 }
       );
     }
+    return destFile;
   };
 }
 
@@ -2356,8 +2357,15 @@ export const getAppLatestVersion = () => {
       // swallow error
     }
 
-    const installedVersion = parse(await ipcRenderer.invoke('getAppVersion'));
+    const v = await ipcRenderer.invoke('getAppVersion');
+
+    const installedVersion = parse(v);
     const isAppUpdated = r => !lt(installedVersion, parse(r.tag_name));
+
+    // If we're on beta but the release channel is stable, return latest stable to force an update
+    if (v.includes('beta') && releaseChannel === 0) {
+      return latestStablerelease;
+    }
 
     if (!isAppUpdated(latestStablerelease)) {
       return latestStablerelease;
