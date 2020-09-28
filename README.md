@@ -1,8 +1,112 @@
 # Koala Launcher [![Discord][discordImg]][discordLink] [![CI][ciImg]][ciLink] [![GHReleases][ghrImg]][ghrLink]
 
+![Javascript][javascriptImg] ![Love][buildLoveImg]
+
 # ❓ What is the Koala Launcher
 Koala Launcher is a fork of GDLauncher aiming to be more FOSS Friendy towards Pull Requests and Contribution
 
+<p align="center">
+    <img width="800" height="auto" src="https://gdevs.io/showcase.jpg" alt="KoalaLauncher Home" />
+</p>
+
+## ⚡ Comparison with Twitch Launcher
+This is an example of the time that GDLauncher takes to install a modpack in comparison to Twitch. Both tests are running at the same time over a 1Gbps network to ensure that the network doesn't impact the comparison.
+
+- Koala Launcher: `52 seconds`
+
+- Twitch Launcher: `2 minutes, 25 seconds`
+
+<p align="center">
+    <img width="800" height="auto" src="https://camo.githubusercontent.com/22505dd1c29e4f4182a117da6aac1235575d908b/68747470733a2f2f67646576732e696f2f636f6d70617269736f6e2e676966" alt="KoalaLauncher Pack DL" />
+</p>
+
+## ⬇️ Download
+To download the latest version, you can either click [here](https://github.com/KoalaDevs/KoalaLauncher/releases) and select the appropriate version for your operating system or visit our [website](https://koaladevs.netlify.app).
+
+## 🎨 Features
+#### Our features:
+- Java downloader. You don't need to have java installed, a suitable version will be downloaded automatically.
+- It's as easy as pie to install the vanilla Game, Forge, Fabric, and all CurseForge Modpacks. No further action from the user is required.
+- Install mods for both Fabric and Forge directly from our UI
+- Built-in auto-updater. The launcher will always keep itself updated to the latest release.
+- Easily manage multiple accounts and switch between them.
+- Still playing on your grandma pc from the 80s? Don't worry, we got you covered with our Potato PC Mode!
+##### You can also:
+- Keep track of the time you played each instance
+- Add instances to the download queue, they will automatically download one after the other
+##### Some of the features we are still working on are:
+- Drag and drop instances wherever you like them, just like in your desktop
+- Liteloader Support
+- Optifine easy-installation support
+- Modpacks.ch (FTB) Support
+- Technic Support
+- Custom Theming
+###### and a lot more...
+
+## 💾 Compilation
+
+### ⚙️ Requirements
+You need the following software installed:
+
+- [NodeJS](https://nodejs.org/) (> v14.8.0 x64)
+- (Rust)[https://www.rust-lang.org/]
+- A C++ Compiler ((GCC)[https://gcc.gnu.org/] or (MSVC)[https://visualstudio.microsoft.com/downloads/])
+- (Yarn)[http://yarnpkg.com/]
+
+### ⏩ Steps
+
+#### Install the dependencies
+```zsh
+yarn
+```
+
+#### Start the Development environment
+
+```zsh
+yarn
+```
+
+#### Packaging
+To package the app for the local platform:
+
+```zsh
+set RELEASE_TESTING=true
+yarn release
+```
+
+## 🗝 Built and managed with 
+
+- [Javascript](https://developer.mozilla.org/bm/docs/Web/JavaScript)
+- [React](https://reactjs.org/)
+- [Redux](https://redux.js.org/)
+- [NodeJS](https://nodejs.org/)
+- [Yarn](http://yarnpkg.com/)
+- [Electron](https://electronjs.org/)
+- [Codacy](https://www.codacy.com/)
+- [Webpack](https://webpack.js.org/)
+- [Babel](https://babeljs.io/)
+- [ESLint](https://eslint.org/)
+- [Ant Design](https://ant.design/)
+- [Styled Components](https://styled-components.com/)
+- [Rust](https://www.rust-lang.org/)
+
+## 🎁 Contributing
+
+You can find a list of unassigned tasks [here](https://github.com/KoalaDevs/KoalaLauncher/projects). Feel free to ask anything on our discord if you need help or want other tasks.
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+## 📜 History
+
+This project was forked from the GDLauncher Rewrite due to some internal team drama with the licensing.
+
+## 🎓 License
+
+This project is licensed under the GNU GPL V3.0 - see the [LICENSE](LICENSE) file for details.
 
 
 [discordImg]: https://img.shields.io/discord/759861708084215838.svg?logo=discord&logoWidth=18&colorB=7289DA&style=for-the-badge
@@ -13,3 +117,6 @@ Koala Launcher is a fork of GDLauncher aiming to be more FOSS Friendy towards Pu
 
 [ghrImg]: https://img.shields.io/github/downloads/KoalaDevs/KoalaLauncher/total?style=for-the-badge
 [ghrlink]: https://github.com/CrankySupertoon/KoalaLauncher/releases
+
+[javascriptImg]: https://forthebadge.com/images/badges/made-with-javascript.svg
+[buildLoveImg]: https://forthebadge.com/images/badges/built-with-love.svg
