@@ -47,6 +47,7 @@ const main = async () => {
     const { data: newRelease } = await axios.default.post(
       'https://api.github.com/repos/KoalaDevs/KoalaLauncher/releases',
       { tag_name: `v${version}`, name: `v${version}`, draft: true },
+
       {
         headers: {
           Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`
