@@ -1,0 +1,67 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+
+    # Checkout Code
+    - uses: actions/checkout@v2
+    
+    # Set Node Version
+    - name: Set Node Version
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.8.0'
+    
+    # Set Python Version
+    - name: Set Python Version
+      run: npm config set python python2.7
+    
+    # Install Node Tools
+    - name: Install Node Tools
+      run: npm install --global --production --vs2015 windwos-build-tools@4.0.0
+    
+    # Install Node GYP
+    - name: Install Node GYP
+      run: npm install --global node-gyp@latest
+    
+    # Set Node MSVC Version
+    - name: Set Node MSVC Version
+      run: npm config set msvs_version 2015
+    
+    # Fetch Koala Dependenices
+    - name: Fetch Koala Dependencies
+      run: |
+        npm i
+
+    # Build Koala Launcher
+    - name: Build Koala Launcher
+      run: npm run release
+
+    # Upload Koala Artifacts
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: KoalaLauncher-win32
+        path: D:\a\KoalaLauncher\KoalaLauncher\release
+    
+    # Send Webhook Notification
+    - uses: actions/setup-ruby@v1
+    - name: Send Webhook Notification
+      if: matrix.os == 'macos-latest'
+      env:
+        JOB_STATUS: ${{ job.status }}
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      run: |
+        git clone https://github.com/KoalaDevs/github-actions-discord-webhook.git webhook
+        bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+      shell: bash
