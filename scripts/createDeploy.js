@@ -175,13 +175,13 @@ const commonConfig = {
   ...((!process.env.RELEASE_TESTING || process.platform === 'linux') && {
     linux:
       type === 'setup'
-        ? ['appimage:x64', 'zip:x64', 'deb:x64', 'rpm:x64', 'pacman:x64' ]
+        ? ['appimage:x64', 'zip:x64', 'deb:x64', 'rpm:x64']
         : ['']
   }),
   ...((!process.env.RELEASE_TESTING || process.platform === 'win32') && {
     win:
         type === 'setup'
-        ? ['nsis-web:x64', 'appx:x64' ]
+        ? ['nsis-web:x64']
         : ['zip:x64']
   }),
 
@@ -228,7 +228,6 @@ const main = async () => {
         `${productName}-linux-${type}.zip`,
         `${productName}-linux-${type}.AppImage`,
         `${productName}-linux-${type}.deb`,
-        `${productName}-linux-${type}.pacman`,
         `${productName}-linux-${type}.rpm`,
         'latest-linux.yml'
       ]
@@ -236,7 +235,7 @@ const main = async () => {
     portable: {
       darwin: [],
       win32: [`${productName}-win-${type}.zip`],
-      linux: [``]
+      linux: []
     }
   };
 
