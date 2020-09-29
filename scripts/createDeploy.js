@@ -231,11 +231,6 @@ const main = async () => {
         `${productName}-linux-${type}.rpm`,
         'latest-linux.yml'
       ]
-    },
-    portable: {
-      darwin: [],
-      win32: [`${productName}-win-${type}.zip`],
-      linux: []
     }
   };
 
