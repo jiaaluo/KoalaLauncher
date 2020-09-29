@@ -65,7 +65,7 @@ const ProfileImage = styled.img`
   position: relative;
   top: 20px;
   left: 20px;
-  background: #212b36;
+  background: #3d3d3d;
   width: 50px;
   height: 50px;
 `;
@@ -74,7 +74,7 @@ const ImagePlaceHolder = styled.div`
   position: relative;
   top: 20px;
   left: 20px;
-  background: #212b36;
+  background: #3d3d3d;
   width: 50px;
   height: 50px;
 `;

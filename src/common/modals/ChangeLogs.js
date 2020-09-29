@@ -79,7 +79,7 @@ const ChangeLogs = () => {
               margin-top: 20px;
             `}
             type="primary"
-            href="https://discord.gg/4cGYzen"
+            href="https://invite.gg/KoalaDevs"
           >
             <FontAwesomeIcon icon={faDiscord} />
             &nbsp; Discord
