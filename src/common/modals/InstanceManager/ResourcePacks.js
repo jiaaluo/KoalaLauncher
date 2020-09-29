@@ -184,7 +184,7 @@ const NotItemsAvailable = styled.div`
   justify-content: center;
 `;
 
-const ResourcePacks = ({ instanceName }) => {
+const ResourePacks = ({ instanceName }) => {
   const instancesPath = useSelector(_getInstancesPath);
   const [resourcePacks, setResourcePacks] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -406,7 +406,7 @@ const ResourcePacks = ({ instanceName }) => {
         fileList={resourcePacks}
       >
         {resourcePacks.length === 0 && (
-          <NotItemsAvailable>No ResourcePacks Available</NotItemsAvailable>
+          <NotItemsAvailable>No Resoure Packs Available</NotItemsAvailable>
         )}
         <AutoSizer>
           {({ height, width }) => (
@@ -426,4 +426,4 @@ const ResourcePacks = ({ instanceName }) => {
   );
 };
 
-export default memo(ResourcePacks);
+export default memo(ResourePacks);

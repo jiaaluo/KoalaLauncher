@@ -5,15 +5,16 @@ import { Transition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLongArrowAltRight,
-  faArchive
+  faArchive,
+  faFire,
 } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Input, Spin, Radio } from 'antd';
-import TwitchModpacks from './TwitchModpacks';
+import CurseModpacks from './CurseModpacks';
 import Import from './Import';
 import NewInstance from './NewInstance';
 import minecraftIcon from '../../assets/minecraftIcon.png';
-import twitchIcon from '../../assets/twitchIcon.webp';
+import curseIcon from '../../assets/curseIcon.webp';
 
 const Content = ({
   in: inProp,
@@ -30,7 +31,7 @@ const Content = ({
   const [loading, setLoading] = useState(false);
   let pages = [
     <NewInstance setVersion={setVersion} setModpack={setModpack} />,
-    <TwitchModpacks
+    <CurseModpacks
       setVersion={setVersion}
       setStep={setStep}
       setModpack={setModpack}
@@ -82,18 +83,17 @@ const Content = ({
                         cursor: pointer;
                       `}
                     />
-                    Vanilla
+                    Custom
                   </Radio.Button>
                   <Radio.Button value={1}>
-                    <img
-                      src={twitchIcon}
-                      width="18px"
-                      css={`
+                    <FontAwesomeIcon
+                        icon={faFire}
+                        css={`
                         margin-right: 4px;
                         cursor: pointer;
                       `}
                     />
-                    Twitch
+                    Curse
                   </Radio.Button>
                   {/* <Radio.Button value={3} disabled>ATLauncher</Radio.Button>
                   <Radio.Button value={4} disabled>Technic</Radio.Button>

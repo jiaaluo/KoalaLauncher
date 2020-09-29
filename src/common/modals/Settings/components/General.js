@@ -434,7 +434,7 @@ const General = () => {
       </ParallelDownload>
       <Hr />
       <Title>
-        Preferred Curse Release Channel &nbsp; <FontAwesomeIcon icon={faFire} />
+        Preferred CurseForge Release Channel &nbsp; <FontAwesomeIcon icon={faFire} />
       </Title>
       <ParallelDownload>
         <p
@@ -443,7 +443,7 @@ const General = () => {
             width: 400px;
           `}
         >
-          Select the preferred release channel for downloading Curse projects.
+          Select the preferred release channel for downloading CurseForge projects.
           This also applies for mods update.
         </p>
         <Select

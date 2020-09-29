@@ -146,7 +146,6 @@ const menuEntries = {
   modpack: { name: 'Modpack', component: Modpack },
   notes: { name: 'Notes', component: Notes },
   resourcePacks: { name: 'Resource Packs', component: ResourcePacks },
-  // resourcePacks: { name: "Resource Packs", component: Overview },
   // worlds: { name: "Worlds", component: Overview },
   screenshots: { name: 'Screenshots', component: Screenshots }
   // settings: { name: "Settings", component: Overview },

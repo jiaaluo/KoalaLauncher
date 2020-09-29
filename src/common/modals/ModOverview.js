@@ -220,7 +220,7 @@ const ModOverview = ({
                   font-weight: 700;
                 `}
               >
-                The installed version of this mod has been removed from twitch,
+                The installed version of this mod has been removed from curse,
                 so you will only be able to get it as part of legacy modpacks.
               </div>
             )}

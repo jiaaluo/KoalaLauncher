@@ -192,7 +192,7 @@ export const getFilteredVersions = (
         },
         {
           value: 'old_beta',
-          label: 'Old Beta',
+          label: 'Beta',
           children: vanillaManifest.versions
             .filter(v => v.type === 'old_beta')
             .map(v => ({
@@ -202,7 +202,7 @@ export const getFilteredVersions = (
         },
         {
           value: 'old_alpha',
-          label: 'Old Alpha',
+          label: 'Alpha',
           children: vanillaManifest.versions
             .filter(v => v.type === 'old_alpha')
             .map(v => ({

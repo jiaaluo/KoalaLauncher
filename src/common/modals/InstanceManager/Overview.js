@@ -328,7 +328,7 @@ const Overview = ({ instanceName, background, manifest }) => {
         </OverviewCard>
         {config?.modloader.slice(3, 5).length === 2 && manifest && (
           <Card
-            title="Curse Modpack"
+            title="CurseForge Modpack"
             color={`linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), ${
               background
                 ? `url(${background})`
