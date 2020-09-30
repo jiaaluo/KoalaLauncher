@@ -49,11 +49,10 @@ jobs:
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: KoalaLauncher-linux
+        name: KoalaLauncher-macos
         path: /Users/runner/work/KoalaLauncher/KoalaLauncher/deploy
 
     # Send Webhook Notification
-    - uses: actions/setup-ruby@v1
     - name: Send Webhook Notification
       env:
         JOB_STATUS: ${{ job.status }}
