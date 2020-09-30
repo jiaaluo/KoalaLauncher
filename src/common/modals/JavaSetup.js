@@ -54,9 +54,9 @@ const JavaSetup = () => {
                 text-align: justify;
               `}
             >
-              For an optimal experience, we suggest letting us take care of java
-              for you. Only manually manage java if you know what you&apos;re
-              doing, it may result in KoalaLauncher not working!
+              For an optimal experience, we suggest letting us take care of Java
+              for you. Only manually manage Java if you know what you&apos;re
+              doing, it may result in Koala Launcher not working!
             </div>
             <div
               css={`

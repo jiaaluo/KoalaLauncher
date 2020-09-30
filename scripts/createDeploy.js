@@ -177,7 +177,7 @@ const commonConfig = {
       type === "setup" ? ["appimage:x64", "zip:x64", "deb:x64", "rpm:x64"] : [],
   }),
   ...((!process.env.RELEASE_TESTING || process.platform === "win32") && {
-    win: type === "setup" ? ["nsis-web:x64"] : ["zip:x64"]
+    win: type === "setup" ? ["nsis-web:x64"] : ["zip:x64"],
   }),
 
   ...((!process.env.RELEASE_TESTING || process.platform === "darwin") && {

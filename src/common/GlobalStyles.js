@@ -1,10 +1,38 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
+
+const FFMarkW05MedWoff2 =
+  "https://lolstatic-a.akamaihd.net/rso-login-page/2.2.20/assets/FFMarkW05-Medium.662fbc7901e31d6bee9c91d5f2cf42a1.woff2";
+const FFMarkW05BoldWoff2 =
+  "https://lolstatic-a.akamaihd.net/rso-login-page/2.2.20/assets/FFMarkW05-Bold.8e5368c00aa72d1e1b19d7b437c375f4.woff2";
+const FFMarkW05HeavyWoff2 =
+  "https://lolstatic-a.akamaihd.net/rso-login-page/2.2.20/assets/FFMarkW05-Heavy.1de8fa6eb6e45628ebb3edd635462180.woff2";
 
 export default createGlobalStyle`
   html {
     height: 100%;
   }
 
+  @font-face {
+    font-family: "FF Mark W05";
+    src: url(${FFMarkW05MedWoff2}) format("woff2");
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  @font-face {
+    font-family: "FF Mark W05";
+    src: url(${FFMarkW05BoldWoff2}) format("woff2");
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  @font-face {
+    font-family: "FF Mark W05";
+    src: url(${FFMarkW05HeavyWoff2}) format("woff2");
+    font-style: normal;
+    font-weight: 800;
+  }
+  
   body {
     height: 100%;   
     overflow: hidden;
@@ -14,7 +42,7 @@ export default createGlobalStyle`
   }
   
   #root {
-    font-family: Inter, Roboto, Helvetica, sans-serif;
+    font-family: FF Mark W05, Roboto, Helvetica, sans-serif;
     font-size: 14px;
     height: 100%;
     overflow: hidden;
@@ -67,12 +95,12 @@ export default createGlobalStyle`
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: ${props => props.theme.palette.grey[200]};
+    background-color: ${(props) => props.theme.palette.grey[200]};
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: ${props => props.theme.palette.grey[900]};
+    background-color: ${(props) => props.theme.palette.grey[900]};
     border-radius: 1px;
   }
 
@@ -85,11 +113,11 @@ export default createGlobalStyle`
   }
 
   .react-contextmenu {
-    background: ${props => props.theme.palette.grey[700]};
+    background: ${(props) => props.theme.palette.grey[700]};
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 4px;
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
     font-size: 16px;
     min-width: 180px;
     outline: none;
@@ -111,7 +139,7 @@ export default createGlobalStyle`
   
   .react-contextmenu-item {
     background: 0 0;
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
     cursor: pointer;
     font-weight: 400;
     line-height: 1.5;
@@ -119,7 +147,7 @@ export default createGlobalStyle`
     text-align: left;
     white-space: nowrap;
     span {
-      color: ${props => props.theme.palette.text.primary};
+      color: ${(props) => props.theme.palette.text.primary};
       width: 25px;
     }
   }
@@ -141,11 +169,11 @@ export default createGlobalStyle`
   .react-contextmenu-item.react-contextmenu-item--disabled,
   .react-contextmenu-item.react-contextmenu-item--disabled:hover {
     background-color: transparent;
-    color: ${props => props.theme.palette.text.disabled};
+    color: ${(props) => props.theme.palette.text.disabled};
   }
   
   .react-contextmenu-item--divider {
-    border-bottom: 1px solid ${props => props.theme.palette.grey[600]};
+    border-bottom: 1px solid ${(props) => props.theme.palette.grey[600]};
     cursor: inherit;
     margin-bottom: 3px;
     padding: 2px 0;

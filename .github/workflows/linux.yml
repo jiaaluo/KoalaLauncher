@@ -30,7 +30,11 @@ jobs:
     - name: Install Node GYP
       run: npm install --global node-gyp@latest
 
-    # Fetch Koala Dependenices
+    # Increase Yarn Timeout due to Azure Timing It Out
+    - name: Increase Yarn Timeout
+      run: yarn --network-timeout 100000
+
+    # Fetch Koala Dependencies
     - name: Fetch Koala Dependencies
       run: yarn
 
@@ -46,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: KoalaLauncher-linux
-        path: /home/runner/work/KoalaDevs/KoalaLauncher/deploy
+        path: /home/runner/work/KoalaDevs/KoalaLauncher/release
 
     # Send Webhook Notification
     - uses: actions/setup-ruby@v1

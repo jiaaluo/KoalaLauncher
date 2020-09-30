@@ -26,48 +26,51 @@ const ChangeLogs = () => {
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.green};
+              color: ${(props) => props.theme.palette.colors.green};
             `}
           >
             <span>New Features</span>
           </SectionTitle>
           <div>
             <ul>
-              <li>Restyled the UI to add new instances.</li>
-              <li>Some performance improvements.</li>
-              <li>Better UX for twitch modpacks.</li>
-              <li>Longer instances names are now allowed.</li>
-              <li>Added a resource packs tab for instances.</li>
+              <li>
+                Twitch Packs are no longer a thing to make way for{" "}
+                <b>Curse Packs</b>.
+              </li>
+              <li>Changed the Font around. We hope you like it.</li>
+              <li>Added more branding to Koala Launcher.</li>
             </ul>
           </div>
         </Section>
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.red};
+              color: ${(props) => props.theme.palette.colors.red};
             `}
           >
             <span>Bug Fixes</span>
           </SectionTitle>
           <div>
             <ul>
-              <li>Security fixes.</li>
-              <li>Improved login errors.</li>
-              <li>The news should now be up to date.</li>
-              <li>Minor visual/functional fixes.</li>
+              <li>
+                Fixed some Grammar issues related to the ex Italian Developers.
+              </li>
+              <li>
+                Fixed some crashes related to the first startup animation.
+              </li>
             </ul>
           </div>
         </Section>
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.lavander};
+              color: ${(props) => props.theme.palette.colors.lavander};
             `}
           >
             <span>Join Our Community</span>
           </SectionTitle>
           <p>
-            We love our users, that's why we have a dedicated Discord server
+            We <b>Really</b> love our users, that's why we have a dedicated Discord server
             just to talk with all of them!
           </p>
           <Button
