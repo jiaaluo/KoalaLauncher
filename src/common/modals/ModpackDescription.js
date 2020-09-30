@@ -115,11 +115,11 @@ const AddInstance = ({ modpack, setStep, setModpack, setVersion }) => {
                     {formatNumber(modpack.downloadCount)}
                   </div>
                   <div>
-                    <label>Last Update: </label>
+                    <label>Last Updated: </label>
                     {formatDate(modpack.dateModified)}
                   </div>
                   <div>
-                    <label>MC version: </label>
+                    <label>Minecraft Version: </label>
                     {modpack.gameVersionLatestFiles[0].gameVersion}
                   </div>
                 </ParallaxContentInfos>
