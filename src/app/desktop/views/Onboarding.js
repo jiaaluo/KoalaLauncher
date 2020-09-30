@@ -105,7 +105,7 @@ const Home = () => {
             padding: 0 120px;
           `}
         >
-          Koala Launcher is an GPL Licensed Open Source Minecraft Launcher which
+          Koala Launcher is a GPL Licensed Open Source Minecraft Launcher which
           is transparent with its community.
         </div>
       </div>

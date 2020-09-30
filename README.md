@@ -112,8 +112,8 @@ This project is licensed under the GNU GPL V3.0 - see the [LICENSE](LICENSE) fil
 [discordImg]: https://img.shields.io/discord/759861708084215838.svg?logo=discord&logoWidth=18&colorB=7289DA&style=for-the-badge
 [discordLink]: https://invite.gg/KoalaDevs
 
-[ciImg]: https://img.shields.io/github/workflow/status/KoalaDevs/KoalaLauncher/GDLauncher%20Next%20CI?style=for-the-badge
-[ciLink]: https://github.com/KoalaDevs/KoalaLauncher/actions?query=workflow%3A%22GDLauncher+Next+CI%22
+[ciImg]: https://img.shields.io/github/workflow/status/KoalaDevs/KoalaLauncher/Linux%20CI?style=for-the-badge
+[ciLink]: https://github.com/KoalaDevs/KoalaLauncher/actions
 
 [ghrImg]: https://img.shields.io/github/downloads/KoalaDevs/KoalaLauncher/total?style=for-the-badge
 [ghrlink]: https://github.com/CrankySupertoon/KoalaLauncher/releases

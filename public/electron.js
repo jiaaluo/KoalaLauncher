@@ -141,6 +141,8 @@ function createWindow() {
     show: true,
     frame: false,
     backgroundColor: '#3d3d3d',
+    //icon: 'public/icon.png',
+    icon: 'icon.png',
     webPreferences: {
       experimentalFeatures: true,
       nodeIntegration: true,

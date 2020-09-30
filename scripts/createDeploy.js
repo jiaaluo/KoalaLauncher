@@ -128,6 +128,14 @@ const commonConfig = {
               filter: "**/*",
             },
           ]
+        : process.platform === "linux"
+        ? [
+            {
+              from: "public/icon.png",
+              to: "./",
+              filter: "**/*",
+            },
+          ]
         : [],
     asar: {
       smartUnpack: false,
