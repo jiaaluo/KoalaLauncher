@@ -34,11 +34,13 @@ const ChangeLogs = () => {
           <div>
             <ul>
               <li>
-                Twitch Packs are no longer a thing to make way for{" "}
-                <b>Curse Packs</b>.
+                GDLauncher Migration is now here. Easily export your packs to
+                your favorite launcher with our new Koala Migrate Tech.
               </li>
-              <li>Changed the Font around. We hope you like it.</li>
-              <li>Added more branding to Koala Launcher.</li>
+              <li>
+                You can now download 100 mods at once. Better not try that on
+                McDonalds Internet.
+              </li>
             </ul>
           </div>
         </Section>
@@ -52,12 +54,7 @@ const ChangeLogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>
-                Fixed some Grammar issues related to the ex Italian Developers.
-              </li>
-              <li>
-                Fixed some crashes related to the first startup animation.
-              </li>
+              <li>Hopefully Fixed Linux Icons.</li>
             </ul>
           </div>
         </Section>

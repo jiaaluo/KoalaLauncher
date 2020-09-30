@@ -64,11 +64,11 @@ const Instances = () => {
         instances.map((i) => <Instance key={i.name} instanceName={i.name} />)
       ) : (
         <NoInstance>
-          {!showOldGDHelp
+          {showOldGDHelp
             ? "Click here to learn how to migrate your GDLauncher Instaces."
             : "No Instances"}
           <SubNoInstance>
-            {!showOldGDHelp ? (
+            {showOldGDHelp ? (
               <Button
                 css={`
                   width: 200px;
@@ -78,7 +78,7 @@ const Instances = () => {
                   margin-top: 20px;
                 `}
                 type="primary"
-                href="https://invite.gg/KoalaDevs"
+                href="https://www.koalalauncher.com/docs/upgrade-path-from-gdlauncher/"
               >
                 Migrate
               </Button>
