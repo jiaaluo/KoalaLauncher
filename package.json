@@ -177,6 +177,7 @@
     "make-dir": "^3.1.0",
     "memoize-one": "^5.1.1",
     "murmur2-calculator": "https://github.com/KoalaDevs/murmur2-calculator",
+    "ncp": "^2.0.0",
     "node-7z": "^2.1.1",
     "node-machine-id": "^1.1.12",
     "nsfw": "^2.0.0",

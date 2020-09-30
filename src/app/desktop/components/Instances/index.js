@@ -4,8 +4,11 @@ import { useSelector } from "react-redux";
 import path from "path";
 import { ipcRenderer } from "electron";
 import { promises as fs } from "fs";
-import { _getInstances } from "../../../../common/utils/selectors";
+import { Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import Instance from "./Instance";
+import { _getInstances } from "../../../../common/utils/selectors";
 
 const Container = styled.div`
   display: flex;
@@ -61,18 +64,24 @@ const Instances = () => {
         instances.map((i) => <Instance key={i.name} instanceName={i.name} />)
       ) : (
         <NoInstance>
-          {showOldGDHelp
-            ? "Where did my GDLauncher Instances go"
+          {!showOldGDHelp
+            ? "Click here to learn how to migrate your GDLauncher Instaces."
             : "No Instances"}
           <SubNoInstance>
-            {showOldGDHelp ? (
-              <div>
-                Click{" "}
-                <a href="https://www.koalalauncher.com/docs/upgrade-path-from-gdlauncher/">
-                  here
-                </a>{" "}
-                for more info
-              </div>
+            {!showOldGDHelp ? (
+              <Button
+                css={`
+                  width: 200px;
+                  height: 40px;
+                  font-size: 20px;
+                  padding: 4px !important;
+                  margin-top: 20px;
+                `}
+                type="primary"
+                href="https://invite.gg/KoalaDevs"
+              >
+                Migrate
+              </Button>
             ) : (
               <div>
                 Click on the icon in the bottom left corner to add new instances

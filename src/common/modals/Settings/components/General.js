@@ -423,7 +423,7 @@ const General = () => {
             text-align: start;
           `}
         >
-          {[...Array(20).keys()]
+          {[...Array(100).keys()]
             .map((x) => x + 1)
             .map((x) => (
               <Select.Option key={x} value={x}>
