@@ -1,11 +1,11 @@
-import React, { useState, useEffect, memo } from 'react';
-import styled from 'styled-components';
-import { ipcRenderer, clipboard } from 'electron';
-import { useSelector, useDispatch } from 'react-redux';
-import path from 'path';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import fsa from 'fs-extra';
-import { promises as fs } from 'fs';
+import React, { useState, useEffect, memo } from "react";
+import styled from "styled-components";
+import { ipcRenderer, clipboard } from "electron";
+import { useSelector, useDispatch } from "react-redux";
+import path from "path";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import fsa from "fs-extra";
+import { promises as fs } from "fs";
 import {
   faCopy,
   faDownload,
@@ -15,27 +15,27 @@ import {
   faToilet,
   faNewspaper,
   faFolder,
-  faFire
-} from '@fortawesome/free-solid-svg-icons';
-import { Select, Tooltip, Button, Switch, Input, Checkbox } from 'antd';
-import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+  faFire,
+} from "@fortawesome/free-solid-svg-icons";
+import { Select, Tooltip, Button, Switch, Input, Checkbox } from "antd";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
   _getCurrentAccount,
   // _getDataStorePath,
   _getInstancesPath,
-  _getTempPath
-} from '../../../utils/selectors';
+  _getTempPath,
+} from "../../../utils/selectors";
 import {
   updateDiscordRPC,
   updateHideWindowOnGameLaunch,
   updatePotatoPcMode,
   updateShowNews,
-  updateCurseReleaseChannel
-} from '../../../reducers/settings/actions';
-import HorizontalLogo from '../../../../ui/HorizontalLogo';
-import { updateConcurrentDownloads } from '../../../reducers/actions';
-import { openModal } from '../../../reducers/modals/actions';
-import { extractFace } from '../../../../app/desktop/utils';
+  updateCurseReleaseChannel,
+} from "../../../reducers/settings/actions";
+import HorizontalLogo from "../../../../ui/HorizontalLogo.png";
+import { updateConcurrentDownloads } from "../../../reducers/actions";
+import { openModal } from "../../../reducers/modals/actions";
+import { extractFace } from "../../../../app/desktop/utils";
 
 const MyAccountPrf = styled.div`
   width: 100%;
@@ -48,7 +48,7 @@ const PersonalData = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   margin: 0 500px 20px 0;
   margin-bottom: 20px;
 `;
@@ -56,7 +56,7 @@ const MainTitle = styled.h1`
 const Title = styled.div`
   font-size: 15px;
   font-weight: 700;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   z-index: 1;
   text-align: left;
 `;
@@ -90,14 +90,14 @@ const UuidContainer = styled.div`
 const Uuid = styled.div`
   font-size: smaller;
   font-weight: 200;
-  color: ${props => props.theme.palette.grey[100]};
+  color: ${(props) => props.theme.palette.grey[100]};
   display: flex;
 `;
 
 const Username = styled.div`
   font-size: smaller;
   font-weight: 200;
-  color: ${props => props.theme.palette.grey[100]};
+  color: ${(props) => props.theme.palette.grey[100]};
   display: flex;
 `;
 
@@ -105,8 +105,8 @@ const PersonalDataContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  background: ${props => props.theme.palette.grey[900]};
-  border-radius: ${props => props.theme.shape.borderRadius};
+  background: ${(props) => props.theme.palette.grey[900]};
+  border-radius: ${(props) => props.theme.shape.borderRadius};
 `;
 
 const Hr = styled.div`
@@ -119,10 +119,10 @@ const ReleaseChannel = styled.div`
   text-align: left;
   width: 100%;
   height: 90px;
-  color: ${props => props.theme.palette.text.third};
+  color: ${(props) => props.theme.palette.text.third};
   p {
     margin-bottom: 7px;
-    color: ${props => props.theme.palette.text.secondary};
+    color: ${(props) => props.theme.palette.text.secondary};
   }
   div {
     display: flex;
@@ -145,7 +145,7 @@ const ParallelDownload = styled.div`
   height: 60px;
   p {
     text-align: left;
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
 `;
 
@@ -157,7 +157,7 @@ const DiscordRpc = styled.div`
   height: 40px;
   p {
     text-align: left;
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
 `;
 
@@ -165,12 +165,12 @@ const LauncherVersion = styled.div`
   margin: 30px 0;
   p {
     text-align: left;
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
     margin: 0 0 0 6px;
   }
 
   h1 {
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
   }
 `;
 const CustomDataPathContainer = styled.div`
@@ -178,13 +178,13 @@ const CustomDataPathContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 140px;
-  border-radius: ${props => props.theme.shape.borderRadius};
+  border-radius: ${(props) => props.theme.shape.borderRadius};
 
   h1 {
     width: 100%;
     font-size: 15px;
     font-weight: 700;
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
     z-index: 1;
     text-align: left;
   }
@@ -214,29 +214,29 @@ const General = () => {
   const [releaseChannel, setReleaseChannel] = useState(null);
   const currentAccount = useSelector(_getCurrentAccount);
   const hideWindowOnGameLaunch = useSelector(
-    state => state.settings.hideWindowOnGameLaunch
+    (state) => state.settings.hideWindowOnGameLaunch
   );
-  const DiscordRPC = useSelector(state => state.settings.discordRPC);
-  const potatoPcMode = useSelector(state => state.settings.potatoPcMode);
+  const DiscordRPC = useSelector((state) => state.settings.discordRPC);
+  const potatoPcMode = useSelector((state) => state.settings.potatoPcMode);
   const concurrentDownloads = useSelector(
-    state => state.settings.concurrentDownloads
+    (state) => state.settings.concurrentDownloads
   );
-  const updateAvailable = useSelector(state => state.updateAvailable);
+  const updateAvailable = useSelector((state) => state.updateAvailable);
   // const dataStorePath = useSelector(_getDataStorePath);
   const instancesPath = useSelector(_getInstancesPath);
-  const isPlaying = useSelector(state => state.startedInstances);
-  const queuedInstances = useSelector(state => state.downloadQueue);
+  const isPlaying = useSelector((state) => state.startedInstances);
+  const queuedInstances = useSelector((state) => state.downloadQueue);
   const tempPath = useSelector(_getTempPath);
   const [copiedUuid, setCopiedUuid] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [deletingInstances, setDeletingInstances] = useState(false);
-  const userData = useSelector(state => state.userData);
+  const userData = useSelector((state) => state.userData);
   const [dataPath, setDataPath] = useState(userData);
   const [moveUserData, setMoveUserData] = useState(false);
-  const showNews = useSelector(state => state.settings.showNews);
+  const showNews = useSelector((state) => state.settings.showNews);
   const [loadingMoveUserData, setLoadingMoveUserData] = useState(false);
   const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
+    (state) => state.settings.curseReleaseChannel
   );
 
   const dispatch = useDispatch();
@@ -246,14 +246,14 @@ const General = () => {
     Object.keys(isPlaying).length > 0;
 
   useEffect(() => {
-    ipcRenderer.invoke('getAppVersion').then(setVersion).catch(console.error);
+    ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
     extractFace(currentAccount.skin).then(setProfileImage).catch(console.error);
     ipcRenderer
-      .invoke('getAppdataPath')
-      .then(appData =>
+      .invoke("getAppdataPath")
+      .then((appData) =>
         fsa
-          .readFile(path.join(appData, 'gdlauncher_next', 'rChannel'))
-          .then(v => setReleaseChannel(parseInt(v.toString(), 10)))
+          .readFile(path.join(appData, "koalalauncher", "rChannel"))
+          .then((v) => setReleaseChannel(parseInt(v.toString(), 10)))
           .catch(() => setReleaseChannel(0))
       )
       .catch(console.error);
@@ -273,30 +273,30 @@ const General = () => {
 
   const changeDataPath = async () => {
     setLoadingMoveUserData(true);
-    const appData = await ipcRenderer.invoke('getAppdataPath');
-    const appDataPath = path.join(appData, 'gdlauncher_next');
+    const appData = await ipcRenderer.invoke("getAppdataPath");
+    const appDataPath = path.join(appData, "koalalauncher");
 
     const notCopiedFiles = [
-      'Cache',
-      'Code Cache',
-      'Dictionaries',
-      'GPUCache',
-      'Cookies',
-      'Cookies-journal'
+      "Cache",
+      "Code Cache",
+      "Dictionaries",
+      "GPUCache",
+      "Cookies",
+      "Cookies-journal",
     ];
-    await fsa.writeFile(path.join(appDataPath, 'override.data'), dataPath);
+    await fsa.writeFile(path.join(appDataPath, "override.data"), dataPath);
 
     if (moveUserData) {
       try {
         const files = await fs.readdir(userData);
         await Promise.all(
-          files.map(async name => {
+          files.map(async (name) => {
             if (!notCopiedFiles.includes(name)) {
               await fsa.copy(
                 path.join(userData, name),
                 path.join(dataPath, name),
                 {
-                  overwrite: true
+                  overwrite: true,
                 }
               );
             }
@@ -307,12 +307,12 @@ const General = () => {
       }
     }
     setLoadingMoveUserData(false);
-    ipcRenderer.invoke('appRestart');
+    ipcRenderer.invoke("appRestart");
   };
 
   const openFolder = async () => {
     const { filePaths, canceled } = await ipcRenderer.invoke(
-      'openFolderDialog',
+      "openFolderDialog",
       userData
     );
     if (!filePaths[0] || canceled) return;
@@ -344,7 +344,7 @@ const General = () => {
               <br />
               <Uuid>
                 {dashUuid(currentAccount.selectedProfile.id)}
-                <Tooltip title={copiedUuid ? 'Copied' : 'Copy'} placement="top">
+                <Tooltip title={copiedUuid ? "Copied" : "Copy"} placement="top">
                   <div
                     css={`
                       width: 13px;
@@ -385,11 +385,11 @@ const General = () => {
             css={`
               width: 100px;
             `}
-            onChange={async e => {
-              const appData = await ipcRenderer.invoke('getAppdataPath');
+            onChange={async (e) => {
+              const appData = await ipcRenderer.invoke("getAppdataPath");
               setReleaseChannel(e);
               await fsa.writeFile(
-                path.join(appData, 'gdlauncher_next', 'rChannel'),
+                path.join(appData, "koalalauncher", "rChannel"),
                 e
               );
             }}
@@ -416,7 +416,7 @@ const General = () => {
         </p>
 
         <Select
-          onChange={v => dispatch(updateConcurrentDownloads(v))}
+          onChange={(v) => dispatch(updateConcurrentDownloads(v))}
           value={concurrentDownloads}
           css={`
             width: 100px;
@@ -424,8 +424,8 @@ const General = () => {
           `}
         >
           {[...Array(20).keys()]
-            .map(x => x + 1)
-            .map(x => (
+            .map((x) => x + 1)
+            .map((x) => (
               <Select.Option key={x} value={x}>
                 {x}
               </Select.Option>
@@ -434,7 +434,8 @@ const General = () => {
       </ParallelDownload>
       <Hr />
       <Title>
-        Preferred CurseForge Release Channel &nbsp; <FontAwesomeIcon icon={faFire} />
+        Preferred CurseForge Release Channel &nbsp;{" "}
+        <FontAwesomeIcon icon={faFire} />
       </Title>
       <ParallelDownload>
         <p
@@ -443,15 +444,15 @@ const General = () => {
             width: 400px;
           `}
         >
-          Select the preferred release channel for downloading CurseForge projects.
-          This also applies for mods update.
+          Select the preferred release channel for downloading CurseForge
+          projects. This also applies for mods update.
         </p>
         <Select
           css={`
             width: 100px;
             text-align: start;
           `}
-          onChange={e => dispatch(updateCurseReleaseChannel(e))}
+          onChange={(e) => dispatch(updateCurseReleaseChannel(e))}
           value={curseReleaseChannel}
         >
           <Select.Option value={1}>Stable</Select.Option>
@@ -477,12 +478,12 @@ const General = () => {
           playing in Discord.
         </p>
         <Switch
-          onChange={e => {
+          onChange={(e) => {
             dispatch(updateDiscordRPC(e));
             if (e) {
-              ipcRenderer.invoke('init-discord-rpc');
+              ipcRenderer.invoke("init-discord-rpc");
             } else {
-              ipcRenderer.invoke('shutdown-discord-rpc');
+              ipcRenderer.invoke("shutdown-discord-rpc");
             }
           }}
           checked={DiscordRPC}
@@ -505,7 +506,7 @@ const General = () => {
           Enable / disable Minecraft news.
         </p>
         <Switch
-          onChange={e => {
+          onChange={(e) => {
             dispatch(updateShowNews(e));
           }}
           checked={showNews}
@@ -533,7 +534,7 @@ const General = () => {
           still be able to open it from the icon tray
         </p>
         <Switch
-          onChange={e => {
+          onChange={(e) => {
             dispatch(updateHideWindowOnGameLaunch(e));
           }}
           checked={hideWindowOnGameLaunch}
@@ -561,7 +562,7 @@ const General = () => {
           and all animations and special effects will be disabled
         </p>
         <Switch
-          onChange={e => {
+          onChange={(e) => {
             dispatch(updatePotatoPcMode(e));
           }}
           checked={potatoPcMode}
@@ -585,7 +586,7 @@ const General = () => {
           margin-bottom: 30px;
           p {
             text-align: left;
-            color: ${props => props.theme.palette.text.third};
+            color: ${(props) => props.theme.palette.text.third};
           }
         `}
       >
@@ -621,8 +622,8 @@ const General = () => {
               margin-left: 30px;
             `}
             onClick={async () => {
-              const appData = await ipcRenderer.invoke('getAppdataPath');
-              const appDataPath = path.join(appData, 'gdlauncher_next');
+              const appData = await ipcRenderer.invoke("getAppdataPath");
+              const appDataPath = path.join(appData, "koalalauncher");
               setDataPath(appDataPath);
             }}
           >
@@ -639,13 +640,13 @@ const General = () => {
             margin: 20px 0 10px 0;
             p {
               text-align: left;
-              color: ${props => props.theme.palette.text.third};
+              color: ${(props) => props.theme.palette.text.third};
             }
           `}
         >
           <Input
             value={dataPath}
-            onChange={e => setDataPath(e.target.value)}
+            onChange={(e) => setDataPath(e.target.value)}
             disabled={
               loadingMoveUserData ||
               deletingInstances ||
@@ -686,7 +687,7 @@ const General = () => {
           `}
         >
           <Checkbox
-            onChange={e => {
+            onChange={(e) => {
               setMoveUserData(e.target.checked);
             }}
           >
@@ -705,10 +706,15 @@ const General = () => {
             margin: 10px 0;
           `}
         >
-          <HorizontalLogo
-            size={200}
-            onClick={() => dispatch(openModal('ChangeLogs'))}
-          />{' '}
+          <img
+            src={HorizontalLogo}
+            height="85px"
+            width="200px"
+            alt="Logo"
+            draggable="false"
+            onClick={() => dispatch(openModal("ChangeLogs"))}
+            pointerCursor
+          />{" "}
           <div
             css={`
               margin-left: 10px;
@@ -719,8 +725,8 @@ const General = () => {
         </div>
         <p>
           {updateAvailable
-            ? 'There is an update available to be installed. Click on update to install it and restart the launcher'
-            : 'You’re currently on the latest version. We automatically check for updates and we will inform you whenever one is available'}
+            ? "There is an update available to be installed. Click on update to install it and restart the launcher"
+            : "You’re currently on the latest version. We automatically check for updates and we will inform you whenever one is available"}
         </p>
         <div
           css={`
@@ -733,7 +739,7 @@ const General = () => {
           {updateAvailable ? (
             <Button
               onClick={() =>
-                ipcRenderer.invoke('installUpdateAndQuitOrRestart')
+                ipcRenderer.invoke("installUpdateAndQuitOrRestart")
               }
               css={`
                 margin-right: 10px;

@@ -1,41 +1,41 @@
-import React, { useState, useEffect, memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ipcRenderer } from 'electron';
-import styled from 'styled-components';
-import { Transition } from 'react-transition-group';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect, memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ipcRenderer } from "electron";
+import styled from "styled-components";
+import { Transition } from "react-transition-group";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faExclamationCircle,
-  faCheckCircle
-} from '@fortawesome/free-solid-svg-icons';
-import { Input, Button } from 'antd';
-import { useKey } from 'rooks';
-import axios from 'axios';
-import { login } from '../../../common/reducers/actions';
-import { load, requesting } from '../../../common/reducers/loading/actions';
-import features from '../../../common/reducers/loading/features';
-import backgroundVideo from '../../../common/assets/background.webm';
-import HorizontalLogo from '../../../ui/HorizontalLogo';
-import { openModal } from '../../../common/reducers/modals/actions';
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { Input, Button } from "antd";
+import { useKey } from "rooks";
+import axios from "axios";
+import { login } from "../../../common/reducers/actions";
+import { load, requesting } from "../../../common/reducers/loading/actions";
+import features from "../../../common/reducers/loading/features";
+import backgroundVideo from "../../../common/assets/background.webm";
+import HorizontalLogo from "../../../ui/HorizontalLogo.png";
+import { openModal } from "../../../common/reducers/modals/actions";
 
 const LoginButton = styled(Button)`
   border-radius: 4px;
   font-size: 22px;
-  background: ${props =>
-    props.active ? props.theme.palette.grey[600] : 'transparent'};
+  background: ${(props) =>
+    props.active ? props.theme.palette.grey[600] : "transparent"};
   border: 0;
   height: auto;
   margin-top: 40px;
   text-align: center;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   &:hover {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[600]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[600]};
   }
   &:focus {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[600]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[600]};
   }
 `;
 
@@ -54,17 +54,17 @@ const LeftSide = styled.div`
   transition: 0.3s ease-in-out;
   transform: translateX(
     ${({ transitionState }) =>
-      transitionState === 'entering' || transitionState === 'entered'
+      transitionState === "entering" || transitionState === "entered"
         ? -300
         : 0}px
   );
-  background: ${props => props.theme.palette.secondary.main};
+  background: ${(props) => props.theme.palette.secondary.main};
   & div {
     margin: 10px 0;
   }
   p {
     margin-top: 1em;
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
 `;
 
@@ -85,7 +85,7 @@ const Background = styled.div`
     transition: 0.3s ease-in-out;
     transform: translateX(
       ${({ transitionState }) =>
-        transitionState === 'entering' || transitionState === 'entered'
+        transitionState === "entering" || transitionState === "entered"
           ? -300
           : 0}px
     );
@@ -115,17 +115,17 @@ const Status = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${props => props.theme.palette.text.third};
+  color: ${(props) => props.theme.palette.text.third};
 `;
 
 const FooterLinks = styled.div`
   font-size: 0.75rem;
   margin: 0 !important;
   a {
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
   a:hover {
-    color: ${props => props.theme.palette.text.secondary};
+    color: ${(props) => props.theme.palette.text.secondary};
   }
 `;
 
@@ -141,21 +141,21 @@ const Loading = styled.div`
   font-size: 40px;
   transition: 0.3s ease-in-out;
   opacity: ${({ transitionState }) =>
-    transitionState === 'entering' || transitionState === 'entered' ? 1 : 0};
+    transitionState === "entering" || transitionState === "entered" ? 1 : 0};
 `;
 const LoginFailMessage = styled.div`
-  color: ${props => props.theme.palette.colors.red};
+  color: ${(props) => props.theme.palette.colors.red};
 `;
 
 const StatusIcon = ({ color }) => {
   return (
     <FontAwesomeIcon
-      icon={color === 'red' ? faExclamationCircle : faCheckCircle}
+      icon={color === "red" ? faExclamationCircle : faCheckCircle}
       color={color}
       css={`
         margin: 0 5px;
-        color: ${props =>
-          props.color === 'green'
+        color: ${(props) =>
+          props.color === "green"
             ? props.theme.palette.colors.green
             : props.theme.palette.error.main};
       `}
@@ -171,16 +171,16 @@ const Login = () => {
   const [loginFailed, setLoginFailed] = useState(false);
   const [status, setStatus] = useState({});
   const loading = useSelector(
-    state => state.loading.accountAuthentication.isRequesting
+    (state) => state.loading.accountAuthentication.isRequesting
   );
 
   const authenticate = () => {
     if (!email || !password) return;
-    dispatch(requesting('accountAuthentication'));
+    dispatch(requesting("accountAuthentication"));
     setTimeout(() => {
       dispatch(
         load(features.mcAuthentication, dispatch(login(email, password)))
-      ).catch(e => {
+      ).catch((e) => {
         console.error(e);
         setLoginFailed(e);
         setPassword(null);
@@ -189,26 +189,33 @@ const Login = () => {
   };
 
   const fetchStatus = async () => {
-    const { data } = await axios.get('https://status.mojang.com/check');
+    const { data } = await axios.get("https://status.mojang.com/check");
     const result = {};
     Object.assign(result, ...data);
     setStatus(result);
   };
 
-  useKey(['Enter'], authenticate);
+  useKey(["Enter"], authenticate);
 
   useEffect(() => {
-    ipcRenderer.invoke('getAppVersion').then(setVersion).catch(console.error);
+    ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
     fetchStatus().catch(console.error);
   }, []);
 
   return (
     <Transition in={loading} timeout={300}>
-      {transitionState => (
+      {(transitionState) => (
         <Container>
           <LeftSide transitionState={transitionState}>
             <Header>
-              <HorizontalLogo size={200} />
+              <img
+                src={HorizontalLogo}
+                height="85px"
+                width="200px"
+                alt="Logo"
+                draggable="false"
+                pointerCursor
+              />{" "}
             </Header>
             <p>Sign in with your Mojang Account</p>
             <Form>
@@ -265,16 +272,16 @@ const Login = () => {
                   css={`
                     cursor: pointer;
                   `}
-                  onClick={() => dispatch(openModal('ChangeLogs'))}
+                  onClick={() => dispatch(openModal("ChangeLogs"))}
                 >
                   v{version}
                 </div>
               </div>
               <Status>
-                Auth: <StatusIcon color={status['authserver.mojang.com']} />
-                Session: <StatusIcon color={status['session.minecraft.net']} />
-                Skins: <StatusIcon color={status['textures.minecraft.net']} />
-                API: <StatusIcon color={status['api.mojang.com']} />
+                Auth: <StatusIcon color={status["authserver.mojang.com"]} />
+                Session: <StatusIcon color={status["session.minecraft.net"]} />
+                Skins: <StatusIcon color={status["textures.minecraft.net"]} />
+                API: <StatusIcon color={status["api.mojang.com"]} />
               </Status>
             </Footer>
           </LeftSide>

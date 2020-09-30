@@ -30,7 +30,11 @@ jobs:
     - name: Install Node GYP
       run: npm install --global node-gyp@latest
 
-    # Fetch Koala Dependenices
+    # Increase Yarn Timeout due to Azure Timing It Out
+    - name: Increase Yarn Timeout
+      run: yarn --network-timeout 100000
+
+    # Fetch Koala Dependencies
     - name: Fetch Koala Dependencies
       run: yarn
 
