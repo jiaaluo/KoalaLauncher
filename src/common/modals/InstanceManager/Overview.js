@@ -261,32 +261,27 @@ const Overview = ({ instanceName, background, manifest }) => {
           css={`
             display: flex;
             justify-content: space-between;
-            width: 100%;
+            width: 100% + 20px;
             margin-top: 20px;
+            margin-left: -20px;
           `}
         >
           <Card
             title="Minecraft Version"
-            color={(props) => props.theme.palette.colors.jungleGreen}
-            instanceName={instanceName}
-            defaultValue={config?.modloader}
-            icon={<FontAwesomeIcon icon={faCog} />}
-          >
-            {config?.modloader[1]}
-          </Card>
-          <Card
-            title="Loader"
             color={(props) => props.theme.palette.colors.darkYellow}
             instanceName={instanceName}
             defaultValue={config?.modloader}
             icon={<FontAwesomeIcon icon={faCog} />}
           >
-            {config?.modloader[0] === "vanilla" ? "Vanilla" : ""}
-            {config?.modloader[0] === "fabric" ? "Fabric - " : ""}
+            {config?.modloader[0] === "vanilla" ? "Vanilla " : ""}
+            {config?.modloader[0] === "fabric" ? "Fabric " : ""}
+            {config?.modloader[0] === "forge" ? "Forge " : ""}
+            {config?.modloader[1]}
+            {config?.modloader[0] === "fabric" ? " - " : ""}
             {config?.modloader[0] === "fabric"
               ? config?.modloader[2] || "-"
               : ""}
-            {config?.modloader[0] === "forge" ? "Forge - " : ""}
+            {config?.modloader[0] === "forge" ? " - " : ""}
             {config?.modloader[0] === "forge"
               ? config?.modloader[2]?.split("-")[1]
               : ""}
