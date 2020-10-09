@@ -2,6 +2,9 @@
   "name": "koalalauncher",
   "version": "1.0.3",
   "description": "KoalaLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
+  "name": "gdlauncher",
+  "version": "1.0.11",
+  "description": "GDLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
   "keywords": [
     "minecraft",
     "launcher",
