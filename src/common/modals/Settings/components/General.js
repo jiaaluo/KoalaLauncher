@@ -21,7 +21,7 @@ import { Select, Tooltip, Button, Switch, Input, Checkbox } from "antd";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import {
   _getCurrentAccount,
-  // _getDataStorePath,
+  _getDataStorePath,
   _getInstancesPath,
   _getTempPath,
 } from "../../../utils/selectors";
@@ -262,7 +262,7 @@ const General = () => {
   const clearSharedData = async () => {
     setDeletingInstances(true);
     try {
-      // await fsa.emptyDir(dataStorePath);
+      await fsa.emptyDir(dataStorePath);
       await fsa.emptyDir(instancesPath);
       await fsa.emptyDir(tempPath);
     } catch (e) {
