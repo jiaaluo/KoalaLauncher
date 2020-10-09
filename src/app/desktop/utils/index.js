@@ -4,7 +4,6 @@ import fse from "fs-extra";
 import { extractFull } from "node-7z";
 import jimp from "jimp/es";
 import makeDir from "make-dir";
-import jarAnalyzer from "jarfile";
 import { promisify } from "util";
 import { ipcRenderer } from "electron";
 import path from "path";
@@ -641,10 +640,13 @@ export const patchForge113 = async (
       );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       const jarFile = await promisify(jarAnalyzer.fetchJarAtPath)(filePath);
       const mainClass = jarFile.valueForManifestEntry("Main-Class");
       await new Promise((resolve) => {
 =======
+=======
+>>>>>>> 7aa41b0845e54581fde86a2d0d770932f2edea90
       const sevenZipPath = await get7zPath();
       const mainClass = await readJarManifest(
         filePath,
