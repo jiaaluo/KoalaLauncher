@@ -75,7 +75,7 @@ const Home = () => {
       const appVersion = await ipcRenderer.invoke("getAppVersion");
       if (lastUpdateVersion !== appVersion) {
         dispatch(updateLastUpdateVersion(appVersion));
-        dispatch(openModal("ChangeLogs"));
+        dispatch(openModal("Changelogs"));
       }
 
       // const oldInstances = await getOldInstances();

@@ -713,7 +713,7 @@ const General = () => {
             width="200px"
             alt="Logo"
             draggable="false"
-            onClick={() => dispatch(openModal("ChangeLogs"))}
+            onClick={() => dispatch(openModal("Changelogs"))}
             pointerCursor
           />{" "}
           <div

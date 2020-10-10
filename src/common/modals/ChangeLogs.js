@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import Modal from "../components/Modal";
 
-const ChangeLogs = () => {
+const Changelogs = () => {
   const [version, setVersion] = useState(null);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const ChangeLogs = () => {
   );
 };
 
-export default memo(ChangeLogs);
+export default memo(Changelogs);
 
 const Container = styled.div`
   width: 100%;
