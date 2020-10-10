@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { Input, Button } from 'antd';
-import Modal from '../components/Modal';
-import { load } from '../reducers/loading/actions';
-import features from '../reducers/loading/features';
-import { login } from '../reducers/actions';
-import { closeModal } from '../reducers/modals/actions';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { Input, Button } from "antd";
+import Modal from "../components/Modal";
+import { load } from "../reducers/loading/actions";
+import features from "../reducers/loading/features";
+import { login } from "../reducers/actions";
+import { closeModal } from "../reducers/modals/actions";
 
 const AddAccount = ({ username }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState(username || '');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(username || "");
+  const [password, setPassword] = useState("");
 
   const addAccount = () => {
     dispatch(
@@ -42,13 +42,13 @@ const AddAccount = ({ username }) => {
             disabled={!!username}
             placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <StyledInput
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </FormContainer>
         <FormContainer>

@@ -1,35 +1,35 @@
-import React, { memo, useState } from 'react';
-import styled from 'styled-components';
-import { clipboard } from 'electron';
-import { Tooltip, Collapse } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy } from '@fortawesome/free-solid-svg-icons';
+import React, { memo, useState } from "react";
+import styled from "styled-components";
+import { clipboard } from "electron";
+import { Tooltip, Collapse } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
-import Modal from '../components/Modal';
-import Logo from '../../ui/LogoSad';
+import Modal from "../components/Modal";
+import Logo from "../../ui/LogoSad";
 
-const calcError = code => {
+const calcError = (code) => {
   switch (code) {
     case 1:
-      return 'Uncaught Fatal Exception';
+      return "Uncaught Fatal Exception";
     case 3:
-      return 'Internal JavaScript Parse Error';
+      return "Internal JavaScript Parse Error";
     case 4:
-      return 'Internal JavaScript Evaluation Failure';
+      return "Internal JavaScript Evaluation Failure";
     case 5:
-      return 'Fatal Error';
+      return "Fatal Error";
     case 6:
-      return 'Non-function Internal Exception Handler ';
+      return "Non-function Internal Exception Handler ";
     case 7:
-      return 'Internal Exception Handler Run-Time Failure';
+      return "Internal Exception Handler Run-Time Failure";
     case 9:
-      return 'Invalid Argument';
+      return "Invalid Argument";
     case 10:
-      return 'Internal JavaScript Run-Time Failure';
+      return "Internal JavaScript Run-Time Failure";
     case 12:
-      return 'Invalid Debug Argument';
+      return "Invalid Debug Argument";
     default:
-      return code > 128 ? 'Signal Exits' : 'Unknown Error';
+      return code > 128 ? "Signal Exits" : "Unknown Error";
   }
 };
 
@@ -77,7 +77,7 @@ const InstanceCrashed = ({ code, errorLogs }) => {
           css={`
             width: 100%;
           `}
-          defaultActiveKey={['1']}
+          defaultActiveKey={["1"]}
         >
           <Panel
             header={
@@ -90,13 +90,13 @@ const InstanceCrashed = ({ code, errorLogs }) => {
                 `}
               >
                 <>Error Log</> &nbsp;
-                <Tooltip title={copiedLog ? 'Copied' : 'Copy'} placement="top">
+                <Tooltip title={copiedLog ? "Copied" : "Copy"} placement="top">
                   <div
                     css={`
                       margin: 0;
                     `}
                   >
-                    <FontAwesomeIcon icon={faCopy} onClick={e => copy(e)} />
+                    <FontAwesomeIcon icon={faCopy} onClick={(e) => copy(e)} />
                   </div>
                 </Tooltip>
               </div>
@@ -129,7 +129,7 @@ const Container = styled.div`
   justify-conter: space-between;
   align-items: center;
   text-align: center;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;
 
 const InnerContainer = styled.div`
@@ -141,7 +141,7 @@ const InnerContainer = styled.div`
     margin-left: 10px;
     text-align: start;
   }
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;
 
 const Card = styled.div`
@@ -155,10 +155,10 @@ const Card = styled.div`
     text-align: start;
     font-weight: 900;
   }
-  background: ${props => props.theme.palette.grey[900]};
-  color: ${props => props.theme.palette.text.primary};
+  background: ${(props) => props.theme.palette.grey[900]};
+  color: ${(props) => props.theme.palette.text.primary};
 `;
 
 const ErrorContainer = styled.div`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;

@@ -1,13 +1,13 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function ContinueButton({ onClick, disabled = false }) {
   return (
     <div
       onClick={() => {
         if (!disabled) {
-          onClick(s => s + 1);
+          onClick((s) => s + 1);
         }
       }}
       disabled={disabled}
@@ -24,13 +24,13 @@ export default function ContinueButton({ onClick, disabled = false }) {
         border-radius: 4px;
         font-size: 40px;
         color: ${disabled
-          ? props => props.theme.palette.text.disabled
-          : props => props.theme.palette.text.icon};
-        ${disabled ? '' : 'cursor: pointer;'}
+          ? (props) => props.theme.palette.text.disabled
+          : (props) => props.theme.palette.text.icon};
+        ${disabled ? "" : "cursor: pointer;"}
         &:hover {
           background-color: ${disabled
-            ? 'transparent'
-            : props => props.theme.action.hover};
+            ? "transparent"
+            : (props) => props.theme.action.hover};
         }
       `}
     >

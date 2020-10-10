@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { ipcRenderer } from 'electron';
-import path from 'path';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { ipcRenderer } from "electron";
+import path from "path";
 import {
   _getInstance,
   _getCurrentAccount,
   _getInstancesPath,
-  _getTempPath
-} from '../../../utils/selectors';
-import Modal from '../../../components/Modal';
-import { closeModal } from '../../../reducers/modals/actions';
-import FirstStep from './FirstStep';
-import SecondStep from './SecondStep';
-import ThirdStep from './ThirdStep';
+  _getTempPath,
+} from "../../../utils/selectors";
+import Modal from "../../../components/Modal";
+import { closeModal } from "../../../reducers/modals/actions";
+import FirstStep from "./FirstStep";
+import SecondStep from "./SecondStep";
+import ThirdStep from "./ThirdStep";
 
 const InstanceExportCurseForge = ({ instanceName }) => {
   const [page, setPage] = useState(0);
-  const instanceConfig = useSelector(state =>
+  const instanceConfig = useSelector((state) =>
     _getInstance(state)(instanceName)
   );
 
   const currentAccount = useSelector(_getCurrentAccount);
   const username = currentAccount.selectedProfile.name;
   const [filePath, setFilePath] = useState(null);
-  const [packVersion, setPackVersion] = useState('1.0');
+  const [packVersion, setPackVersion] = useState("1.0");
   const [packAuthor, setPackAuthor] = useState(username);
   const [packZipName, setPackZipName] = useState(instanceName);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -33,7 +33,7 @@ const InstanceExportCurseForge = ({ instanceName }) => {
   const instancePath = path.join(instancesPath, instanceName);
 
   const openFolderDialog = async () => {
-    const dialog = await ipcRenderer.invoke('openFolderDialog', instancesPath);
+    const dialog = await ipcRenderer.invoke("openFolderDialog", instancesPath);
     if (dialog.canceled) return;
     setFilePath(dialog.filePaths[0]);
   };

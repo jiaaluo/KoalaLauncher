@@ -1,27 +1,27 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { memo, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { ipcRenderer } from 'electron';
-import { promises as fs } from 'fs';
-import path from 'path';
-import pMap from 'p-map';
-import fse from 'fs-extra';
-import makeDir from 'make-dir';
-import { useSelector, useDispatch } from 'react-redux';
-import { LoadingOutlined } from '@ant-design/icons';
-import Modal from '../components/Modal';
+import React, { memo, useEffect, useState } from "react";
+import styled from "styled-components";
+import { ipcRenderer } from "electron";
+import { promises as fs } from "fs";
+import path from "path";
+import pMap from "p-map";
+import fse from "fs-extra";
+import makeDir from "make-dir";
+import { useSelector, useDispatch } from "react-redux";
+import { LoadingOutlined } from "@ant-design/icons";
+import Modal from "../components/Modal";
 import {
   _getInstancesPath,
   _getDownloadQueue,
-  _getCurrentDownloadItem
-} from '../utils/selectors';
-import { addToQueue } from '../reducers/actions';
-import { closeModal } from '../reducers/modals/actions';
-import Logo from '../../ui/Logo.png';
+  _getCurrentDownloadItem,
+} from "../utils/selectors";
+import { addToQueue } from "../reducers/actions";
+import { closeModal } from "../reducers/modals/actions";
+import Logo from "../../ui/Logo.png";
 
 const InstancesMigration = () => {
   const dispatch = useDispatch();
-  const forgeVersions = useSelector(state => state.app.forgeManifest);
+  const forgeVersions = useSelector((state) => state.app.forgeManifest);
   const instancesPath = useSelector(_getInstancesPath);
   const downloadQueue = useSelector(_getDownloadQueue);
   const currentDownloadItem = useSelector(_getCurrentDownloadItem);
@@ -33,25 +33,25 @@ const InstancesMigration = () => {
 
   const getOldInstances = async () => {
     const oldLauncherUserData = await ipcRenderer.invoke(
-      'getOldLauncherUserData'
+      "getOldLauncherUserData"
     );
-    const files = await fs.readdir(path.join(oldLauncherUserData, 'packs'));
+    const files = await fs.readdir(path.join(oldLauncherUserData, "packs"));
     const instances = (
       await Promise.all(
-        files.map(async f => {
+        files.map(async (f) => {
           try {
             const stat = await fs.stat(
-              path.join(oldLauncherUserData, 'packs', f)
+              path.join(oldLauncherUserData, "packs", f)
             );
 
             if (stat.isDirectory()) {
               const config = await fse.readJSON(
-                path.join(oldLauncherUserData, 'packs', f, 'config.json')
+                path.join(oldLauncherUserData, "packs", f, "config.json")
               );
 
               const isForgeOk = config?.forgeVersion
-                ? forgeVersions[config?.version].find(v =>
-                    v.includes(config?.forgeVersion.replace('forge-', ''))
+                ? forgeVersions[config?.version].find((v) =>
+                    v.includes(config?.forgeVersion.replace("forge-", ""))
                   )
                 : true;
 
@@ -63,47 +63,47 @@ const InstancesMigration = () => {
           }
         })
       )
-    ).filter(v => v);
+    ).filter((v) => v);
     return instances;
   };
 
   useEffect(() => {
     const migrateOldLauncherInstances = async () => {
       const oldLauncherUserData = await ipcRenderer.invoke(
-        'getOldLauncherUserData'
+        "getOldLauncherUserData"
       );
       const instances = await getOldInstances();
       setTotalInstances(instances.length);
 
       await pMap(
         instances,
-        async instance => {
-          await new Promise(resolve => setTimeout(resolve, 300));
+        async (instance) => {
+          await new Promise((resolve) => setTimeout(resolve, 300));
           const config = await fse.readJSON(
-            path.join(oldLauncherUserData, 'packs', instance, 'config.json')
+            path.join(oldLauncherUserData, "packs", instance, "config.json")
           );
 
           const { version, forgeVersion, timePlayed } = config;
 
           if (version) {
             const instanceFiles = await fs.readdir(
-              path.join(oldLauncherUserData, 'packs', instance)
+              path.join(oldLauncherUserData, "packs", instance)
             );
 
-            setTotalFiles(v => v + instanceFiles.length);
+            setTotalFiles((v) => v + instanceFiles.length);
 
             let icon = null;
 
             await Promise.all(
-              instanceFiles.map(async f => {
+              instanceFiles.map(async (f) => {
                 try {
-                  const iconExts = ['png', 'jpg', 'jpeg'];
-                  if (f === 'config.json') return;
-                  const isIcon = iconExts.find(v => f === `thumbnail.${v}`);
+                  const iconExts = ["png", "jpg", "jpeg"];
+                  if (f === "config.json") return;
+                  const isIcon = iconExts.find((v) => f === `thumbnail.${v}`);
                   if (isIcon) {
                     await makeDir(path.join(instancesPath, instance));
                     await fse.copy(
-                      path.join(oldLauncherUserData, 'packs', instance, f),
+                      path.join(oldLauncherUserData, "packs", instance, f),
                       path.join(instancesPath, instance, `icon.${isIcon}`)
                     );
                     icon = `icon.${isIcon}`;
@@ -119,15 +119,15 @@ const InstancesMigration = () => {
               addToQueue(
                 instance,
                 [
-                  forgeVersion ? 'forge' : 'vanilla',
+                  forgeVersion ? "forge" : "vanilla",
                   version,
                   ...(forgeVersion
                     ? [
-                        `${forgeVersions[version].find(v =>
-                          v.includes(forgeVersion.replace('forge-', ''))
-                        )}`
+                        `${forgeVersions[version].find((v) =>
+                          v.includes(forgeVersion.replace("forge-", ""))
+                        )}`,
                       ]
-                    : [])
+                    : []),
                 ],
                 null,
                 icon,
@@ -149,31 +149,31 @@ const InstancesMigration = () => {
     const copyInstanceFiles = async () => {
       setCopying(true);
       const oldLauncherUserData = await ipcRenderer.invoke(
-        'getOldLauncherUserData'
+        "getOldLauncherUserData"
       );
       const instances = await getOldInstances();
       await pMap(
         instances,
-        async instance => {
+        async (instance) => {
           const instanceFiles = await fs.readdir(
-            path.join(oldLauncherUserData, 'packs', instance)
+            path.join(oldLauncherUserData, "packs", instance)
           );
 
           await Promise.all(
-            instanceFiles.map(async f => {
+            instanceFiles.map(async (f) => {
               try {
-                const iconExts = ['png', 'jpg', 'jpeg'];
-                const isIcon = iconExts.find(v => f === `thumbnail.${v}`);
-                if (f === 'config.json' || isIcon || f === 'natives') return;
+                const iconExts = ["png", "jpg", "jpeg"];
+                const isIcon = iconExts.find((v) => f === `thumbnail.${v}`);
+                if (f === "config.json" || isIcon || f === "natives") return;
                 await fse.copy(
-                  path.join(oldLauncherUserData, 'packs', instance, f),
+                  path.join(oldLauncherUserData, "packs", instance, f),
                   path.join(
                     instancesPath,
                     instance,
                     isIcon ? `icon.${isIcon}` : f
                   )
                 );
-                setCopiedFiles(v => v + 1);
+                setCopiedFiles((v) => v + 1);
               } catch (error) {
                 console.error(error);
               }
@@ -211,14 +211,14 @@ const InstancesMigration = () => {
             margin-top: 20px;
           `}
         >
-          Importing {totalInstances} Instances -{' '}
+          Importing {totalInstances} Instances -{" "}
           {Object.keys(downloadQueue).length} Left
         </div>
         <div
           css={`
             margin-top: 20px;
             font-size: 20px;
-            color: ${props => props.theme.palette.text.secondary};
+            color: ${(props) => props.theme.palette.text.secondary};
           `}
         >
           Please, do NOT close KoalaLauncher.
@@ -227,7 +227,7 @@ const InstancesMigration = () => {
           css={`
             margin-top: 80px;
             font-size: 20px;
-            color: ${props => props.theme.palette.text.secondary};
+            color: ${(props) => props.theme.palette.text.secondary};
           `}
         >
           {!copying

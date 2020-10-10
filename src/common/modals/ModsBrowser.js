@@ -1,28 +1,28 @@
-import React, { memo, useEffect, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import styled from 'styled-components';
-import InfiniteLoader from 'react-window-infinite-loader';
-import { Input, Select, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
-import { FixedSizeGrid as Grid } from 'react-window';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../components/Modal';
-import { getSearch, getAddonFiles } from '../api';
-import { openModal } from '../reducers/modals/actions';
-import { _getInstance } from '../utils/selectors';
-import { installMod } from '../reducers/actions';
-import { FABRIC, FORGE } from '../utils/constants';
+import React, { memo, useEffect, useState } from "react";
+import AutoSizer from "react-virtualized-auto-sizer";
+import styled from "styled-components";
+import InfiniteLoader from "react-window-infinite-loader";
+import { Input, Select, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebouncedCallback } from "use-debounce";
+import { FixedSizeGrid as Grid } from "react-window";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import Modal from "../components/Modal";
+import { getSearch, getAddonFiles } from "../api";
+import { openModal } from "../reducers/modals/actions";
+import { _getInstance } from "../utils/selectors";
+import { installMod } from "../reducers/actions";
+import { FABRIC, FORGE } from "../utils/constants";
 import {
   getFirstPreferredCandidate,
   filterFabricFilesByVersion,
   filterForgeFilesByVersion,
-  getPatchedInstanceType
-} from '../../app/desktop/utils';
+  getPatchedInstanceType,
+} from "../../app/desktop/utils";
 
-const CellContainer = styled.div.attrs(props => ({
-  style: props.override
+const CellContainer = styled.div.attrs((props) => ({
+  style: props.override,
 }))`
   height: 100%;
   width: 100%;
@@ -59,7 +59,7 @@ const CellContainer = styled.div.attrs(props => ({
         font-size: 22px;
         font-weight: 700;
         transition: all 150ms ease-in-out;
-        color: ${props => props.theme.palette.text.primary};
+        color: ${(props) => props.theme.palette.text.primary};
       }
       &:hover {
         opacity: 1;
@@ -76,11 +76,11 @@ const Cell = ({
   items,
   version,
   installedMods,
-  instanceName
+  instanceName,
 }) => {
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
   const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
+    (state) => state.settings.curseReleaseChannel
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -89,8 +89,8 @@ const Cell = ({
     return <div />;
 
   const mod = items[3 * rowIndex + columnIndex];
-  const primaryImage = (mod?.attachments || []).find(v => v.isDefault);
-  const isInstalled = installedMods.find(v => v.projectID === mod?.id);
+  const primaryImage = (mod?.attachments || []).find((v) => v.isDefault);
+  const isInstalled = installedMods.find((v) => v.projectID === mod?.id);
 
   return (
     <CellContainer mod={mod} override={style}>
@@ -102,19 +102,19 @@ const Cell = ({
             position: absolute;
             top: 20px;
             left: 20px;
-            color: ${props => props.theme.palette.primary.main};
+            color: ${(props) => props.theme.palette.primary.main};
           `}
         />
       )}
       <div
         onClick={() => {
           dispatch(
-            openModal('ModOverview', {
+            openModal("ModOverview", {
               gameVersion: version,
               projectID: mod.id,
               ...(isInstalled && { fileID: isInstalled.fileID }),
               ...(isInstalled && { fileName: isInstalled.fileName }),
-              instanceName
+              instanceName,
             })
           );
         }}
@@ -124,8 +124,8 @@ const Cell = ({
             rgba(0, 0, 0, 0.9),
             rgba(0, 0, 0, 0.9)
             ), url('${primaryImage?.thumbnailUrl}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <div className="hoverContainer">
@@ -135,7 +135,7 @@ const Cell = ({
               <Button
                 type="primary"
                 loading={loading}
-                onClick={async e => {
+                onClick={async (e) => {
                   setLoading(true);
                   e.stopPropagation();
                   const files = (await getAddonFiles(mod?.id)).data;
@@ -158,7 +158,7 @@ const Cell = ({
 
                   if (preferredFile === null) {
                     setLoading(false);
-                    setError('Mod Not Available');
+                    setError("Mod Not Available");
                     console.error(
                       `Could not find any release candidate for addon: ${mod?.id} / ${version}`
                     );
@@ -208,7 +208,7 @@ const ModsListWrapper = ({
   instance,
   version,
   installedMods,
-  instanceName
+  instanceName,
 }) => {
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? items.length + 3 : items.length;
@@ -218,7 +218,7 @@ const ModsListWrapper = ({
   const loadMoreItems = loadNextPage;
 
   // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = index => !hasNextPage || index < items.length;
+  const isItemLoaded = (index) => !hasNextPage || index < items.length;
 
   return (
     <InfiniteLoader
@@ -231,7 +231,7 @@ const ModsListWrapper = ({
         <Grid
           ref={ref}
           useIsScrolling
-          onItemsRendered={gridData => {
+          onItemsRendered={(gridData) => {
             const useOverscanForLoading = true; // default is true
 
             const {
@@ -240,7 +240,7 @@ const ModsListWrapper = ({
               visibleColumnStopIndex,
               overscanRowStartIndex,
               overscanRowStopIndex,
-              overscanColumnStopIndex
+              overscanColumnStopIndex,
             } = gridData;
 
             const endCol =
@@ -261,7 +261,7 @@ const ModsListWrapper = ({
             onItemsRendered({
               // call onItemsRendered from InfiniteLoader so it can load more if needed
               visibleStartIndex,
-              visibleStopIndex
+              visibleStopIndex,
             });
           }}
           columnCount={3}
@@ -273,7 +273,7 @@ const ModsListWrapper = ({
           rowHeight={180}
           width={width}
         >
-          {p => (
+          {(p) => (
             <MemoizedCell
               items={items}
               version={version}
@@ -298,10 +298,10 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
 
   const [mods, setMods] = useState([]);
   const [areModsLoading, setAreModsLoading] = useState(false);
-  const [filterType, setFilterType] = useState('Featured');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState("Featured");
+  const [searchQuery, setSearchQuery] = useState("");
   const [hasNextPage, setHasNextPage] = useState(false);
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
 
   const installedMods = instance?.mods;
 
@@ -321,18 +321,18 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
     loadMoreMods();
   }, []);
 
-  const loadMoreMods = async (searchP = '', reset) => {
+  const loadMoreMods = async (searchP = "", reset) => {
     const reqObj = {};
     lastRequest = reqObj;
     const isReset = reset !== undefined ? reset : false;
     setAreModsLoading(true);
     const { data } = await getSearch(
-      'mods',
+      "mods",
       searchP,
       itemsNumber,
       isReset ? 0 : mods.length,
       filterType,
-      filterType !== 'Author' && filterType !== 'Name',
+      filterType !== "Author" && filterType !== "Name",
       gameVersion,
       getPatchedInstanceType(instance) === FABRIC ? 4780 : null
     );
@@ -377,7 +377,7 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
             `}
             placeholder="Search for a mod"
             value={searchQuery}
-            onChange={e => {
+            onChange={(e) => {
               setSearchQuery(e.target.value);
               loadMoreModsDebounced(e.target.value, true);
             }}

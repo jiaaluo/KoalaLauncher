@@ -1,5 +1,5 @@
-import * as ActionTypes from './actionTypes';
-import features from './features';
+import * as ActionTypes from "./actionTypes";
+import features from "./features";
 
 const FEATURES = Object.values(features);
 
@@ -11,8 +11,8 @@ const defaultState = FEATURES.reduce(
       isRequesting: false,
       isReceived: false,
       error: null,
-      updated: null
-    }
+      updated: null,
+    },
   }),
   {}
 );
@@ -27,8 +27,8 @@ function loading(state = defaultState, action) {
           ...state[action.feature],
           isRequesting: true,
           isReceived: false,
-          error: null
-        }
+          error: null,
+        },
       };
     case ActionTypes.RECEIVED_DATA:
       return {
@@ -38,8 +38,8 @@ function loading(state = defaultState, action) {
           ...state[action.feature],
           isRequesting: false,
           isReceived: true,
-          updated: new Date().toISOString()
-        }
+          updated: new Date().toISOString(),
+        },
       };
     case ActionTypes.CATCH_ERROR:
       return {
@@ -48,8 +48,8 @@ function loading(state = defaultState, action) {
         [action.feature]: {
           ...state[action.feature],
           isRequesting: false,
-          error: action.error
-        }
+          error: action.error,
+        },
       };
     case ActionTypes.RESET:
       return {
@@ -60,8 +60,8 @@ function loading(state = defaultState, action) {
           isRequesting: false,
           isReceived: false,
           error: null,
-          updated: null
-        }
+          updated: null,
+        },
       };
     default:
       return state;

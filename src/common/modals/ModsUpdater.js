@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { Progress } from 'antd';
-import Modal from '../components/Modal';
-import { updateMod } from '../reducers/actions';
-import { closeModal } from '../reducers/modals/actions';
-import { _getInstance } from '../utils/selectors';
+import React, { useState, useEffect, useMemo } from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { Progress } from "antd";
+import Modal from "../components/Modal";
+import { updateMod } from "../reducers/actions";
+import { closeModal } from "../reducers/modals/actions";
+import { _getInstance } from "../utils/selectors";
 
 const ModsUpdater = ({ instanceName }) => {
   const dispatch = useDispatch();
-  const latestMods = useSelector(state => state.latestModManifests);
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const latestMods = useSelector((state) => state.latestModManifests);
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
   const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
+    (state) => state.settings.curseReleaseChannel
   );
   const [computedMods, setComputedMods] = useState(0);
   const [installProgress, setInstallProgress] = useState(null);
 
   const filterAvailableUpdates = () => {
-    return instance.mods.filter(mod => {
+    return instance.mods.filter((mod) => {
       return (
         latestMods[mod.projectID] &&
         latestMods[mod.projectID].id !== mod.fileID &&
@@ -48,7 +48,7 @@ const ModsUpdater = ({ instanceName }) => {
           )
         );
         if (!cancel) {
-          setComputedMods(p => p + 1);
+          setComputedMods((p) => p + 1);
         }
         i += 1;
       }

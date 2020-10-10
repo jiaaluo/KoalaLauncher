@@ -1,7 +1,7 @@
-import React, { useEffect, useState, memo } from 'react';
-import { ipcRenderer } from 'electron';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState, memo } from "react";
+import { ipcRenderer } from "electron";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faWindowMinimize,
   faWindowMaximize,
@@ -9,70 +9,70 @@ import {
   faTimes,
   faTerminal,
   faCog,
-  faDownload
-} from '@fortawesome/free-solid-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
-import { openModal } from '../../../common/reducers/modals/actions';
+  faDownload,
+} from "@fortawesome/free-solid-svg-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { openModal } from "../../../common/reducers/modals/actions";
 import {
   checkForPortableUpdates,
   updateUpdateAvailable,
-  getAppLatestVersion
-} from '../../../common/reducers/actions';
-import Logo from '../../../ui/Logo.png';
+  getAppLatestVersion,
+} from "../../../common/reducers/actions";
+import Logo from "../../../ui/Logo.png";
 
 const SystemNavbar = () => {
   const dispatch = useDispatch();
   const [isMaximized, setIsMaximized] = useState(false);
-  const isUpdateAvailable = useSelector(state => state.updateAvailable);
-  const location = useSelector(state => state.router.location.pathname);
+  const isUpdateAvailable = useSelector((state) => state.updateAvailable);
+  const location = useSelector((state) => state.router.location.pathname);
   const [isAppImage, setIsAppImage] = useState(false);
 
-  const modals = useSelector(state => state.modals);
+  const modals = useSelector((state) => state.modals);
 
   const areSettingsOpen = modals.find(
-    v => v.modalType === 'Settings' && !v.unmounting
+    (v) => v.modalType === "Settings" && !v.unmounting
   );
 
   const checkForUpdates = async () => {
-    const isAppImageVar = await ipcRenderer.invoke('isAppImage');
+    const isAppImageVar = await ipcRenderer.invoke("isAppImage");
     setIsAppImage(isAppImageVar);
     if (
-      process.env.REACT_APP_RELEASE_TYPE === 'setup' &&
-      (isAppImageVar || process.platform === 'win32')
+      process.env.REACT_APP_RELEASE_TYPE === "setup" &&
+      (isAppImageVar || process.platform === "win32")
     ) {
-      ipcRenderer.invoke('checkForUpdates');
-      ipcRenderer.on('updateAvailable', () => {
+      ipcRenderer.invoke("checkForUpdates");
+      ipcRenderer.on("updateAvailable", () => {
         dispatch(updateUpdateAvailable(true));
       });
     } else if (
-      process.platform === 'win32' &&
-      process.env.REACT_APP_RELEASE_TYPE === 'portable'
+      process.platform === "win32" &&
+      process.env.REACT_APP_RELEASE_TYPE === "portable"
     ) {
       dispatch(checkForPortableUpdates())
-        .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
+        .then((v) => dispatch(updateUpdateAvailable(Boolean(v))))
         .catch(console.error);
     } else {
       dispatch(getAppLatestVersion())
-        .then(v => dispatch(updateUpdateAvailable(Boolean(v))))
+        .then((v) => dispatch(updateUpdateAvailable(Boolean(v))))
         .catch(console.error);
     }
   };
 
   useEffect(() => {
     ipcRenderer
-      .invoke('getIsWindowMaximized')
+      .invoke("getIsWindowMaximized")
       .then(setIsMaximized)
       .catch(console.error);
-    ipcRenderer.on('window-maximized', () => {
+    ipcRenderer.on("window-maximized", () => {
       setIsMaximized(true);
     });
-    ipcRenderer.on('window-minimized', () => {
+    ipcRenderer.on("window-minimized", () => {
       setIsMaximized(false);
     });
   }, []);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') return;
+    if (process.env.NODE_ENV === "development") return;
     setTimeout(() => {
       console.log(process.env.REACT_APP_RELEASE_TYPE);
       checkForUpdates();
@@ -83,12 +83,12 @@ const SystemNavbar = () => {
   }, []);
 
   const openDevTools = () => {
-    ipcRenderer.invoke('open-devtools');
+    ipcRenderer.invoke("open-devtools");
   };
 
-  const isOsx = process.platform === 'darwin';
-  const isLinux = process.platform === 'linux';
-  const isWindows = process.platform === 'win32';
+  const isOsx = process.platform === "darwin";
+  const isLinux = process.platform === "linux";
+  const isWindows = process.platform === "win32";
 
   const DevtoolButton = () => (
     <TerminalButton
@@ -106,13 +106,13 @@ const SystemNavbar = () => {
       areSettingsOpen={areSettingsOpen}
       css={`
         margin: 0 20px 0 10px;
-        ${props =>
+        ${(props) =>
           props.areSettingsOpen
             ? `background: ${props.theme.palette.grey[700]};`
             : null}
       `}
       onClick={() => {
-        dispatch(openModal('Settings'));
+        dispatch(openModal("Settings"));
       }}
     >
       <FontAwesomeIcon icon={faCog} />
@@ -123,13 +123,13 @@ const SystemNavbar = () => {
     <TerminalButton
       onClick={() => {
         if (isAppImage || isWindows) {
-          ipcRenderer.invoke('installUpdateAndQuitOrRestart');
+          ipcRenderer.invoke("installUpdateAndQuitOrRestart");
         } else {
-          dispatch(openModal('AutoUpdatesNotAvailable'));
+          dispatch(openModal("AutoUpdatesNotAvailable"));
         }
       }}
       css={`
-        color: ${props => props.theme.palette.colors.green};
+        color: ${(props) => props.theme.palette.colors.green};
       `}
     >
       <FontAwesomeIcon icon={faDownload} />
@@ -138,13 +138,13 @@ const SystemNavbar = () => {
 
   const quitApp = () => {
     if (isUpdateAvailable && (isAppImage || !isLinux)) {
-      ipcRenderer.invoke('installUpdateAndQuitOrRestart', true);
+      ipcRenderer.invoke("installUpdateAndQuitOrRestart", true);
     } else {
-      ipcRenderer.invoke('quit-app');
+      ipcRenderer.invoke("quit-app");
     }
   };
 
-  const isLocation = loc => {
+  const isLocation = (loc) => {
     if (loc === location) {
       return true;
     }
@@ -154,8 +154,8 @@ const SystemNavbar = () => {
   return (
     <MainContainer
       onDoubleClick={() => {
-        if (process.platform === 'darwin') {
-          ipcRenderer.invoke('min-max-window');
+        if (process.platform === "darwin") {
+          ipcRenderer.invoke("min-max-window");
         }
       }}
     >
@@ -193,11 +193,11 @@ const SystemNavbar = () => {
         {!isOsx ? (
           <>
             {isUpdateAvailable && <UpdateButton />}
-            {!isLocation('/') && !isLocation('/onboarding') && (
+            {!isLocation("/") && !isLocation("/onboarding") && (
               <SettingsButton />
             )}
             <div
-              onClick={() => ipcRenderer.invoke('minimize-window')}
+              onClick={() => ipcRenderer.invoke("minimize-window")}
               css={`
                 -webkit-app-region: no-drag;
               `}
@@ -205,7 +205,7 @@ const SystemNavbar = () => {
               <FontAwesomeIcon icon={faWindowMinimize} />
             </div>
             <div
-              onClick={() => ipcRenderer.invoke('min-max-window')}
+              onClick={() => ipcRenderer.invoke("min-max-window")}
               css={`
                 -webkit-app-region: no-drag;
               `}
@@ -236,7 +236,7 @@ const SystemNavbar = () => {
               <FontAwesomeIcon icon={faTimes} />
             </div>
             <div
-              onClick={() => ipcRenderer.invoke('min-max-window')}
+              onClick={() => ipcRenderer.invoke("min-max-window")}
               css={`
                 -webkit-app-region: no-drag;
               `}
@@ -246,14 +246,14 @@ const SystemNavbar = () => {
               />
             </div>
             <div
-              onClick={() => ipcRenderer.invoke('minimize-window')}
+              onClick={() => ipcRenderer.invoke("minimize-window")}
               css={`
                 -webkit-app-region: no-drag;
               `}
             >
               <FontAwesomeIcon icon={faWindowMinimize} />
             </div>
-            {!isLocation('/') && !isLocation('/onboarding') && (
+            {!isLocation("/") && !isLocation("/onboarding") && (
               <SettingsButton />
             )}
             {isUpdateAvailable && <UpdateButton />}
@@ -329,7 +329,7 @@ const Container = styled.div`
       background: ${({ theme }) => theme.palette.grey[600]};
     }
   }
-  ${props => (props.os ? '& > *:first-child' : '& > *:last-child')} {
+  ${(props) => (props.os ? "& > *:first-child" : "& > *:last-child")} {
     &:hover {
       background: ${({ theme }) => theme.palette.colors.red};
     }

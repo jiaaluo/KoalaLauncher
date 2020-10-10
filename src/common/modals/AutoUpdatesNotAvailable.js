@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import Modal from '../components/Modal';
+import React, { memo } from "react";
+import styled from "styled-components";
+import Modal from "../components/Modal";
 
 const AutoUpdatesNotAvailable = () => {
   return (
@@ -18,8 +18,9 @@ const AutoUpdatesNotAvailable = () => {
             margin-top: 20px;
           `}
         >
-          Please, update KoalaLauncher through your package manager or download the
-          new version from our website <a href="https://koala.crankysupertoon.live">here</a>
+          Please, update KoalaLauncher through your package manager or download
+          the new version from our website{" "}
+          <a href="https://koala.crankysupertoon.live">here</a>
         </div>
       </Container>
     </Modal>
@@ -32,5 +33,5 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   text-align: center;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;

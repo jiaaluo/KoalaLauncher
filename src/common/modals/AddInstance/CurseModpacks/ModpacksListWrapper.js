@@ -1,12 +1,12 @@
-import React, { forwardRef, memo, useContext, useEffect } from 'react';
-import styled, { ThemeContext } from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { FixedSizeList as List } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
-import ContentLoader from 'react-content-loader';
-import { transparentize } from 'polished';
-import { openModal } from '../../../reducers/modals/actions';
-import { FORGE } from '../../../utils/constants';
+import React, { forwardRef, memo, useContext, useEffect } from "react";
+import styled, { ThemeContext } from "styled-components";
+import { useDispatch } from "react-redux";
+import { FixedSizeList as List } from "react-window";
+import InfiniteLoader from "react-window-infinite-loader";
+import ContentLoader from "react-content-loader";
+import { transparentize } from "polished";
+import { openModal } from "../../../reducers/modals/actions";
+import { FORGE } from "../../../utils/constants";
 
 const ModpacksListWrapper = ({
   // Are there more items to load?
@@ -32,7 +32,7 @@ const ModpacksListWrapper = ({
 
   setModpack,
 
-  infiniteLoaderRef
+  infiniteLoaderRef,
 }) => {
   const dispatch = useDispatch();
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
@@ -41,7 +41,7 @@ const ModpacksListWrapper = ({
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
   // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = index => !hasNextPage || index < items.length;
+  const isItemLoaded = (index) => !hasNextPage || index < items.length;
 
   // Render an item or a loading indicator.
   const Item = memo(({ index, style }) => {
@@ -58,7 +58,7 @@ const ModpacksListWrapper = ({
       );
     }
 
-    const primaryImage = modpack.attachments.find(v => v.isDefault);
+    const primaryImage = modpack.attachments.find((v) => v.isDefault);
     return (
       <div
         // eslint-disable-next-line
@@ -67,14 +67,14 @@ const ModpacksListWrapper = ({
           top: style.top + 8,
           height: style.height - 8,
           background: `url('${primaryImage.thumbnailUrl}')`,
-          position: 'absolute',
-          width: '100%',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          margin: '10px 0',
-          transition: 'height 0.2s ease-in-out',
-          borderRadius: 4
+          position: "absolute",
+          width: "100%",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          margin: "10px 0",
+          transition: "height 0.2s ease-in-out",
+          borderRadius: 4,
         }}
         key={modpack.id}
       >
@@ -87,7 +87,7 @@ const ModpacksListWrapper = ({
               setVersion([
                 FORGE,
                 modpack.id,
-                modpack.latestFiles[modpack.latestFiles.length - 1].id
+                modpack.latestFiles[modpack.latestFiles.length - 1].id,
               ]);
               setModpack(modpack);
               setStep(1);
@@ -98,11 +98,11 @@ const ModpacksListWrapper = ({
           <div
             onClick={() => {
               dispatch(
-                openModal('ModpackDescription', {
+                openModal("ModpackDescription", {
                   modpack,
                   setVersion,
                   setModpack,
-                  setStep
+                  setStep,
                 })
               );
             }}
@@ -120,7 +120,7 @@ const ModpacksListWrapper = ({
       // eslint-disable-next-line react/forbid-dom-props
       style={{
         ...style,
-        paddingTop: 8
+        paddingTop: 8,
       }}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
@@ -141,7 +141,7 @@ const ModpacksListWrapper = ({
           itemSize={100}
           onItemsRendered={onItemsRendered}
           innerElementType={innerElementType}
-          ref={list => {
+          ref={(list) => {
             // Manually bind ref to reset scroll
             // eslint-disable-next-line
             infiniteLoaderRef.current = list;
@@ -165,7 +165,7 @@ const Modpack = styled.div`
   font-size: 20px;
   padding: 0 10px;
   font-weight: 700;
-  background: ${props => transparentize(0.2, props.theme.palette.grey[700])};
+  background: ${(props) => transparentize(0.2, props.theme.palette.grey[700])};
 `;
 
 const ModpackHover = styled.div`
@@ -175,7 +175,7 @@ const ModpackHover = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: ${props => transparentize(0.4, props.theme.palette.grey[900])};
+  background: ${(props) => transparentize(0.4, props.theme.palette.grey[900])};
   opacity: 0;
   padding-left: 40%;
   will-change: opacity;
@@ -190,7 +190,7 @@ const ModpackHover = styled.div`
     border-radius: 4px;
     transition: background-color 0.1s ease-in-out;
     &:hover {
-      background-color: ${props => props.theme.palette.primary.main};
+      background-color: ${(props) => props.theme.palette.primary.main};
     }
   }
   &:hover {
@@ -215,10 +215,10 @@ const ModpackLoader = memo(
         title={false}
         style={{
           width: width - 8,
-          height: '100px',
+          height: "100px",
           paddingTop: 8,
-          position: 'absolute',
-          top
+          position: "absolute",
+          top,
         }}
       >
         <rect x="0" y="0" width="100%" height="92px" />

@@ -1,21 +1,21 @@
-import React, { useState, useEffect, memo } from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
-import { ipcRenderer } from 'electron';
+import React, { useState, useEffect, memo } from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { ipcRenderer } from "electron";
 // import { promises as fs } from 'fs';
 // import path from 'path';
-import Instances from '../components/Instances';
-import News from '../components/News';
-import { openModal } from '../../../common/reducers/modals/actions';
+import Instances from "../components/Instances";
+import News from "../components/News";
+import { openModal } from "../../../common/reducers/modals/actions";
 import {
-  _getCurrentAccount
+  _getCurrentAccount,
   // _getInstances
-} from '../../../common/utils/selectors';
-import { extractFace } from '../utils';
-import { updateLastUpdateVersion } from '../../../common/reducers/actions';
+} from "../../../common/utils/selectors";
+import { extractFace } from "../utils";
+import { updateLastUpdateVersion } from "../../../common/reducers/actions";
 
 const AddInstanceIcon = styled(Button)`
   position: fixed;
@@ -34,16 +34,16 @@ const AccountContainer = styled(Button)`
 const Home = () => {
   const dispatch = useDispatch();
   const account = useSelector(_getCurrentAccount);
-  const news = useSelector(state => state.news);
-  const lastUpdateVersion = useSelector(state => state.app.lastUpdateVersion);
+  const news = useSelector((state) => state.news);
+  const lastUpdateVersion = useSelector((state) => state.app.lastUpdateVersion);
   // const instances = useSelector(_getInstances);
 
-  const openAddInstanceModal = defaultPage => {
-    dispatch(openModal('AddInstance', { defaultPage }));
+  const openAddInstanceModal = (defaultPage) => {
+    dispatch(openModal("AddInstance", { defaultPage }));
   };
 
   const openAccountModal = () => {
-    dispatch(openModal('AccountsManager'));
+    dispatch(openModal("AccountsManager"));
   };
 
   // const getOldInstances = async () => {
@@ -72,10 +72,10 @@ const Home = () => {
 
   useEffect(() => {
     const init = async () => {
-      const appVersion = await ipcRenderer.invoke('getAppVersion');
+      const appVersion = await ipcRenderer.invoke("getAppVersion");
       if (lastUpdateVersion !== appVersion) {
         dispatch(updateLastUpdateVersion(appVersion));
-        dispatch(openModal('ChangeLogs'));
+        dispatch(openModal("ChangeLogs"));
       }
 
       // const oldInstances = await getOldInstances();
@@ -119,7 +119,7 @@ const Home = () => {
             css={`
               width: 15px;
               height: 15px;
-              background: ${props => props.theme.palette.grey[100]};
+              background: ${(props) => props.theme.palette.grey[100]};
               margin-right: 10px;
             `}
           />

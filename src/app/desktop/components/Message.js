@@ -1,7 +1,7 @@
-import React, { useState, useEffect, memo } from 'react';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import { LoadingOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, memo } from "react";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const MessageContainer = styled.div`
   width: 280px;
@@ -12,8 +12,8 @@ const MessageContainer = styled.div`
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  color: ${props => props.theme.palette.text.primary};
-  background: ${props => props.theme.palette.grey[800]};
+  color: ${(props) => props.theme.palette.text.primary};
+  background: ${(props) => props.theme.palette.grey[800]};
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -22,12 +22,12 @@ const MessageContainer = styled.div`
   z-index: 10000000;
   border-radius: 5px;
   transition: opacity 200ms ease-in-out;
-  opacity: ${props => props.visible};
-  visibility: ${props => (props.visible ? 'visible' : 'hidden')};
+  opacity: ${(props) => props.visible};
+  visibility: ${(props) => (props.visible ? "visible" : "hidden")};
 `;
 
 const Message = () => {
-  const currentState = useSelector(state => state.message);
+  const currentState = useSelector((state) => state.message);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

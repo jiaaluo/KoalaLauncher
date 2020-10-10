@@ -1,36 +1,36 @@
-const { Client } = require('discord-rpc');
-const log = require('electron-log');
+const { Client } = require("discord-rpc");
+const log = require("electron-log");
 
 let client;
 let activity;
 
 exports.initRPC = () => {
-  client = new Client({ transport: 'ipc' });
+  client = new Client({ transport: "ipc" });
 
   activity = {
-    details: 'Playing Koala Launcher',
-    state: 'Idle',
+    details: "Playing Koala Launcher",
+    state: "Idle",
     startTimestamp: Math.floor(Date.now() / 1000),
-    largeImageKey: 'default_big',
-    largeImageText: 'Koala Launcher - A Custom Minecraft Launcher',
-    instance: false
+    largeImageKey: "default_big",
+    largeImageText: "Koala Launcher - A Custom Minecraft Launcher",
+    instance: false,
   };
 
-  client.on('ready', () => {
-    log.log('Discord RPC Connected');
+  client.on("ready", () => {
+    log.log("Discord RPC Connected");
     client.setActivity(activity);
   });
 
-  client.login({ clientId: '600470444893667328' }).catch(error => {
-    if (error.message.includes('ENOENT')) {
-      log.error('Unable to initialize Discord RPC, no client detected.');
+  client.login({ clientId: "600470444893667328" }).catch((error) => {
+    if (error.message.includes("ENOENT")) {
+      log.error("Unable to initialize Discord RPC, no client detected.");
     } else {
-      log.error('Unable to initialize Discord RPC:', error);
+      log.error("Unable to initialize Discord RPC:", error);
     }
   });
 };
 
-exports.updateDetails = details => {
+exports.updateDetails = (details) => {
   activity.details = details;
   client.setActivity(activity);
 };

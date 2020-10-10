@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWindowClose } from "@fortawesome/free-solid-svg-icons";
 
-const CloseButton = props => {
+const CloseButton = (props) => {
   return (
     // eslint-disable-next-line
     <CloseIcon {...props}>
@@ -20,6 +20,6 @@ const CloseIcon = styled.div`
   cursor: pointer;
   transition: all 0.15s ease-in-out;
   &:hover {
-    color: ${props => props.theme.palette.error.main};
+    color: ${(props) => props.theme.palette.error.main};
   }
 `;

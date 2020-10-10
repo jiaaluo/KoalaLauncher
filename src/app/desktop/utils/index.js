@@ -573,17 +573,17 @@ export const getJVMArguments113 = (
 };
 
 export const readJarManifest = async (jarPath, sevenZipPath, property) => {
-  const list = extractFull(jarPath, '.', {
+  const list = extractFull(jarPath, ".", {
     $bin: sevenZipPath,
     toStdout: true,
-    $cherryPick: 'META-INF/MANIFEST.MF'
+    $cherryPick: "META-INF/MANIFEST.MF",
   });
 
   await new Promise((resolve, reject) => {
-    list.on('end', () => {
+    list.on("end", () => {
       resolve();
     });
-    list.on('error', error => {
+    list.on("error", (error) => {
       reject(error.stderr);
     });
   });
@@ -643,10 +643,10 @@ export const patchForge113 = async (
       const mainClass = await readJarManifest(
         filePath,
         sevenZipPath,
-        'Main-Class'
+        "Main-Class"
       );
 
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         const ps = spawn(
           `"${javaPath}"`,
           [

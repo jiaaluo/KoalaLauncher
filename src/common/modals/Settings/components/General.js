@@ -706,6 +706,7 @@ const General = () => {
             margin: 10px 0;
           `}
         >
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
           <img
             src={HorizontalLogo}
             height="85px"

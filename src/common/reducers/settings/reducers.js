@@ -1,9 +1,9 @@
-import { combineReducers } from 'redux';
-import * as ActionTypes from './actionTypes';
+import { combineReducers } from "redux";
+import * as ActionTypes from "./actionTypes";
 import {
   DEFAULT_JAVA_ARGS,
-  DEFAULT_MEMORY
-} from '../../../app/desktop/utils/constants';
+  DEFAULT_MEMORY,
+} from "../../../app/desktop/utils/constants";
 
 function sounds(state = true, action) {
   switch (action.type) {
@@ -88,7 +88,7 @@ function minecraftSettings(
     case ActionTypes.UPDATE_MINECRAFT_RESOLUTION:
       return {
         ...state,
-        resolution: { ...state.resolution, ...action.resolution }
+        resolution: { ...state.resolution, ...action.resolution },
       };
     default:
       return state;
@@ -99,7 +99,7 @@ function java(
   state = {
     path: null,
     memory: DEFAULT_MEMORY,
-    args: DEFAULT_JAVA_ARGS
+    args: DEFAULT_JAVA_ARGS,
   },
   action
 ) {
@@ -125,5 +125,5 @@ export default combineReducers({
   showNews,
   curseReleaseChannel,
   java,
-  minecraftSettings
+  minecraftSettings,
 });

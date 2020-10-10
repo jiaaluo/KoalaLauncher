@@ -1,100 +1,100 @@
-import * as ActionTypes from './actionTypes';
+import * as ActionTypes from "./actionTypes";
 
 export function updateSoundsSetting(sounds) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_SOUNDS,
-      sounds
+      sounds,
     });
   };
 }
 
 export function updateReleaseChannel(releaseChannel) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_RELEASE_CHANNEL,
-      releaseChannel
+      releaseChannel,
     });
   };
 }
 
 export function updateHideWindowOnGameLaunch(hideWindow) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.HIDE_WINDOW_ON_GAME_LAUNCH,
-      hideWindow
+      hideWindow,
     });
   };
 }
 
 export function updateShowNews(value) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_SHOW_NEWS,
-      value
+      value,
     });
   };
 }
 
 export function updatePotatoPcMode(value) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_POTATO_PC_MODE,
-      value
+      value,
     });
   };
 }
 
 export function updateResolution(resolution) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_MINECRAFT_RESOLUTION,
-      resolution
+      resolution,
     });
   };
 }
 
 export function updateJavaPath(path) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_JAVA_PATH,
-      path
+      path,
     });
   };
 }
 
 export function updateJavaMemory(memory) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_JAVA_MEMORY,
-      memory
+      memory,
     });
   };
 }
 
 export function updateJavaArguments(args) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_JAVA_ARGUMENTS,
-      args
+      args,
     });
   };
 }
 
 export function updateDiscordRPC(val) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_DISCORD_RPC,
-      val
+      val,
     });
   };
 }
 
 export function updateCurseReleaseChannel(curseReleaseChannel) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch({
       type: ActionTypes.UPDATE_CURSE_RELEASE_CHANNEL,
-      curseReleaseChannel
+      curseReleaseChannel,
     });
   };
 }

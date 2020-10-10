@@ -10,7 +10,6 @@ import {
 import { Button } from "antd";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { _getCurrentAccount } from "../../../common/utils/selectors";
-import { openModal } from "../../../common/reducers/modals/actions";
 
 const Background = styled.div`
   position: absolute;
@@ -166,7 +165,8 @@ const Home = () => {
             padding: 0 120px;
           `}
         >
-          Well that is it. Koala Launcher is all ready for you to enjoy. Game on!
+          Well that is it. Koala Launcher is all ready for you to enjoy. Game
+          on!
         </div>
       </div>
       {currentSlide !== 0 && currentSlide !== 1 && initScrolled && (

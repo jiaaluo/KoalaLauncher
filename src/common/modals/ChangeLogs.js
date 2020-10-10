@@ -1,17 +1,17 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { memo, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { ipcRenderer } from 'electron';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import Modal from '../components/Modal';
+import React, { memo, useState, useEffect } from "react";
+import styled from "styled-components";
+import { Button } from "antd";
+import { ipcRenderer } from "electron";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import Modal from "../components/Modal";
 
 const ChangeLogs = () => {
   const [version, setVersion] = useState(null);
 
   useEffect(() => {
-    ipcRenderer.invoke('getAppVersion').then(setVersion).catch(console.error);
+    ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
   }, []);
 
   return (
@@ -67,8 +67,8 @@ const ChangeLogs = () => {
             <span>Join Our Community</span>
           </SectionTitle>
           <p>
-            We <b>Really</b> love our users, that's why we have a dedicated Discord server
-            just to talk with all of them!
+            We <b>Really</b> love our users, that's why we have a dedicated
+            Discord server just to talk with all of them!
           </p>
           <Button
             css={`
@@ -97,7 +97,7 @@ const Container = styled.div`
   height: 100%;
   text-align: center;
   overflow-y: auto;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;
 
 const SectionTitle = styled.h2`
@@ -108,7 +108,7 @@ const SectionTitle = styled.h2`
   margin: 10px 0 20px;
 
   span {
-    background: ${props => props.theme.palette.secondary.main};
+    background: ${(props) => props.theme.palette.secondary.main};
     padding: 0 10px;
   }
 `;

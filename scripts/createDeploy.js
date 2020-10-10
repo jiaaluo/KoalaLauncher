@@ -120,6 +120,7 @@ const commonConfig = {
       "public/icon.png",
     ],
     extraFiles:
+      // eslint-disable-next-line no-nested-ternary
       process.platform === "win32"
         ? [
             {

@@ -5,8 +5,6 @@ import path from "path";
 import { ipcRenderer } from "electron";
 import { promises as fs } from "fs";
 import { Button } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 import Instance from "./Instance";
 import { _getInstances } from "../../../../common/utils/selectors";
 

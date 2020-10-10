@@ -1,23 +1,23 @@
-import React, { memo, useMemo, useState } from 'react';
-import { Cascader } from 'antd';
-import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons';
-import path from 'path';
-import { isEqual } from 'lodash';
-import Modal from '../components/Modal';
-import { addToQueue } from '../reducers/actions';
-import { _getInstance } from '../utils/selectors';
-import { closeAllModals } from '../reducers/modals/actions';
-import { FABRIC, VANILLA, FORGE } from '../utils/constants';
-import { getFilteredVersions } from '../../app/desktop/utils';
+import React, { memo, useMemo, useState } from "react";
+import { Cascader } from "antd";
+import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons";
+import path from "path";
+import { isEqual } from "lodash";
+import Modal from "../components/Modal";
+import { addToQueue } from "../reducers/actions";
+import { _getInstance } from "../utils/selectors";
+import { closeAllModals } from "../reducers/modals/actions";
+import { FABRIC, VANILLA, FORGE } from "../utils/constants";
+import { getFilteredVersions } from "../../app/desktop/utils";
 
 const McVersionChanger = ({ instanceName, defaultValue }) => {
-  const vanillaManifest = useSelector(state => state.app.vanillaManifest);
-  const fabricManifest = useSelector(state => state.app.fabricManifest);
-  const forgeManifest = useSelector(state => state.app.forgeManifest);
-  const config = useSelector(state => _getInstance(state)(instanceName));
+  const vanillaManifest = useSelector((state) => state.app.vanillaManifest);
+  const fabricManifest = useSelector((state) => state.app.fabricManifest);
+  const forgeManifest = useSelector((state) => state.app.forgeManifest);
+  const config = useSelector((state) => _getInstance(state)(instanceName));
   const [selectedVersion, setSelectedVersion] = useState(null);
 
   const dispatch = useDispatch();
@@ -31,14 +31,16 @@ const McVersionChanger = ({ instanceName, defaultValue }) => {
     const isForge = defaultValue[0] === FORGE;
 
     if (isForge) return defaultValue.slice(0, 3);
-    const type = filteredVers.find(v => v.value === defaultValue[0]);
+    const type = filteredVers.find((v) => v.value === defaultValue[0]);
     for (const releaseType of type.children) {
-      const match = releaseType.children.find(v => v.value === defaultValue[1]);
+      const match = releaseType.children.find(
+        (v) => v.value === defaultValue[1]
+      );
       if (match) {
         return [
           defaultValue[0],
           releaseType.value,
-          ...defaultValue.slice(1, isFabric ? 3 : 2)
+          ...defaultValue.slice(1, isFabric ? 3 : 2),
         ];
       }
     }
@@ -60,7 +62,7 @@ const McVersionChanger = ({ instanceName, defaultValue }) => {
           defaultValue.slice(3, 5).length === 2 && (
             <div
               css={`
-                color: ${props => props.theme.palette.colors.yellow};
+                color: ${(props) => props.theme.palette.colors.yellow};
                 font-weight: 900;
                 width: 400px;
                 text-align: center;
@@ -115,16 +117,16 @@ const McVersionChanger = ({ instanceName, defaultValue }) => {
               align-items: center;
               border-radius: 4px;
               font-size: 40px;
-              color: ${props =>
+              color: ${(props) =>
                 props.isVersionDifferent
                   ? props.theme.palette.text.icon
                   : props.theme.palette.text.disabled};
-              ${props => (props.isVersionDifferent ? 'cursor: pointer;' : '')}
+              ${(props) => (props.isVersionDifferent ? "cursor: pointer;" : "")}
               &:hover {
-                background-color: ${props =>
+                background-color: ${(props) =>
                   props.isVersionDifferent
                     ? props.theme.action.hover
-                    : 'transparent'};
+                    : "transparent"};
               }
             `}
             onClick={async () => {
@@ -177,7 +179,7 @@ const McVersionChanger = ({ instanceName, defaultValue }) => {
                       selectedVersion[3],
                       ...(isModpack && isSameLoader
                         ? defaultValue.slice(3, 5)
-                        : [])
+                        : []),
                     ],
                     null,
                     background

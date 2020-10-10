@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { ipcRenderer } from 'electron';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faJava } from '@fortawesome/free-brands-svg-icons';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import { ipcRenderer } from "electron";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faJava } from "@fortawesome/free-brands-svg-icons";
 import {
   faMemory,
   faFolder,
   faUndo,
   faLevelDownAlt,
   faList,
-  faDesktop
-} from '@fortawesome/free-solid-svg-icons';
-import { Slider, Button, Input, Switch, Select } from 'antd';
+  faDesktop,
+} from "@fortawesome/free-solid-svg-icons";
+import { Slider, Button, Input, Switch, Select } from "antd";
 import {
   updateJavaArguments,
   updateJavaMemory,
   updateJavaPath,
-  updateResolution
-} from '../../../reducers/settings/actions';
+  updateResolution,
+} from "../../../reducers/settings/actions";
 import {
   DEFAULT_JAVA_ARGS,
-  resolutionPresets
-} from '../../../../app/desktop/utils/constants';
-import { _getJavaPath } from '../../../utils/selectors';
-import { openModal } from '../../../reducers/modals/actions';
+  resolutionPresets,
+} from "../../../../app/desktop/utils/constants";
+import { _getJavaPath } from "../../../utils/selectors";
+import { openModal } from "../../../reducers/modals/actions";
 
 const JavaSettings = styled.div`
   width: 100%;
@@ -73,11 +73,11 @@ const JavaCustomArguments = styled.div`
 const Title = styled.h3`
   font-size: 15px;
   font-weight: 700;
-  color: ${props => props.theme.palette.text.secondary};
+  color: ${(props) => props.theme.palette.text.secondary};
 `;
 
 const Paragraph = styled.p`
-  color: ${props => props.theme.palette.text.third};
+  color: ${(props) => props.theme.palette.text.third};
 `;
 
 const Hr = styled.div`
@@ -85,7 +85,7 @@ const Hr = styled.div`
 `;
 
 const MainTitle = styled.h1`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   width: 80px;
   margin: 30px 0 20px 0;
 `;
@@ -99,26 +99,26 @@ function resetJavaArguments(dispatch) {
 }
 
 const marks = {
-  2048: '2048 MB',
-  4096: '4096 MB',
-  8192: '8192 MB',
-  16384: '16384 MB'
+  2048: "2048 MB",
+  4096: "4096 MB",
+  8192: "8192 MB",
+  16384: "16384 MB",
 };
 
 export default function MyAccountPreferences() {
   const [screenResolution, setScreenResolution] = useState(null);
-  const javaArgs = useSelector(state => state.settings.java.args);
-  const javaMemory = useSelector(state => state.settings.java.memory);
+  const javaArgs = useSelector((state) => state.settings.java.args);
+  const javaMemory = useSelector((state) => state.settings.java.memory);
   const javaPath = useSelector(_getJavaPath);
-  const customJavaPath = useSelector(state => state.settings.java.path);
+  const customJavaPath = useSelector((state) => state.settings.java.path);
   const mcResolution = useSelector(
-    state => state.settings.minecraftSettings.resolution
+    (state) => state.settings.minecraftSettings.resolution
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
     ipcRenderer
-      .invoke('getAllDisplaysBounds')
+      .invoke("getAllDisplaysBounds")
       .then(setScreenResolution)
       .catch(console.error);
   }, []);
@@ -138,7 +138,7 @@ export default function MyAccountPreferences() {
             margin-left: 30px;
           `}
           onClick={() => {
-            dispatch(openModal('JavaSetup'));
+            dispatch(openModal("JavaSetup"));
           }}
         >
           Run Java Setup again
@@ -155,7 +155,7 @@ export default function MyAccountPreferences() {
         </Paragraph>
         <Switch
           color="primary"
-          onChange={c => {
+          onChange={(c) => {
             if (c) {
               dispatch(updateJavaPath(null));
             } else {
@@ -188,14 +188,14 @@ export default function MyAccountPreferences() {
                   width: 75%;
                   margin: 0 10px;
                 `}
-                onChange={e => dispatch(updateJavaPath(e.target.value))}
+                onChange={(e) => dispatch(updateJavaPath(e.target.value))}
                 value={customJavaPath}
               />
               <StyledButtons
                 color="primary"
                 onClick={async () => {
                   const { filePaths, canceled } = await ipcRenderer.invoke(
-                    'openFileDialog',
+                    "openFileDialog",
                     javaPath
                   );
                   if (!filePaths[0] || canceled) return;
@@ -235,7 +235,7 @@ export default function MyAccountPreferences() {
             <Input
               placeholder="width"
               value={mcResolution.width}
-              onChange={e => {
+              onChange={(e) => {
                 const w = parseInt(e.target.value, 10);
                 dispatch(updateResolution({ width: w || 854 }));
               }}
@@ -244,7 +244,7 @@ export default function MyAccountPreferences() {
             <Input
               placeholder="Height"
               value={mcResolution.height}
-              onChange={e => {
+              onChange={(e) => {
                 const h = parseInt(e.target.value, 10);
                 dispatch(updateResolution({ height: h || 480 }));
               }}
@@ -252,18 +252,18 @@ export default function MyAccountPreferences() {
           </div>
           <Select
             placeholder="Presets"
-            onChange={v => {
-              const w = parseInt(v.split('x')[0], 10);
-              const h = parseInt(v.split('x')[1], 10);
+            onChange={(v) => {
+              const w = parseInt(v.split("x")[0], 10);
+              const h = parseInt(v.split("x")[1], 10);
               dispatch(updateResolution({ height: h, width: w }));
             }}
           >
-            {resolutionPresets.map(v => {
-              const w = parseInt(v.split('x')[0], 10);
-              const h = parseInt(v.split('x')[1], 10);
+            {resolutionPresets.map((v) => {
+              const w = parseInt(v.split("x")[0], 10);
+              const h = parseInt(v.split("x")[1], 10);
 
               const isBiggerThanScreen = (screenResolution || []).every(
-                bounds => {
+                (bounds) => {
                   return bounds.width < w || bounds.height < h;
                 }
               );
@@ -303,7 +303,7 @@ export default function MyAccountPreferences() {
           css={`
             margin: 20px 20px 20px 0;
           `}
-          onAfterChange={e => {
+          onAfterChange={(e) => {
             dispatch(updateJavaMemory(e));
           }}
           defaultValue={javaMemory}
@@ -338,7 +338,7 @@ export default function MyAccountPreferences() {
           `}
         >
           <Input
-            onChange={e => dispatch(updateJavaArguments(e.target.value))}
+            onChange={(e) => dispatch(updateJavaArguments(e.target.value))}
             value={javaArgs}
             css={`
               width: 83%;
