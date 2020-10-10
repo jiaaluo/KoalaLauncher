@@ -222,7 +222,7 @@ const General = () => {
     (state) => state.settings.concurrentDownloads
   );
   const updateAvailable = useSelector((state) => state.updateAvailable);
-  // const dataStorePath = useSelector(_getDataStorePath);
+  const dataStorePath = useSelector(_getDataStorePath);
   const instancesPath = useSelector(_getInstancesPath);
   const isPlaying = useSelector((state) => state.startedInstances);
   const queuedInstances = useSelector((state) => state.downloadQueue);
