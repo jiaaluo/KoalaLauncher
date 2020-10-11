@@ -21,7 +21,7 @@ This is an example of the time that GDLauncher takes to install a modpack in com
 </p>
 
 ## ⬇️ Download
-To download the latest version, you can either click [here](https://github.com/KoalaDevs/KoalaLauncher/releases) and select the appropriate version for your operating system or visit our [website](https://koaladevs.netlify.app).
+To download the latest version, you can either click [here](https://github.com/KoalaDevs/KoalaLauncher/releases) and select the appropriate version for your operating system or visit our [website](https://www.koalalauncher.com/download/).
 
 ## 🎨 Features
 #### Our features:
