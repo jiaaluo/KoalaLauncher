@@ -17,11 +17,12 @@ import {
   faEllipsisV,
   faCopy,
   faFolder,
+  faFire,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { Transition } from "react-transition-group";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { faTwitch } from "@fortawesome/free-brands-svg-icons";
+import {} from "@fortawesome/free-brands-svg-icons";
 import fse from "fs-extra";
 import makeDir from "make-dir";
 import { _getInstance, _getInstancesPath } from "../../utils/selectors";
@@ -344,7 +345,7 @@ const Row = memo(({ index, style, data }) => {
                 }
               }}
             />
-            {item.fileID && <FontAwesomeIcon icon={faTwitch} />}
+            {item.fileID && <FontAwesomeIcon icon={faFire} />}
           </div>
           <div
             onClick={() => {
