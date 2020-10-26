@@ -172,7 +172,7 @@ const SystemNavbar = () => {
               href="https://koalalauncher.com/"
               rel="noopener noreferrer"
               css={`
-                margin-top: 0px;
+                margin-top: 2px;
                 -webkit-app-region: no-drag;
               `}
             >

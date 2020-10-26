@@ -709,20 +709,24 @@ const General = () => {
           {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
           <img
             src={HorizontalLogo}
-            height="85px"
-            width="200px"
+            height="128px"
+            width="311px"
             alt="Logo"
             draggable="false"
             onClick={() => dispatch(openModal("Changelogs"))}
             pointerCursor
           />{" "}
-          <div
-            css={`
-              margin-left: 10px;
-            `}
-          >
-            v {version}
-          </div>
+        </div>
+        <div
+          css={`
+            margin-top: -40px;
+            margin-left: 230px;
+            margin-bottom: 50px;
+            color: #6c5d53;
+            font-size: 18px;
+          `}
+        >
+          <p>v{version}</p>
         </div>
         <p>
           {updateAvailable

@@ -475,7 +475,35 @@ const Row = memo(({ index, style, data }) => {
                 margin-right: 10px;
               `}
             />
-            Copy Name
+            Copy File Name
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              clipboard.writeText(item.displayName);
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCopy}
+              css={`
+                margin-right: 10px;
+              `}
+            />
+            Open CurseForge page
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              if (!loading && !updateLoading) {
+                dispatch(deleteMod(instanceName, item));
+              }
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faTrash}
+              css={`
+                margin-right: 10px;
+              `}
+            />
+            Remove Mod
           </MenuItem>
         </ContextMenu>
       </Portal>

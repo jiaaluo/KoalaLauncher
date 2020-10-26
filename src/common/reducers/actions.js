@@ -104,6 +104,7 @@ export function initManifests() {
     let mc = null;
     try {
       mc = (await getMcManifest()).data;
+
       dispatch({
         type: ActionTypes.UPDATE_VANILLA_MANIFEST,
         data: mc,
