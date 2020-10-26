@@ -169,17 +169,17 @@ const SystemNavbar = () => {
             `}
           >
             <a
-              href="https://koala.crankysupertoon.live/"
+              href="https://koalalauncher.com/"
               rel="noopener noreferrer"
               css={`
-                margin-top: 5px;
+                margin-top: 0px;
                 -webkit-app-region: no-drag;
               `}
             >
               <img
                 src={Logo}
-                height="35px"
-                width="35px"
+                height="40px"
+                width="38px"
                 alt="Logo"
                 draggable="false"
                 pointerCursor
