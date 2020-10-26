@@ -34,12 +34,16 @@ const Changelogs = () => {
           <div>
             <ul>
               <li>
-                GDLauncher Migration is now here. Easily export your packs to
-                your favorite launcher with our new Koala Migrate Tech.
+                Our logo now looks not squashed. Hope you can enjoy its quality
+                now.
               </li>
               <li>
-                You can now download 100 mods at once. Better not try that on
-                McDonalds Internet.
+                The pesky mods/memory_repo folder where specific authors put
+                their core mods now will be blocked from exporting.
+              </li>
+              <li>
+                Whats a Twitch Mod, they are Curse Mods. Even before Overwolf
+                bought them.
               </li>
             </ul>
           </div>
