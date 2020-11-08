@@ -691,13 +691,29 @@ const Mods = ({ instanceName }) => {
     <Menu>
       <Menu.Item
         key="0"
-        onClick={async () => {
-          dispatch(openModal("ModsUpdater", { instanceName }));
+        onClick={() => {
+          dispatch(openModal('ModsUpdater', { instanceName, mods: [] }));
           setIsMenuOpen(false);
         }}
         disabled={!hasModUpdates}
       >
         Update all mods
+      </Menu.Item>
+
+      <Menu.Item
+        key="1"
+        onClick={() => {
+          dispatch(
+            openModal('ModsUpdater', { instanceName, mods: selectedMods })
+          );
+          setSelectedMods([]);
+          setIsMenuOpen(false);
+        }}
+        disabled={
+          !selectedMods.length >= 1 && !selectedMods.length < mods.length
+        }
+      >
+        Update all selected mod
       </Menu.Item>
     </Menu>
   );
