@@ -14,24 +14,21 @@ import ContentLoader from "react-content-loader";
 import { Input, Select, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebouncedCallback } from "use-debounce";
-import { FixedSizeList as List, FixedSizeGrid as Grid } from "react-window";
+import { FixedSizeList as List } from "react-window";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import {
   faBomb,
-  faCheck,
   faDownload,
-  faTrash,
   faExclamationCircle,
-  faSave,
   faWrench,
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../components/Modal";
 import { getSearch, getAddonFiles } from "../api";
 import { openModal } from "../reducers/modals/actions";
 import { _getInstance } from "../utils/selectors";
-import { deleteMod, installMod } from "../reducers/actions";
+import { installMod } from "../reducers/actions";
 import { FABRIC, FORGE } from "../utils/constants";
 import {
   getFirstPreferredCandidate,

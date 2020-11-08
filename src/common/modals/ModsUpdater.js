@@ -58,11 +58,11 @@ const ModsUpdater = ({ instanceName, mods }) => {
       }
     };
 
-    const updateSelectedMods = async filteredMods => {
+    const updateSelectedMods = async (filteredMods) => {
       let i = 0;
       while (!cancel && i < filteredMods.length) {
         const fileName = filteredMods[i];
-        const item = totalMods.find(x => x.fileName === fileName);
+        const item = totalMods.find((x) => x.fileName === fileName);
 
         if (item) {
           const isUpdateAvailable =
@@ -86,7 +86,7 @@ const ModsUpdater = ({ instanceName, mods }) => {
           }
         }
         if (!cancel) {
-          setComputedMods(p => p + 1);
+          setComputedMods((p) => p + 1);
         }
         i += 1;
       }
@@ -97,8 +97,8 @@ const ModsUpdater = ({ instanceName, mods }) => {
 
     if (mods.length >= 1) {
       // eslint-disable-next-line array-callback-return
-      const updetableMods = mods.filter(x => {
-        const item = totalMods.find(y => y.fileName === x);
+      const updetableMods = mods.filter((x) => {
+        const item = totalMods.find((y) => y.fileName === x);
         if (item) {
           const isUpdateAvailable =
             latestMods[item.projectID] &&

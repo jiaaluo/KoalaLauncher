@@ -2151,7 +2151,7 @@ export function launchInstance(instanceName) {
       clearInterval(playTimer);
       if (code !== 0) {
         dispatch(
-          openModal('InstanceCrashed', {
+          openModal("InstanceCrashed", {
             instanceName,
             code,
             errorLogs: errorLogs?.toString("utf8"),

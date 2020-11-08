@@ -1,15 +1,15 @@
-import React, { useEffect, memo, useState } from 'react';
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
-import { clipboard } from 'electron';
-import { Tooltip, Collapse } from 'antd';
-import makeDir from 'make-dir';
-import { promises as fs, watch } from 'fs';
-import path from 'path';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faShare } from '@fortawesome/free-solid-svg-icons';
-import { pasteBinPost } from '../api';
-import { _getInstancesPath } from '../utils/selectors';
+import React, { useEffect, memo, useState } from "react";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
+import { clipboard } from "electron";
+import { Tooltip, Collapse } from "antd";
+import makeDir from "make-dir";
+import { promises as fs, watch } from "fs";
+import path from "path";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy, faShare } from "@fortawesome/free-solid-svg-icons";
+import { pasteBinPost } from "../api";
+import { _getInstancesPath } from "../utils/selectors";
 
 import Modal from "../components/Modal";
 import Logo from "../../ui/LogoSad";
@@ -41,12 +41,12 @@ const calcError = (code) => {
 
 const { Panel } = Collapse;
 
-const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
+const InstanceCrashed = ({ instanceName, code }) => {
   const [copiedLog, setCopiedLog] = useState(null);
   const [crashLog, setCrashLog] = useState(null);
   const instancesPath = useSelector(_getInstancesPath);
   const instancePath = path.join(instancesPath, instanceName);
-  const crashReportsPath = path.join(instancePath, 'crash-reports');
+  const crashReportsPath = path.join(instancePath, "crash-reports");
 
   let watcher;
 
@@ -55,7 +55,7 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
     try {
       const files = await fs.readdir(crashReportsPath);
       await Promise.all(
-        files.map(async element => {
+        files.map(async (element) => {
           const stats = await fs.stat(path.join(crashReportsPath, element));
           const fileBirthdate = new Date(stats.birthtimeMs);
           const timeDiff = Date.now() - fileBirthdate;
@@ -124,8 +124,8 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
         <InnerContainer>
           <Logo size={100} />
           <h3>
-            OOPSIE WOOPSIE!!
-            <br /> A creeper blew this instance up!
+            Uh Oh!!
+            <br /> Your Game Crashed!
           </h3>
         </InnerContainer>
         <Card
@@ -142,75 +142,9 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
           css={`
             width: 100%;
           `}
-          defaultActiveKey={['1']}
-          accordion
           defaultActiveKey={["1"]}
+          accordion
         >
-          <Panel
-            header={
-              <div
-                css={`
-                  display: flex;
-                  flex-direction: row;
-                  justify-content: space-between;
-                  align-items: center;
-                `}
-                key="1"
-              >
-                <>Error Log</> &nbsp;
-                <div
-                  css={`
-                    display: flex;
-                  `}
-                >
-                  <Tooltip
-                    title={copiedLog ? 'Copied Link' : 'Share'}
-                    placement="top"
-                  >
-                    <div
-                      css={`
-                        margin: 0;
-                      `}
-                    >
-                      <FontAwesomeIcon
-                        css={`
-                          margin: 0 20px;
-                        `}
-                        icon={faShare}
-                        onClick={e => share(e, errorLogs)}
-                      />
-                    </div>
-                  </Tooltip>
-                  <Tooltip
-                    title={copiedLog ? 'Copied' : 'Copy'}
-                    placement="top"
-                  >
-                    <div
-                      css={`
-                        margin: 0;
-                      `}
-                    >
-                      <FontAwesomeIcon
-                        icon={faCopy}
-                        onClick={e => copy(e, errorLogs)}
-                      />
-                    </div>
-                  </Tooltip>
-                </div>
-              </div>
-            }
-            key="1"
-          >
-            <div
-              css={`
-                height: 100px;
-                word-break: break-all;
-                overflow-y: auto;
-              `}
-            >
-              <p>{errorLogs || 'Uknown Error'}</p>
-            </div>
-          </Panel>
           <Panel
             header={
               <div
@@ -229,7 +163,7 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
                   `}
                 >
                   <Tooltip
-                    title={copiedLog ? 'Copied Link' : 'Share'}
+                    title={copiedLog ? "Copied Link" : "Share"}
                     placement="top"
                   >
                     <div
@@ -242,12 +176,12 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
                           margin: 0 20px;
                         `}
                         icon={faShare}
-                        onClick={e => share(e, crashLog)}
+                        onClick={(e) => share(e, crashLog)}
                       />
                     </div>
                   </Tooltip>
                   <Tooltip
-                    title={copiedLog ? 'Copied' : 'Copy'}
+                    title={copiedLog ? "Copied" : "Copy"}
                     placement="top"
                   >
                     <div
@@ -257,7 +191,7 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
                     >
                       <FontAwesomeIcon
                         icon={faCopy}
-                        onClick={e => copy(e, crashLog)}
+                        onClick={(e) => copy(e, crashLog)}
                       />
                     </div>
                   </Tooltip>
@@ -278,7 +212,7 @@ const InstanceCrashed = ({ instanceName, code, errorLogs }) => {
                   text-align: start;
                 `}
               >
-                {crashLog || 'No crash log found'}
+                {crashLog || "No crash log found"}
               </pre>
             </div>
           </Panel>

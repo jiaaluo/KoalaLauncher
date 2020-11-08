@@ -692,7 +692,7 @@ const Mods = ({ instanceName }) => {
       <Menu.Item
         key="0"
         onClick={() => {
-          dispatch(openModal('ModsUpdater', { instanceName, mods: [] }));
+          dispatch(openModal("ModsUpdater", { instanceName, mods: [] }));
           setIsMenuOpen(false);
         }}
         disabled={!hasModUpdates}
@@ -704,7 +704,7 @@ const Mods = ({ instanceName }) => {
         key="1"
         onClick={() => {
           dispatch(
-            openModal('ModsUpdater', { instanceName, mods: selectedMods })
+            openModal("ModsUpdater", { instanceName, mods: selectedMods })
           );
           setSelectedMods([]);
           setIsMenuOpen(false);
