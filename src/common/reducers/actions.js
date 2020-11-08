@@ -2149,17 +2149,10 @@ export function launchInstance(instanceName) {
 
     ps.on("close", async (code) => {
       clearInterval(playTimer);
-      if (!ps.killed) {
-        ps.kill("SIGKILL");
-      }
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      ipcRenderer.invoke("show-window");
-      dispatch(removeStartedInstance(instanceName));
-      fse.remove(instanceJLFPath);
-      if (process.platform === "win32") fse.remove(symLinkDirPath);
-      if (code !== 0 && errorLogs) {
+      if (code !== 0) {
         dispatch(
-          openModal("InstanceCrashed", {
+          openModal('InstanceCrashed', {
+            instanceName,
             code,
             errorLogs: errorLogs?.toString("utf8"),
           })
