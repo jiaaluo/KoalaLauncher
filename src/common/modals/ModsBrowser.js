@@ -4,27 +4,35 @@ import React, {
   useEffect,
   useState,
   forwardRef,
-  useContext
-} from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import styled, { ThemeContext } from 'styled-components';
-import memoize from 'memoize-one';
-import InfiniteLoader from 'react-window-infinite-loader';
-import ContentLoader from 'react-content-loader';
-import { Input, Select, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
-import { FixedSizeList as List } from 'react-window';
-import { FixedSizeGrid as Grid } from "react-window";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-regular-svg-icons';
-import { faBomb, faCheck, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../components/Modal';
-import { getSearch, getAddonFiles } from '../api';
-import { openModal } from '../reducers/modals/actions';
-import { _getInstance } from '../utils/selectors';
-import { installMod } from '../reducers/actions';
-import { FABRIC, FORGE } from '../utils/constants';
+  useContext,
+} from "react";
+import AutoSizer from "react-virtualized-auto-sizer";
+import styled, { ThemeContext } from "styled-components";
+import memoize from "memoize-one";
+import InfiniteLoader from "react-window-infinite-loader";
+import ContentLoader from "react-content-loader";
+import { Input, Select, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebouncedCallback } from "use-debounce";
+import { FixedSizeList as List, FixedSizeGrid as Grid } from "react-window";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBomb,
+  faCheck,
+  faDownload,
+  faTrash,
+  faExclamationCircle,
+  faSave,
+  faWrench,
+} from "@fortawesome/free-solid-svg-icons";
+import Modal from "../components/Modal";
+import { getSearch, getAddonFiles } from "../api";
+import { openModal } from "../reducers/modals/actions";
+import { _getInstance } from "../utils/selectors";
+import { deleteMod, installMod } from "../reducers/actions";
+import { FABRIC, FORGE } from "../utils/constants";
 import {
   getFirstPreferredCandidate,
   filterFabricFilesByVersion,
@@ -40,8 +48,8 @@ const RowContainer = styled.div`
   width: calc(100% - 30px) !important;
   border-radius: 4px;
   padding: 11px 21px;
-  background: ${props => props.theme.palette.grey[800]};
-  ${props =>
+  background: ${(props) => props.theme.palette.grey[800]};
+  ${(props) =>
     props.isInstalled &&
     `border: 2px solid ${props.theme.palette.colors.green};`}
 `;
@@ -54,13 +62,13 @@ const RowInnerContainer = styled.div`
   font-weight: bold;
   font-size: 15px;
   line-height: 18px;
-  color: ${props => props.theme.palette.text.secondary};
+  color: ${(props) => props.theme.palette.text.secondary};
 `;
 
 const RowContainerImg = styled.div`
   width: 38px;
   height: 38px;
-  background: ${props => `url('${props.img}')`};
+  background: ${(props) => `url('${props.img}')`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -72,7 +80,7 @@ const ModInstalledIcon = styled(FontAwesomeIcon)`
   position: absolute;
   top: -10px;
   left: -10px;
-  color: ${props => props.theme.palette.colors.green};
+  color: ${(props) => props.theme.palette.colors.green};
   font-size: 25px;
   z-index: 1;
 `;
@@ -81,7 +89,7 @@ const ModsIconBg = styled.div`
   position: absolute;
   top: -10px;
   left: -10px;
-  background: ${props => props.theme.palette.grey[800]};
+  background: ${(props) => props.theme.palette.grey[800]};
   width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -105,7 +113,7 @@ const ModsListWrapper = ({
   searchQuery,
   width,
   height,
-  itemData
+  itemData,
 }) => {
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? items.length + 3 : items.length;
@@ -125,7 +133,7 @@ const ModsListWrapper = ({
       // eslint-disable-next-line react/forbid-dom-props
       style={{
         ...style,
-        paddingTop: 8
+        paddingTop: 8,
       }}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
@@ -136,15 +144,15 @@ const ModsListWrapper = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const curseReleaseChannel = useSelector(
-      state => state.settings.curseReleaseChannel
+      (state) => state.settings.curseReleaseChannel
     );
     const dispatch = useDispatch();
     const { instanceName, gameVersion, installedMods, instance } = data;
 
     const item = items[index];
 
-    const isInstalled = installedMods.find(v => v.projectID === item?.id);
-    const primaryImage = item.attachments.find(v => v.isDefault);
+    const isInstalled = installedMods.find((v) => v.projectID === item?.id);
+    const primaryImage = item.attachments.find((v) => v.isDefault);
 
     if (!item || isNextPageLoading) {
       return (
@@ -165,9 +173,9 @@ const ModsListWrapper = ({
           ...style,
           top: style.top + 15,
           height: style.height - 15,
-          position: 'absolute',
-          margin: '15px 10px',
-          transition: 'height 0.2s ease-in-out'
+          position: "absolute",
+          margin: "15px 10px",
+          transition: "height 0.2s ease-in-out",
         }}
       >
         {isInstalled && <ModInstalledIcon icon={faCheckCircle} />}
@@ -177,20 +185,20 @@ const ModsListWrapper = ({
           <RowContainerImg img={primaryImage.thumbnailUrl} />
           <div
             css={`
-              color: ${props => props.theme.palette.text.third};
+              color: ${(props) => props.theme.palette.text.third};
               &:hover {
-                color: ${props => props.theme.palette.text.primary};
+                color: ${(props) => props.theme.palette.text.primary};
               }
               transition: color 0.1s ease-in-out;
             `}
             onClick={() => {
               dispatch(
-                openModal('ModOverview', {
+                openModal("ModOverview", {
                   gameVersion,
                   projectID: item.id,
                   ...(isInstalled && { fileID: isInstalled.fileID }),
                   ...(isInstalled && { fileName: isInstalled.fileName }),
-                  instanceName
+                  instanceName,
                 })
               );
             }}
@@ -202,7 +210,7 @@ const ModsListWrapper = ({
           error || (
             <Button
               type="primary"
-              onClick={async e => {
+              onClick={async (e) => {
                 setLoading(true);
                 e.stopPropagation();
                 const files = (await getAddonFiles(item?.id)).data;
@@ -228,7 +236,7 @@ const ModsListWrapper = ({
 
                 if (preferredFile === null) {
                   setLoading(false);
-                  setError('Mod Not Available');
+                  setError("Mod Not Available");
                   console.error(
                     `Could not find any release candidate for addon: ${item?.id} / ${gameVersion}`
                   );
@@ -247,7 +255,7 @@ const ModsListWrapper = ({
               }}
               loading={loading}
             >
-              Install
+              <FontAwesomeIcon icon={faDownload} />
             </Button>
           )
         ) : (
@@ -255,17 +263,17 @@ const ModsListWrapper = ({
             type="primary"
             onClick={() => {
               dispatch(
-                openModal('ModOverview', {
+                openModal("ModOverview", {
                   gameVersion,
                   projectID: item.id,
                   ...(isInstalled && { fileID: isInstalled.fileID }),
                   ...(isInstalled && { fileName: isInstalled.fileName }),
-                  instanceName
+                  instanceName,
                 })
               );
             }}
           >
-            Change version / explore
+            <FontAwesomeIcon icon={faWrench} />
           </Button>
         )}
       </RowContainer>
@@ -294,6 +302,7 @@ const ModsListWrapper = ({
           innerElementType={innerElementType}
         >
           {Row}
+        </List>
       )}
     </InfiniteLoader>
   );
@@ -313,7 +322,7 @@ const createItemData = memoize(
     gameVersion,
     installedMods,
     instance,
-    isNextPageLoading
+    isNextPageLoading,
   })
 );
 
@@ -323,11 +332,11 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
 
   const [mods, setMods] = useState([]);
   const [areModsLoading, setAreModsLoading] = useState(true);
-  const [filterType, setFilterType] = useState('Featured');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState("Featured");
+  const [searchQuery, setSearchQuery] = useState("");
   const [hasNextPage, setHasNextPage] = useState(false);
   const [error, setError] = useState(false);
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
   const installedMods = instance?.mods;
 
   const [loadMoreModsDebounced] = useDebouncedCallback(
@@ -360,12 +369,12 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
         setError(false);
       }
       ({ data } = await getSearch(
-        'mods',
+        "mods",
         searchP,
         itemsNumber,
         isReset ? 0 : mods.length,
         filterType,
-        filterType !== 'Author' && filterType !== 'Name',
+        filterType !== "Author" && filterType !== "Name",
         gameVersion,
         getPatchedInstanceType(instance) === FABRIC ? 4780 : null
       ));
@@ -513,10 +522,10 @@ const ModsLoader = memo(
       <ContentLoader
         style={{
           width: width - 10,
-          height: '62px',
+          height: "62px",
           paddingTop: 8,
-          position: 'absolute',
-          top
+          position: "absolute",
+          top,
         }}
         speed={2}
         foregroundColor={ContextTheme.palette.grey[900]}
