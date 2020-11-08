@@ -79,7 +79,8 @@ const Content = ({
                       src={minecraftIcon}
                       width="22px"
                       css={`
-                        margin-right: 4px;
+                        margin-right: 3px;
+                        margin-bottom: 5px;
                         cursor: pointer;
                       `}
                     />
