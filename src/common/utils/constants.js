@@ -6,7 +6,7 @@ export const LEGACYJAVAFIXER_URL =
   "https://cdn.crankysupertoon.live/koala/fmllibs/legacyjavafixer-1.0.jar";
 export const MOJANG_APIS = "https://authserver.mojang.com";
 export const JAVA_MANIFEST_URL =
-  "https://api.adoptopenjdk.net/v2/latestAssets/releases/openjdk8?arch=x64&heap_size=normal&openjdk_impl=hotspot&type=jre";
+  "https://cdn.crankysupertoon.live/koala/openjdk8.json";
 export const MAVEN_REPO = "http://central.maven.org/maven2";
 export const MC_LIBRARIES_URL = "https://libraries.minecraft.net";
 export const FORGESVC_URL = "https://addons-ecs.forgesvc.net/api/v2";
