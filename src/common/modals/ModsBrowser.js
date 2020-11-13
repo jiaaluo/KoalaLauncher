@@ -195,7 +195,7 @@ const Row = ({ index, style, data }) => {
       {isInstalled && <ModInstalledIcon icon={faCheckCircle} />}
       {isInstalled && <ModsIconBg />}
       <RowInnerContainer>
-        <RowContainerImg img={primaryImage.thumbnailUrl} />
+        <RowContainerImg img={primaryImage?.thumbnailUrl} />
         <div
           css={`
             color: ${(props) => props.theme.palette.text.third};
