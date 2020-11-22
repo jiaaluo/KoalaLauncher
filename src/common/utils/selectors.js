@@ -100,6 +100,9 @@ export const _getNativeLibs = createSelector(
     if (process.platform === "linux") {
       return path.join(datastorePath, "natives", "linux");
     }
+    if (process.platform === "freebsd") {
+      return path.join(datastorePath, "natives", "freebsd");
+    }
     return path.join(datastorePath, "natives", "undefinedOS");
   }
 );
