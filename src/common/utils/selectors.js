@@ -91,11 +91,16 @@ export const _getAssetsPath = createSelector(
 export const _getNativeLibs = createSelector(
   _getDataStorePath,
   (datastorePath) => {
-    if (process.platform === "win32")
+    if (process.platform === "win32") {
       return path.join(datastorePath, "natives", "windows");
-    if (process.platform === "darwin")
+    }
+    if (process.platform === "darwin") {
       return path.join(datastorePath, "natives", "MacOS");
-    return path.join(datastorePath, "natives", "linux");
+    }
+    if (process.platform === "linux") {
+      return path.join(datastorePath, "natives", "linux");
+    }
+    return path.join(datastorePath, "natives", "undefinedOS");
   }
 );
 
