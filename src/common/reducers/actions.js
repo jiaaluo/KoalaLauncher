@@ -62,7 +62,6 @@ import {
   _getTempPath,
   _getInstance,
   _getDataStorePath,
-  _getNativeLibs,
   _getInstances,
   _getModCachePath,
 } from "../utils/selectors";
