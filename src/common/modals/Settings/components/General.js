@@ -16,6 +16,7 @@ import {
   faNewspaper,
   faFolder,
   faFire,
+  faHdd,
 } from "@fortawesome/free-solid-svg-icons";
 import { Select, Tooltip, Button, Switch, Input, Checkbox } from "antd";
 import { faDiscord } from "@fortawesome/free-brands-svg-icons";
@@ -24,6 +25,7 @@ import {
   _getDataStorePath,
   _getInstancesPath,
   _getTempPath,
+  _getModCachePath,
 } from "../../../utils/selectors";
 import {
   updateDiscordRPC,
@@ -31,6 +33,9 @@ import {
   updatePotatoPcMode,
   updateShowNews,
   updateCurseReleaseChannel,
+  updateAssetsCheckSkip,
+  updateCacheModsInstances,
+  updateCacheMods,
 } from "../../../reducers/settings/actions";
 import HorizontalLogo from "../../../../ui/HorizontalLogo.png";
 import { updateConcurrentDownloads } from "../../../reducers/actions";
@@ -238,6 +243,14 @@ const General = () => {
   const curseReleaseChannel = useSelector(
     (state) => state.settings.curseReleaseChannel
   );
+  const assetsCheckSkip = useSelector(
+    (state) => state.settings.assetsCheckSkip
+  );
+  const cacheMods = useSelector((state) => state.settings.cacheMods);
+  const cacheModsInstances = useSelector(
+    (state) => state.settings.cacheModsInstances
+  );
+  const modCachedPath = useSelector(_getModCachePath);
 
   const dispatch = useDispatch();
 
@@ -317,6 +330,16 @@ const General = () => {
     );
     if (!filePaths[0] || canceled) return;
     setDataPath(filePaths[0]);
+  };
+
+  const clearCacheMods = async () => {
+    setDeletingInstances(true);
+    try {
+      await fsa.emptyDir(modCachedPath);
+    } catch (e) {
+      console.error(e);
+    }
+    setDeletingInstances(false);
   };
 
   return (
@@ -512,6 +535,133 @@ const General = () => {
           checked={showNews}
         />
       </DiscordRpc>
+
+      <Hr />
+      <div>
+        <Title
+          css={`
+            margin-top: 0px;
+          `}
+        >
+          Skip Extra Asset Check &nbsp; <FontAwesomeIcon icon={faHdd} />
+        </Title>
+        <DiscordRpc>
+          <p
+            css={`
+              width: 350px;
+            `}
+          >
+            Enable / Disable - Make installs that use the same MC/Forge version
+            faster. Leave enabled unless your having issues with assets/forge.
+          </p>
+          <Switch
+            onChange={(e) => {
+              dispatch(updateAssetsCheckSkip(e));
+            }}
+            checked={assetsCheckSkip}
+          />
+        </DiscordRpc>
+      </div>
+
+      <Hr />
+      <div>
+        <Title
+          css={`
+            margin-top: 0px;
+          `}
+        >
+          Use Instances As Mod Cache &nbsp; <FontAwesomeIcon icon={faHdd} />
+        </Title>
+        <DiscordRpc>
+          <p
+            css={`
+              width: 350px;
+            `}
+          >
+            Enable / Disable retreiving mods from other installed instances.
+          </p>
+          <Switch
+            onChange={(e) => {
+              dispatch(updateCacheModsInstances(e));
+            }}
+            checked={cacheModsInstances}
+          />
+        </DiscordRpc>
+      </div>
+
+      <Hr />
+      <div>
+        <Title
+          css={`
+            margin-top: 0px;
+          `}
+        >
+          Cache Mods &nbsp; <FontAwesomeIcon icon={faHdd} />
+        </Title>
+        <DiscordRpc>
+          <p
+            css={`
+              width: 350px;
+            `}
+          >
+            Enable / Disable caching mods to a dedicated folder.
+          </p>
+          <Switch
+            onChange={(e) => {
+              dispatch(updateCacheMods(e));
+            }}
+            checked={cacheMods}
+          />
+        </DiscordRpc>
+      </div>
+      <div>
+        <Title
+          css={`
+            width: 300px;
+            float: left;
+          `}
+        >
+          Clear Mod Cache &nbsp; <FontAwesomeIcon icon={faHdd} />
+        </Title>
+        <div
+          css={`
+            display: flex;
+            justify-content: space-between;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 30px;
+            p {
+              text-align: left;
+              color: ${(props) => props.theme.palette.text.third};
+            }
+          `}
+        >
+          <p
+            css={`
+              margin: 0;
+              width: 500px;
+            `}
+          >
+            Deletes all the cached mods.
+          </p>
+          <Button
+            onClick={() => {
+              dispatch(
+                openModal("ActionConfirmation", {
+                  message: "Are you sure you want to delete the mod cache?",
+                  confirmCallback: clearCacheMods,
+                  title: "Confirm",
+                })
+              );
+            }}
+            disabled={disableInstancesActions}
+            loading={deletingInstances}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
+
       <Hr />
       <Title
         css={`

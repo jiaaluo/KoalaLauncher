@@ -87,3 +87,27 @@ export const _getAssetsPath = createSelector(
   _getDataStorePath,
   (datastorePath) => path.join(datastorePath, "assets")
 );
+
+export const _getNativeLibs = createSelector(
+  _getDataStorePath,
+  (datastorePath) => {
+    if (process.platform === "win32") {
+      return path.join(datastorePath, "natives", "windows");
+    }
+    if (process.platform === "darwin") {
+      return path.join(datastorePath, "natives", "MacOS");
+    }
+    if (process.platform === "linux") {
+      return path.join(datastorePath, "natives", "linux");
+    }
+    if (process.platform === "freebsd") {
+      return path.join(datastorePath, "natives", "freebsd");
+    }
+    return path.join(datastorePath, "natives", "undefinedOS");
+  }
+);
+
+export const _getModCachePath = createSelector(
+  _getDataStorePath,
+  (datastorePath) => path.join(datastorePath, "modCache")
+);

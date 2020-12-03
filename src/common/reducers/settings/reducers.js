@@ -115,6 +115,33 @@ function java(
   }
 }
 
+function assetsCheckSkip(state = true, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_ASSETS_CHECK_SKIP:
+      return action.value;
+    default:
+      return state;
+  }
+}
+
+function cacheModsInstances(state = true, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_CACHE_MODS_INSTANCES:
+      return action.value;
+    default:
+      return state;
+  }
+}
+
+function cacheMods(state = false, action) {
+  switch (action.type) {
+    case ActionTypes.UPDATE_CACHE_MODS:
+      return action.value;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   sounds,
   releaseChannel,
@@ -126,4 +153,7 @@ export default combineReducers({
   curseReleaseChannel,
   java,
   minecraftSettings,
+  assetsCheckSkip,
+  cacheModsInstances,
+  cacheMods,
 });
