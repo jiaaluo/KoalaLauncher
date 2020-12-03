@@ -98,3 +98,30 @@ export function updateCurseReleaseChannel(curseReleaseChannel) {
     });
   };
 }
+
+export function updateAssetsCheckSkip(value) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_ASSETS_CHECK_SKIP,
+      value,
+    });
+  };
+}
+
+export function updateCacheModsInstances(value) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_CACHE_MODS_INSTANCES,
+      value,
+    });
+  };
+}
+
+export function updateCacheMods(value) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UPDATE_CACHE_MODS,
+      value,
+    });
+  };
+}
