@@ -6,7 +6,7 @@
 Koala Launcher is a fork of GDLauncher aiming to be more FOSS Friendy towards Pull Requests and Contribution
 
 <p align="center">
-    <img width="800" height="auto" src="https://i.ibb.co/Ht9VS2P/image.png" alt="KoalaLauncher Home" />
+    <img width="800" height="auto" src="https://i.ibb.co/Fb5yzcz/image.png" alt="KoalaLauncher Home" />
 </p>
 
 ## ⚡ Comparison with Twitch Launcher
@@ -17,7 +17,7 @@ This is an example of the time that GDLauncher takes to install a modpack in com
 - Twitch Launcher: `2 minutes, 25 seconds`
 
 <p align="center">
-    <img width="800" height="auto" src="https://camo.githubusercontent.com/22505dd1c29e4f4182a117da6aac1235575d908b/68747470733a2f2f67646576732e696f2f636f6d70617269736f6e2e676966" alt="KoalaLauncher Pack DL" />
+    <img width="800" height="auto" src="https://i.ibb.co/THPh9yt/ezgif-6-527c7e1caa76.gif" alt="KoalaLauncher Pack DL" />
 </p>
 
 ## ⬇️ Download

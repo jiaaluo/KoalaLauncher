@@ -11,7 +11,6 @@ import {
   faDownload,
   faTachometerAlt,
   faTrash,
-  faPlay,
   faToilet,
   faNewspaper,
   faFolder,
@@ -29,7 +28,6 @@ import {
 } from "../../../utils/selectors";
 import {
   updateDiscordRPC,
-  updateHideWindowOnGameLaunch,
   updatePotatoPcMode,
   updateShowNews,
   updateCurseReleaseChannel,
@@ -218,9 +216,7 @@ const General = () => {
   const [version, setVersion] = useState(null);
   const [releaseChannel, setReleaseChannel] = useState(null);
   const currentAccount = useSelector(_getCurrentAccount);
-  const hideWindowOnGameLaunch = useSelector(
-    (state) => state.settings.hideWindowOnGameLaunch
-  );
+
   const DiscordRPC = useSelector((state) => state.settings.discordRPC);
   const potatoPcMode = useSelector((state) => state.settings.potatoPcMode);
   const concurrentDownloads = useSelector(
@@ -398,7 +394,7 @@ const General = () => {
         <div>
           <div
             css={`
-              width: 400px;
+              width: 450px;
             `}
           >
             Stable updates once a month, beta does update more often but it may
@@ -423,7 +419,6 @@ const General = () => {
           </Select>
         </div>
       </ReleaseChannel>
-      <Hr />
       <Title>
         Concurrent Downloads &nbsp; <FontAwesomeIcon icon={faTachometerAlt} />
       </Title>
@@ -431,7 +426,7 @@ const General = () => {
         <p
           css={`
             margin: 0;
-            width: 400px;
+            width: 450px;
           `}
         >
           Select the number of concurrent downloads. If you have a slow
@@ -464,7 +459,7 @@ const General = () => {
         <p
           css={`
             margin: 0;
-            width: 400px;
+            width: 450px;
           `}
         >
           Select the preferred release channel for downloading CurseForge
@@ -494,11 +489,11 @@ const General = () => {
       <DiscordRpc>
         <p
           css={`
-            width: 350px;
+            width: 450px;
           `}
         >
-          Enable / disable Discord Integration. This displays what you are
-          playing in Discord.
+          Enable Discord Integration. This displays what you are playing in
+          Discord.
         </p>
         <Switch
           onChange={(e) => {
@@ -523,10 +518,10 @@ const General = () => {
       <DiscordRpc>
         <p
           css={`
-            width: 350px;
+            width: 450px;
           `}
         >
-          Enable / disable Minecraft news.
+          Enable the Minecraft News.
         </p>
         <Switch
           onChange={(e) => {
@@ -535,8 +530,6 @@ const General = () => {
           checked={showNews}
         />
       </DiscordRpc>
-
-      <Hr />
       <div>
         <Title
           css={`
@@ -548,11 +541,11 @@ const General = () => {
         <DiscordRpc>
           <p
             css={`
-              width: 350px;
+              width: 450px;
             `}
           >
-            Enable / Disable - Make installs that use the same MC/Forge version
-            faster. Leave enabled unless your having issues with assets/forge.
+            Make installs that use the same MC/Forge version faster. Leave
+            enabled unless your having issues with assets/forge.
           </p>
           <Switch
             onChange={(e) => {
@@ -575,10 +568,10 @@ const General = () => {
         <DiscordRpc>
           <p
             css={`
-              width: 350px;
+              width: 450px;
             `}
           >
-            Enable / Disable retreiving mods from other installed instances.
+            Enable retreiving mods from other installed instances.
           </p>
           <Switch
             onChange={(e) => {
@@ -588,8 +581,6 @@ const General = () => {
           />
         </DiscordRpc>
       </div>
-
-      <Hr />
       <div>
         <Title
           css={`
@@ -601,7 +592,7 @@ const General = () => {
         <DiscordRpc>
           <p
             css={`
-              width: 350px;
+              width: 450px;
             `}
           >
             Enable / Disable caching mods to a dedicated folder.
@@ -617,7 +608,7 @@ const General = () => {
       <div>
         <Title
           css={`
-            width: 300px;
+            width: 450px;
             float: left;
           `}
         >
@@ -629,7 +620,7 @@ const General = () => {
             justify-content: space-between;
             text-align: left;
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             p {
               text-align: left;
               color: ${(props) => props.theme.palette.text.third};
@@ -661,36 +652,6 @@ const General = () => {
           </Button>
         </div>
       </div>
-
-      <Hr />
-      <Title
-        css={`
-          margin-top: 0px;
-        `}
-      >
-        Hide Launcher While Playing &nbsp; <FontAwesomeIcon icon={faPlay} />
-      </Title>
-      <DiscordRpc
-        css={`
-          margin-bottom: 30px;
-        `}
-      >
-        <p
-          css={`
-            width: 500px;
-          `}
-        >
-          Automatically hide the launcher when launching an instance. You will
-          still be able to open it from the icon tray
-        </p>
-        <Switch
-          onChange={(e) => {
-            dispatch(updateHideWindowOnGameLaunch(e));
-          }}
-          checked={hideWindowOnGameLaunch}
-        />
-      </DiscordRpc>
-      <Hr />
       <Title
         css={`
           margin-top: 0px;
@@ -700,7 +661,7 @@ const General = () => {
       </Title>
       <DiscordRpc
         css={`
-          margin-bottom: 30px;
+          margin-bottom: 10px;
         `}
       >
         <p
@@ -765,7 +726,6 @@ const General = () => {
           Clear
         </Button>
       </div>
-      <Hr />
       {/* {process.env.REACT_APP_RELEASE_TYPE === 'setup' && ( */}
       <CustomDataPathContainer>
         <Title
@@ -854,7 +814,6 @@ const General = () => {
         </div>
       </CustomDataPathContainer>
       {/* )} */}
-      <Hr />
       <LauncherVersion>
         <div
           css={`

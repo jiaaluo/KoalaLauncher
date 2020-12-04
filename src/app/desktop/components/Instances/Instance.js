@@ -33,7 +33,7 @@ import { FABRIC, FORGE, VANILLA } from "../../../../common/utils/constants";
 
 const Container = styled.div`
   position: relative;
-  width: 185px;
+  width: 175px;
   height: 175px;
   transform: ${(p) =>
     p.isHovered && !p.installing

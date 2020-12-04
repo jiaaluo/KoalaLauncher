@@ -33,18 +33,7 @@ const Changelogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>
-                Our logo now looks not squashed. Hope you can enjoy its quality
-                now.
-              </li>
-              <li>
-                The pesky mods/memory_repo folder where specific authors put
-                their core mods now will be blocked from exporting.
-              </li>
-              <li>
-                Whats a Twitch Mod, they are Curse Mods. Even before Overwolf
-                bought them.
-              </li>
+              <li>We now have mod caching! Mod installs goes wicked fast.</li>
             </ul>
           </div>
         </Section>
@@ -58,7 +47,7 @@ const Changelogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>Hopefully Fixed Linux Icons.</li>
+              <li>Resized Main Menu icons to populate entire screen.</li>
             </ul>
           </div>
         </Section>
