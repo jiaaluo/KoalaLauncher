@@ -35,11 +35,29 @@ const InstanceName = ({
   importZipPath,
   step
 }) => {
-  const mcName = (
-    modpack?.name.replace(/\W/g, ' ') ||
-    (version && `Minecraft ${version[0]}`) ||
-    ''
-  ).trim();
+  
+  const mcName = () => {
+    // Version array output will be =>
+    // ["vanilla", "release", "1.16.4"] or
+    // ["forge", "1.16.4", "1.16.4-35.1.10"] or
+    // ["fabric", "release", "1.16.4", "0.10.8"]
+    if (modpack) {
+      return (modpack?.name.replace(/\W/g, ' ')).trim();
+    }
+    if (version) {
+      if (version[0] === "vanilla") {
+        return (`${version[0]} ${version[2]}`)
+      }
+      else if (version[0] === "forge") {
+        return (`${version[0]} ${version[2]}`)
+      }
+      else if (version[0] === "fabric") {
+        return (`${version[0]} ${version[2]}-${version[3]}`)
+      }
+    }
+    return ('');
+  }
+
   const originalMcName =
     modpack?.name || (version && `Minecraft ${version[0]}`);
   const dispatch = useDispatch();
@@ -53,33 +71,37 @@ const InstanceName = ({
   const [invalidName, setInvalidName] = useState(true);
   const [clicked, setClicked] = useState(false);
 
-  useEffect(() => {
-    if (instanceName || mcName) {
-      const regex = /^[\sa-zA-Z0-9_.-]+$/;
-      const finalWhiteSpace = /[^\s]$/;
-      if (
-        !regex.test(instanceName || mcName) ||
-        !finalWhiteSpace.test(instanceName || mcName) ||
-        (instanceName || mcName).length >= 45
-      ) {
-        setInvalidName(true);
-        setAlreadyExists(false);
-        return;
-      }
-    }
-  }, [instanceName, step]);
+  useEffect(() =>{
+    setInstanceName(mcName);
+  }, [step]);
 
   useEffect(() => {
+    // Checks user input for invalid input.
+    const regex = /^[\sa-zA-Z0-9_.-]+$/;
+    const finalWhiteSpace = /[^\s]$/;
+    if (
+      !regex.test(instanceName) ||
+      !finalWhiteSpace.test(instanceName) ||
+      (instanceName).length >= 45 ||
+      instanceName === ''
+    ) {
+      setInvalidName(true);
+      setAlreadyExists(false);
+      // Don't need to run any more checks since name is invalid.
+      return;
+    } else {
+      setInvalidName(false);
+    }
+      // Checks for instances dir for folder name usage.
     fse
-      .pathExists(path.join(instancesPath, instanceName || mcName))
+      .pathExists(path.join(instancesPath, instanceName))
       .then(exists => {
-        const newName = instanceNameSuffix(instanceName || mcName, instances);
+        const newName = instanceNameSuffix(instanceName, instances);
         setInstanceNameSufx(newName);
 
         setAlreadyExists(exists);
-        setInvalidName(false);
       });
-  }, [step]);
+  }, [instanceName, step]);
 
   const thumbnailURL = modpack?.attachments?.find(v => v.isDefault)
     ?.thumbnailUrl;
@@ -277,13 +299,9 @@ const InstanceName = ({
                     <Input
                       state={state1}
                       size="large"
-                      placeholder={instanceNameSufx || instanceName || mcName}
+                      value={instanceName}
                       onChange={async e => {
-                        const newName = instanceNameSuffix(
-                          e.target.value,
-                          instances
-                        );
-                        setInstanceName(newName);
+                        setInstanceName(e.target.value);
                       }}
                       css={`
                         opacity: ${({ state }) =>
@@ -294,14 +312,13 @@ const InstanceName = ({
                       `}
                     />
                     <div
-                      show={!instanceNameSufx && (invalidName || alreadyExists)}
                       css={`
-                        opacity: ${props => (props.show ? 1 : 0)};
+                        visibility: ${(invalidName || alreadyExists) ? 'visible' : 'hidden'};
                         color: ${props => props.theme.palette.error.main};
                         font-weight: 700;
                         font-size: 14px;
-                        padding: 3px;
-                        height: 30px;
+                        padding: 5px;
+                        height: 50px;
                         margin-top: 10px;
                         text-align: center;
                         border-radius: ${props =>
@@ -310,11 +327,22 @@ const InstanceName = ({
                           transparentize(0.7, props.theme.palette.grey[700])};
                       `}
                     >
-                      {invalidName &&
-                        'Instance name is not valid or too long. Please try another one'}
-                      {alreadyExists &&
-                        !instanceNameSufx &&
-                        'An instance with this name already exists!'}
+                      {invalidName && (
+                        <div>
+                          Instance name is not valid or too long. Please try another one
+                        </div>)
+                      }
+
+                      {alreadyExists && (
+                        <div>
+                          <div>
+                            Name already in use. Will use the this instead:
+                          </div>
+                          <div>
+                            {instanceNameSufx && `${instanceNameSufx}`}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
