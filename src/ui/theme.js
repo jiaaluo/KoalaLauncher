@@ -63,7 +63,7 @@ module.exports = {
     main: 0.2,
     shorter: 0.1,
   },
-  shape: { borderRadius: "4px" },
+  shape: { borderRadius: "8px" },
   spacing: (factor) => [0, 4, 8, 16, 32, 64][factor],
   sizes: {
     width: {

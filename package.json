@@ -1,6 +1,6 @@
 {
   "name": "koalalauncher",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "KoalaLauncher is simple, yet powerful custom Minecraft launcher with a strong focus on the user experience",
   "keywords": [
     "minecraft",
@@ -112,7 +112,6 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "babel-core": "^6.26.3",
-    "babel-loader": "^8.1.0",
     "babel-plugin-macros": "^2.8.0",
     "babel-plugin-module-resolver": "^4.0.0",
     "babel-plugin-preval": "^5.0.0",

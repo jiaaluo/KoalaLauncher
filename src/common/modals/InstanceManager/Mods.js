@@ -795,7 +795,7 @@ const Mods = ({ instanceName }) => {
             );
           }}
         >
-          Add Mod
+          Add Mods
         </Button>
         <Input
           allowClear

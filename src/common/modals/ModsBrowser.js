@@ -396,7 +396,7 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
             css={`
               height: 32px;
             `}
-            placeholder="Search for a mod"
+            placeholder="Search"
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);

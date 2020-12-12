@@ -396,7 +396,7 @@ const ResourePacks = ({ instanceName }) => {
             openFolderDialog();
           }}
         >
-          Add ResourcePack
+          Add Resource Packs
         </Button>
       </Header>
 
@@ -406,7 +406,9 @@ const ResourePacks = ({ instanceName }) => {
         fileList={resourcePacks}
       >
         {resourcePacks.length === 0 && (
-          <NotItemsAvailable>No Resoure Packs Available</NotItemsAvailable>
+          <NotItemsAvailable>
+            <h2>No Resoure Packs Available</h2>
+          </NotItemsAvailable>
         )}
         <AutoSizer>
           {({ height, width }) => (

@@ -262,7 +262,7 @@ const Instance = ({ instanceName }) => {
                         css={`
                           color: ${({ theme }) => theme.palette.colors.green};
                           font-size: 27px;
-                          position: absolute;
+                          position: absoeslute;
                           margin-left: -6px;
                           margin-top: -2px;
                           animation: ${PlayButtonAnimation} 0.5s

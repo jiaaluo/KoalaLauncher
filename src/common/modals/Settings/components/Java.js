@@ -150,8 +150,8 @@ export default function MyAccountPreferences() {
             text-align: left;
           `}
         >
-          Disable this to specify a custom java path to use instead of using
-          openJDK shipped with KoalaLauncher. Please select the java.exe binary
+          Disable this to specify a custom Java version instead of using the
+          shipped one. Select the Java binary file.
         </Paragraph>
         <Switch
           color="primary"

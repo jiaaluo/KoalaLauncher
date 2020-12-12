@@ -46,20 +46,18 @@ const InstanceName = ({
     }
     if (version) {
       if (version[0] === "vanilla") {
-        return (`${version[0]} ${version[2]}`)
+        return (`Vanilla ${version[2]}`)
       }
       else if (version[0] === "forge") {
-        return (`${version[0]} ${version[2]}`)
+        return (`Forge ${version[2]}`)
       }
       else if (version[0] === "fabric") {
-        return (`${version[0]} ${version[2]}-${version[3]}`)
+        return (`Fabric ${version[2]}-${version[3]}`)
       }
     }
     return ('');
   }
-
-  const originalMcName =
-    modpack?.name || (version && `Minecraft ${version[0]}`);
+  const originalMcName = modpack?.name || (version && `${version[0]} ${version[2]}`);
   const dispatch = useDispatch();
   const instancesPath = useSelector(_getInstancesPath);
   const tempPath = useSelector(_getTempPath);

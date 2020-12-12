@@ -8,7 +8,7 @@ const Carousel = styled.div`
   width: 100%;
   height: 180px;
   overflow: hidden;
-  border-radius: ${(props) => props.theme.shape.borderRadius};
+  border-radius: 24px;
   cursor: pointer;
   display: inline-block;
 `;
@@ -19,7 +19,7 @@ const ImageSlider = styled.div`
   align-items: stretch;
   object-fit: covert;
   overflow: hidden;
-  border-radius: ${(props) => props.theme.shape.borderRadius};
+  border-radius: 24px;
   justify-content: space-between;
   padding: 0;
   margin: 0;
@@ -37,7 +37,7 @@ const ImageSlide = styled.div`
   top: 0;
   height: 100%;
   width: 100%;
-  border-radius: ${(props) => props.theme.shape.borderRadius};
+  border-radius: 24px;
   background-image: url("${(props) => (props.image ? props.image : null)}");
   background-position: center;
   background-size: cover;
