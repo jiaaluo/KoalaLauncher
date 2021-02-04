@@ -24,9 +24,11 @@ import originalFs from "original-fs";
 import pMap from "p-map";
 import makeDir from "make-dir";
 import { parse } from "semver";
+import fxp from "fast-xml-parser";
 import * as ActionTypes from "./actionTypes";
 import {
-  NEWS_URL,
+  // NEWS_URL,
+  NEWS_URL_RSS,
   MC_RESOURCES_URL,
   LEGACYJAVAFIXER_URL,
   FORGE,
@@ -186,22 +188,18 @@ export function initNews() {
     } = getState();
     if (news.length === 0 && !minecraftNews.isRequesting) {
       try {
-        const res = await axios.get(NEWS_URL);
-        const newsArr = await Promise.all(
-          res.data.article_grid.map(async (item) => {
-            return {
-              title: item.default_tile.title,
-              description: item.default_tile.sub_header,
-              // We need to get the header image of every article, since
-              // the ones present in this json are thumbnails
-              image: `https://minecraft.net${item.default_tile.image.imageURL}`,
-              url: `https://minecraft.net${item.article_url}`,
-            };
-          })
-        );
+        const { data: newsXml } = await axios.get(NEWS_URL_RSS);
+        const newsArr =
+          fxp.parse(newsXml)?.rss?.channel?.item?.map((newsEntry) => ({
+            title: newsEntry.title,
+            description: newsEntry.description,
+            image: `https://minecraft.net${newsEntry.imageURL}`,
+            url: newsEntry.link,
+            guid: newsEntry.guid,
+          })) || [];
         dispatch({
           type: ActionTypes.UPDATE_NEWS,
-          news: newsArr.splice(0, 12),
+          news: newsArr.splice(0, 10),
         });
       } catch (err) {
         console.error(err.message);
