@@ -793,8 +793,12 @@ export const getPlayerSkin = async (uuid) => {
 
 export const extractFace = async (buffer) => {
   const image = await jimp.read(buffer);
+  const layar = await jimp.read(buffer);
   image.crop(8, 8, 8, 8);
+  layar.crop(40, 8, 8, 8);
+  image.composite(layar, 0, 0);
   image.scale(10, jimp.RESIZE_NEAREST_NEIGHBOR);
+  layar.scale(10, jimp.RESIZE_NEAREST_NEIGHBOR);
   const imageBuffer = await image.getBufferAsync(jimp.MIME_PNG);
   return imageBuffer.toString("base64");
 };
@@ -808,8 +812,8 @@ export const normalizeModData = (data, projectID, modName, categorySection) => {
     temp.projectID = projectID;
     temp.fileID = data.id;
     delete temp.id;
-    delete temp.projectId;
-    delete temp.fileId;
+    delete temp.projectId; // CurseForge ProjectID
+    delete temp.fileId; // CurseForge FileID
   }
   return temp;
 };

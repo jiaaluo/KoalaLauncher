@@ -32,15 +32,15 @@ import { convertMinutesToHumanTime } from "../../../../common/utils";
 import { FABRIC, FORGE, VANILLA } from "../../../../common/utils/constants";
 
 const Container = styled.div`
-  position: relative;
-  width: 175px;
-  height: 175px;
+  position: flex;
+  width: 155px;
+  height: 155px;
   transform: ${(p) =>
     p.isHovered && !p.installing
       ? "scale3d(1.1, 1.1, 1.1)"
       : "scale3d(1, 1, 1)"};
-  margin-right: 20px;
-  margin-top: 20px;
+
+  margin: 20px;
   transition: transform 150ms ease-in-out;
   &:hover {
     ${(p) => (p.installing ? "" : "transform: scale3d(1.1, 1.1, 1.1);")}
@@ -95,16 +95,16 @@ const HoverContainer = styled.div`
   align-items: center;
   cursor: pointer;
   font-size: 18px;
-  margin: 10px;
+  margin: 5px;
   padding: 10px;
   text-align: center;
   font-weight: 800;
-  border-radius: 25px;
+  border-radius: 32px;
   transition: opacity 150ms ease-in-out;
-  width: 100%;
-  height: 100%;
+  width: 105%;
+  height: 105%;
   opacity: ${(p) => (p.installing || p.isHovered ? "1" : "0")};
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(12px);
   will-change: opacity;
   background: ${(p) => transparentize(0.5, p.theme.palette.grey[800])};
   &:hover {

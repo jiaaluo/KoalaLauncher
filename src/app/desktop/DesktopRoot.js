@@ -32,6 +32,7 @@ import SystemNavbar from "./components/SystemNavbar";
 import useTrackIdle from "./utils/useTrackIdle";
 import { openModal } from "../../common/reducers/modals/actions";
 import Message from "./components/Message";
+import QuickInstanceListener from "./components/QuickInstance";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -158,12 +159,14 @@ function DesktopRoot({ store }) {
       <Message />
       <Container style={contentStyle}>
         <GlobalStyles />
-        <RouteBackground />
-        <Switch>
-          {routes.map((route, i) => (
-            <RouteWithSubRoutes key={i} {...route} /> // eslint-disable-line
-          ))}
-        </Switch>
+        <QuickInstanceListener>
+          <RouteBackground />
+          <Switch>
+            {routes.map((route, i) => (
+                <RouteWithSubRoutes key={i} {...route} /> // eslint-disable-line
+            ))}
+          </Switch>
+        </QuickInstanceListener>
       </Container>
     </Wrapper>
   );
