@@ -36,7 +36,7 @@ const AddAccount = ({ username }) => {
               height: 80px;
             `}
           >
-            Mojang login
+            Mojang Login
           </h1>
           <StyledInput
             disabled={!!username}

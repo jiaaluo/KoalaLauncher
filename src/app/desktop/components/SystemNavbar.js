@@ -18,7 +18,7 @@ import {
   updateUpdateAvailable,
   getAppLatestVersion,
 } from "../../../common/reducers/actions";
-import Logo from "../../../ui/Logo.png";
+import Logo from "../../../ui/Logo";
 
 const SystemNavbar = () => {
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ const SystemNavbar = () => {
   const isUpdateAvailable = useSelector((state) => state.updateAvailable);
   const location = useSelector((state) => state.router.location.pathname);
   const [isAppImage, setIsAppImage] = useState(false);
-
   const modals = useSelector((state) => state.modals);
 
   const areSettingsOpen = modals.find(
@@ -176,14 +175,7 @@ const SystemNavbar = () => {
                 -webkit-app-region: no-drag;
               `}
             >
-              <img
-                src={Logo}
-                height="40px"
-                width="38px"
-                alt="Logo"
-                draggable="false"
-                pointerCursor
-              />
+              <Logo size={35} pointerCursor />
             </a>
             <DevtoolButton />
           </div>

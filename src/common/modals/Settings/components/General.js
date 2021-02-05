@@ -5,35 +5,18 @@ import { useSelector, useDispatch } from "react-redux";
 import path from "path";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import fsa from "fs-extra";
-import { promises as fs } from "fs";
 import {
   faCopy,
   faDownload,
   faTachometerAlt,
-  faTrash,
   faToilet,
-  faNewspaper,
-  faFolder,
   faFire,
-  faHdd,
 } from "@fortawesome/free-solid-svg-icons";
-import { Select, Tooltip, Button, Switch, Input, Checkbox } from "antd";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { Select, Tooltip, Button, Switch } from "antd";
+import { _getCurrentAccount } from "../../../utils/selectors";
 import {
-  _getCurrentAccount,
-  _getDataStorePath,
-  _getInstancesPath,
-  _getTempPath,
-  _getModCachePath,
-} from "../../../utils/selectors";
-import {
-  updateDiscordRPC,
   updatePotatoPcMode,
-  updateShowNews,
   updateCurseReleaseChannel,
-  updateAssetsCheckSkip,
-  updateCacheModsInstances,
-  updateCacheMods,
 } from "../../../reducers/settings/actions";
 import HorizontalLogo from "../../../../ui/HorizontalLogo.png";
 import { updateConcurrentDownloads } from "../../../reducers/actions";
@@ -152,7 +135,7 @@ const ParallelDownload = styled.div`
   }
 `;
 
-const DiscordRpc = styled.div`
+const ListView = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -174,22 +157,6 @@ const LauncherVersion = styled.div`
 
   h1 {
     color: ${(props) => props.theme.palette.text.primary};
-  }
-`;
-const CustomDataPathContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 140px;
-  border-radius: ${(props) => props.theme.shape.borderRadius};
-
-  h1 {
-    width: 100%;
-    font-size: 15px;
-    font-weight: 700;
-    color: ${(props) => props.theme.palette.text.primary};
-    z-index: 1;
-    text-align: left;
   }
 `;
 
@@ -217,42 +184,18 @@ const General = () => {
   const [releaseChannel, setReleaseChannel] = useState(null);
   const currentAccount = useSelector(_getCurrentAccount);
 
-  const DiscordRPC = useSelector((state) => state.settings.discordRPC);
   const potatoPcMode = useSelector((state) => state.settings.potatoPcMode);
   const concurrentDownloads = useSelector(
     (state) => state.settings.concurrentDownloads
   );
   const updateAvailable = useSelector((state) => state.updateAvailable);
-  const dataStorePath = useSelector(_getDataStorePath);
-  const instancesPath = useSelector(_getInstancesPath);
-  const isPlaying = useSelector((state) => state.startedInstances);
-  const queuedInstances = useSelector((state) => state.downloadQueue);
-  const tempPath = useSelector(_getTempPath);
   const [copiedUuid, setCopiedUuid] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [deletingInstances, setDeletingInstances] = useState(false);
-  const userData = useSelector((state) => state.userData);
-  const [dataPath, setDataPath] = useState(userData);
-  const [moveUserData, setMoveUserData] = useState(false);
-  const showNews = useSelector((state) => state.settings.showNews);
-  const [loadingMoveUserData, setLoadingMoveUserData] = useState(false);
   const curseReleaseChannel = useSelector(
     (state) => state.settings.curseReleaseChannel
   );
-  const assetsCheckSkip = useSelector(
-    (state) => state.settings.assetsCheckSkip
-  );
-  const cacheMods = useSelector((state) => state.settings.cacheMods);
-  const cacheModsInstances = useSelector(
-    (state) => state.settings.cacheModsInstances
-  );
-  const modCachedPath = useSelector(_getModCachePath);
 
   const dispatch = useDispatch();
-
-  const disableInstancesActions =
-    Object.keys(queuedInstances).length > 0 ||
-    Object.keys(isPlaying).length > 0;
 
   useEffect(() => {
     ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
@@ -267,76 +210,6 @@ const General = () => {
       )
       .catch(console.error);
   }, []);
-
-  const clearSharedData = async () => {
-    setDeletingInstances(true);
-    try {
-      await fsa.emptyDir(dataStorePath);
-      await fsa.emptyDir(instancesPath);
-      await fsa.emptyDir(tempPath);
-    } catch (e) {
-      console.error(e);
-    }
-    setDeletingInstances(false);
-  };
-
-  const changeDataPath = async () => {
-    setLoadingMoveUserData(true);
-    const appData = await ipcRenderer.invoke("getAppdataPath");
-    const appDataPath = path.join(appData, "koalalauncher");
-
-    const notCopiedFiles = [
-      "Cache",
-      "Code Cache",
-      "Dictionaries",
-      "GPUCache",
-      "Cookies",
-      "Cookies-journal",
-    ];
-    await fsa.writeFile(path.join(appDataPath, "override.data"), dataPath);
-
-    if (moveUserData) {
-      try {
-        const files = await fs.readdir(userData);
-        await Promise.all(
-          files.map(async (name) => {
-            if (!notCopiedFiles.includes(name)) {
-              await fsa.copy(
-                path.join(userData, name),
-                path.join(dataPath, name),
-                {
-                  overwrite: true,
-                }
-              );
-            }
-          })
-        );
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    setLoadingMoveUserData(false);
-    ipcRenderer.invoke("appRestart");
-  };
-
-  const openFolder = async () => {
-    const { filePaths, canceled } = await ipcRenderer.invoke(
-      "openFolderDialog",
-      userData
-    );
-    if (!filePaths[0] || canceled) return;
-    setDataPath(filePaths[0]);
-  };
-
-  const clearCacheMods = async () => {
-    setDeletingInstances(true);
-    try {
-      await fsa.emptyDir(modCachedPath);
-    } catch (e) {
-      console.error(e);
-    }
-    setDeletingInstances(false);
-  };
 
   return (
     <MyAccountPrf>
@@ -419,7 +292,11 @@ const General = () => {
           </Select>
         </div>
       </ReleaseChannel>
-      <Title>
+      <Title
+        css={`
+          margin-top: 5px;
+        `}
+      >
         Concurrent Downloads &nbsp; <FontAwesomeIcon icon={faTachometerAlt} />
       </Title>
       <ParallelDownload>
@@ -481,185 +358,12 @@ const General = () => {
       <Hr />
       <Title
         css={`
-          margin-top: 0px;
-        `}
-      >
-        Discord Integration &nbsp; <FontAwesomeIcon icon={faDiscord} />
-      </Title>
-      <DiscordRpc>
-        <p
-          css={`
-            width: 450px;
-          `}
-        >
-          Enable Discord Integration. This displays what you are playing in
-          Discord.
-        </p>
-        <Switch
-          onChange={(e) => {
-            dispatch(updateDiscordRPC(e));
-            if (e) {
-              ipcRenderer.invoke("init-discord-rpc");
-            } else {
-              ipcRenderer.invoke("shutdown-discord-rpc");
-            }
-          }}
-          checked={DiscordRPC}
-        />
-      </DiscordRpc>
-      <Hr />
-      <Title
-        css={`
-          margin-top: 0px;
-        `}
-      >
-        Minecraft News &nbsp; <FontAwesomeIcon icon={faNewspaper} />
-      </Title>
-      <DiscordRpc>
-        <p
-          css={`
-            width: 450px;
-          `}
-        >
-          Enable the Minecraft News.
-        </p>
-        <Switch
-          onChange={(e) => {
-            dispatch(updateShowNews(e));
-          }}
-          checked={showNews}
-        />
-      </DiscordRpc>
-      <div>
-        <Title
-          css={`
-            margin-top: 0px;
-          `}
-        >
-          Skip Extra Asset Check &nbsp; <FontAwesomeIcon icon={faHdd} />
-        </Title>
-        <DiscordRpc>
-          <p
-            css={`
-              width: 450px;
-            `}
-          >
-            Make installs that use the same MC/Forge version faster. Leave
-            enabled unless your having issues with assets/forge.
-          </p>
-          <Switch
-            onChange={(e) => {
-              dispatch(updateAssetsCheckSkip(e));
-            }}
-            checked={assetsCheckSkip}
-          />
-        </DiscordRpc>
-      </div>
-
-      <Hr />
-      <div>
-        <Title
-          css={`
-            margin-top: 0px;
-          `}
-        >
-          Use Instances As Mod Cache &nbsp; <FontAwesomeIcon icon={faHdd} />
-        </Title>
-        <DiscordRpc>
-          <p
-            css={`
-              width: 450px;
-            `}
-          >
-            Enable retreiving mods from other installed instances.
-          </p>
-          <Switch
-            onChange={(e) => {
-              dispatch(updateCacheModsInstances(e));
-            }}
-            checked={cacheModsInstances}
-          />
-        </DiscordRpc>
-      </div>
-      <div>
-        <Title
-          css={`
-            margin-top: 0px;
-          `}
-        >
-          Cache Mods &nbsp; <FontAwesomeIcon icon={faHdd} />
-        </Title>
-        <DiscordRpc>
-          <p
-            css={`
-              width: 450px;
-            `}
-          >
-            Enable / Disable caching mods to a dedicated folder.
-          </p>
-          <Switch
-            onChange={(e) => {
-              dispatch(updateCacheMods(e));
-            }}
-            checked={cacheMods}
-          />
-        </DiscordRpc>
-      </div>
-      <div>
-        <Title
-          css={`
-            width: 450px;
-            float: left;
-          `}
-        >
-          Clear Mod Cache &nbsp; <FontAwesomeIcon icon={faHdd} />
-        </Title>
-        <div
-          css={`
-            display: flex;
-            justify-content: space-between;
-            text-align: left;
-            width: 100%;
-            margin-bottom: 15px;
-            p {
-              text-align: left;
-              color: ${(props) => props.theme.palette.text.third};
-            }
-          `}
-        >
-          <p
-            css={`
-              margin: 0;
-              width: 500px;
-            `}
-          >
-            Deletes all the cached mods.
-          </p>
-          <Button
-            onClick={() => {
-              dispatch(
-                openModal("ActionConfirmation", {
-                  message: "Are you sure you want to delete the mod cache?",
-                  confirmCallback: clearCacheMods,
-                  title: "Confirm",
-                })
-              );
-            }}
-            disabled={disableInstancesActions}
-            loading={deletingInstances}
-          >
-            Clear
-          </Button>
-        </div>
-      </div>
-      <Title
-        css={`
-          margin-top: 0px;
+          margin-top: 5px;
         `}
       >
         Potato PC Mode &nbsp; <FontAwesomeIcon icon={faToilet} />
       </Title>
-      <DiscordRpc
+      <ListView
         css={`
           margin-bottom: 10px;
         `}
@@ -678,142 +382,8 @@ const General = () => {
           }}
           checked={potatoPcMode}
         />
-      </DiscordRpc>
+      </ListView>
       <Hr />
-      <Title
-        css={`
-          width: 300px;
-          float: left;
-        `}
-      >
-        Clear Shared Data&nbsp; <FontAwesomeIcon icon={faTrash} />
-      </Title>
-      <div
-        css={`
-          display: flex;
-          justify-content: space-between;
-          text-align: left;
-          width: 100%;
-          margin-bottom: 30px;
-          p {
-            text-align: left;
-            color: ${(props) => props.theme.palette.text.third};
-          }
-        `}
-      >
-        <p
-          css={`
-            margin: 0;
-            width: 500px;
-          `}
-        >
-          Deletes all the shared files between instances. Doing this will result
-          in the complete loss of the instances data
-        </p>
-        <Button
-          onClick={() => {
-            dispatch(
-              openModal("ActionConfirmation", {
-                message: "Are you sure you want to delete shared data?",
-                confirmCallback: clearSharedData,
-                title: "Confirm",
-              })
-            );
-          }}
-          disabled={disableInstancesActions}
-          loading={deletingInstances}
-        >
-          Clear
-        </Button>
-      </div>
-      {/* {process.env.REACT_APP_RELEASE_TYPE === 'setup' && ( */}
-      <CustomDataPathContainer>
-        <Title
-          css={`
-            width: 400px;
-            float: left;
-          `}
-        >
-          User Data Path&nbsp; <FontAwesomeIcon icon={faFolder} />
-          <a
-            css={`
-              margin-left: 30px;
-            `}
-            onClick={async () => {
-              const appData = await ipcRenderer.invoke("getAppdataPath");
-              const appDataPath = path.join(appData, "koalalauncher");
-              setDataPath(appDataPath);
-            }}
-          >
-            Reset Path
-          </a>
-        </Title>
-        <div
-          css={`
-            display: flex;
-            justify-content: space-between;
-            text-align: left;
-            width: 100%;
-            height: 30px;
-            margin: 20px 0 10px 0;
-            p {
-              text-align: left;
-              color: ${(props) => props.theme.palette.text.third};
-            }
-          `}
-        >
-          <Input
-            value={dataPath}
-            onChange={(e) => setDataPath(e.target.value)}
-            disabled={
-              loadingMoveUserData ||
-              deletingInstances ||
-              disableInstancesActions
-            }
-          />
-          <Button
-            css={`
-              margin-left: 20px;
-            `}
-            onClick={openFolder}
-            disabled={loadingMoveUserData || deletingInstances}
-          >
-            <FontAwesomeIcon icon={faFolder} />
-          </Button>
-          <Button
-            css={`
-              margin-left: 20px;
-            `}
-            onClick={changeDataPath}
-            disabled={
-              disableInstancesActions ||
-              userData === dataPath ||
-              !dataPath ||
-              dataPath.length === 0 ||
-              deletingInstances
-            }
-            loading={loadingMoveUserData}
-          >
-            Apply & Restart
-          </Button>
-        </div>
-        <div
-          css={`
-            display: flex;
-            justify-content: flex-start;
-            width: 100%;
-          `}
-        >
-          <Checkbox
-            onChange={(e) => {
-              setMoveUserData(e.target.checked);
-            }}
-          >
-            Copy current data to the new directory
-          </Checkbox>
-        </div>
-      </CustomDataPathContainer>
-      {/* )} */}
       <LauncherVersion>
         <div
           css={`
@@ -852,7 +422,7 @@ const General = () => {
         </p>
         <div
           css={`
-            margin-top: 20px;
+            margin-top: 5px;
             height: 36px;
             display: flex;
             flex-direction: row;

@@ -91,14 +91,18 @@ const InstanceName = ({
       setInvalidName(false);
     }
       // Checks for instances dir for folder name usage.
-    fse
-      .pathExists(path.join(instancesPath, instanceName))
-      .then(exists => {
-        const newName = instanceNameSuffix(instanceName, instances);
-        setInstanceNameSufx(newName);
+    useEffect(() => {
+      fse
+          .pathExists(path.join(instancesPath, instanceName || mcName))
+          .then(exists => {
+            instanceNameSuffix(instanceName || mcName).then(x =>
+                setInstanceNameSufx(x)
+            );
 
-        setAlreadyExists(exists);
-      });
+            setAlreadyExists(exists);
+            setInvalidName(false);
+          });
+    }, [step]);
   }, [instanceName, step]);
 
   const thumbnailURL = modpack?.attachments?.find(v => v.isDefault)

@@ -2341,7 +2341,16 @@ export function launchInstance(instanceName) {
       await ipcRenderer.invoke("hide-window");
     }
 
-    const minecraftProcess = spawn(
+    // const minecraftProcess = spawn(
+    //  `"${javaPath.replace(...replaceRegex)}"`,
+    //  jvmArguments.map((v) => v.replace(...replaceRegex)),
+    //  /{
+    //    cwd: instancePath,
+    //    shell: true,
+    //  }
+    // );
+
+    const ps = spawn(
       `"${javaPath.replace(...replaceRegex)}"`,
       jvmArguments.map((v) => v.replace(...replaceRegex)),
       {
@@ -2365,26 +2374,33 @@ export function launchInstance(instanceName) {
         lastPlayed: Date.now(),
       }))
     );
-    dispatch(addStartedInstance({ instanceName, pid: minecraftProcess.pid }));
+    dispatch(addStartedInstance({ instanceName, pid: ps.pid }));
 
-    minecraftProcess.stdout.on("data", (data) => {
+    ps.stdout.on("data", (data) => {
       console.log(data.toString());
       if (data.toString().includes("Setting user:")) {
         dispatch(updateStartedInstance({ instanceName, initialized: true }));
       }
     });
 
-    minecraftProcess.stderr.on("data", (data) => {
+    ps.stderr.on("data", (data) => {
       console.error(`ps stderr: ${data}`);
       errorLogs += data || "";
     });
 
-    minecraftProcess.on("close", async (code) => {
+    ps.on("close", async (code) => {
       clearInterval(playTimer);
-      if (code !== 0) {
+      if (!ps.killed) {
+        ps.kill("SIGKILL");
+      }
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      ipcRenderer.invoke("show-window");
+      dispatch(removeStartedInstance(instanceName));
+      await fse.remove(instanceJLFPath);
+      if (process.platform === "win32") fse.remove(symLinkDirPath);
+      if (code !== 0 && errorLogs) {
         dispatch(
           openModal("InstanceCrashed", {
-            instanceName,
             code,
             errorLogs: errorLogs?.toString("utf8"),
           })

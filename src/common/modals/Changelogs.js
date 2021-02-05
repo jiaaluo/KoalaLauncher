@@ -33,7 +33,7 @@ const Changelogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>We now have mod caching! Mod installs goes wicked fast.</li>
+              <li>You can now import Modpack ZIPs by dragging them on top of the launcher.</li>
             </ul>
           </div>
         </Section>
@@ -47,7 +47,16 @@ const Changelogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>Resized Main Menu icons to populate entire screen.</li>
+              <li>Instances should now properly close when being exited.</li>
+            </ul>
+            <ul>
+              <li>Fixed duplicate news posts by using the official RSS Endpoint</li>
+            </ul>
+            <ul>
+              <li>Default memory is now set to 6GB. Most packs will not run with 4GB anymore.</li>
+            </ul>
+            <ul>
+              <li>Alot of work has been done on the backend to clean up the codebase to improve stability. Thank you all for being patient with us.</li>
             </ul>
           </div>
         </Section>
@@ -60,8 +69,7 @@ const Changelogs = () => {
             <span>Join Our Community</span>
           </SectionTitle>
           <p>
-            We <b>Really</b> love our users, that's why we have a dedicated
-            Discord server just to talk with all of them!
+            We <b>really</b> love our users, that is why we have a Discord Server to talk to them!
           </p>
           <Button
             css={`
