@@ -16,13 +16,12 @@ import {
   faDownload,
   faEllipsisV,
   faCopy,
-  faFolder,
   faFire,
+  faFolder,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { Transition } from "react-transition-group";
 import AutoSizer from "react-virtualized-auto-sizer";
-import {} from "@fortawesome/free-brands-svg-icons";
 import fse from "fs-extra";
 import makeDir from "make-dir";
 import { _getInstance, _getInstancesPath } from "../../utils/selectors";

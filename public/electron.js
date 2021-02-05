@@ -200,6 +200,7 @@ function createWindow() {
     webPreferences: {
       experimentalFeatures: true,
       nodeIntegration: true,
+      enableRemoteModule: true,
       // Disable in dev since I think hot reload is messing with it
       webSecurity: !isDev,
     },
@@ -237,6 +238,21 @@ function createWindow() {
         cancel: false,
         responseHeaders: details.responseHeaders,
       });
+    }
+  );
+
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      // Use a header to skip sending Origin on request.
+      const {
+        "X-Skip-Origin": xSkipOrigin,
+        Origin: _origin,
+        ...requestHeaders
+      } = details.requestHeaders;
+      if (xSkipOrigin !== "skip") {
+        requestHeaders.Origin = "https://gdevs.io";
+      }
+      callback({ cancel: false, requestHeaders });
     }
   );
 
@@ -339,7 +355,7 @@ ipcMain.handle(
       msAuthorizeUrl.searchParams.set("response_type", "code");
       msAuthorizeUrl.searchParams.set(
         "scope",
-        "xboxlive.signin xboxlive.offline_access"
+        "offline_access xboxlive.signin xboxlive.offline_access"
       );
       msAuthorizeUrl.searchParams.set(
         "cobrandid",
@@ -375,6 +391,16 @@ ipcMain.handle(
       });
 
       oAuthWindow.webContents.session.clearStorageData();
+
+      // Remove Origin
+      oAuthWindow.webContents.session.webRequest.onBeforeSendHeaders(
+        (details, callback) => {
+          const {
+            requestHeaders: { Origin, ...requestHeaders },
+          } = details;
+          callback({ cancel: false, requestHeaders });
+        }
+      );
 
       oAuthWindow.on("close", () =>
         reject(new Error("User closed login window"))
@@ -463,7 +489,7 @@ ipcMain.handle("getIsWindowMaximized", () => {
 });
 
 ipcMain.handle("openFolder", (e, folderPath) => {
-  shell.openItem(folderPath);
+  shell.openPath(folderPath);
 });
 
 ipcMain.handle("open-devtools", () => {

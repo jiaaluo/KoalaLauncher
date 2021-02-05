@@ -9,12 +9,14 @@ import {
   faFire,
 } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Input, Spin, Radio } from 'antd';
+import { Spin, Radio } from 'antd';
 import CurseModpacks from './CurseModpacks';
+import FTBModpacks from './FTBModpacks';
 import Import from './Import';
 import NewInstance from './NewInstance';
 import minecraftIcon from '../../assets/minecraftIcon.png';
-import curseIcon from '../../assets/curseIcon.webp';
+import curseIcon from '../../assets/curseforgeIcon.webp';
+import ftbIcon from '../../assets/ftbIcon.webp';
 
 const Content = ({
   in: inProp,
@@ -42,6 +44,11 @@ const Content = ({
       importZipPath={importZipPath}
       setImportZipPath={setImportZipPath}
       setOverrideNextStepOnClick={setOverrideNextStepOnClick}
+    />,
+    <FTBModpacks
+      setVersion={setVersion}
+      setStep={setStep}
+      setModpack={setModpack}
     />
   ];
 
@@ -97,8 +104,18 @@ const Content = ({
                     Curse
                   </Radio.Button>
                   {/* <Radio.Button value={3} disabled>ATLauncher</Radio.Button>
-                  <Radio.Button value={4} disabled>Technic</Radio.Button>
-                  <Radio.Button value={4} disabled>FTB</Radio.Button> */}
+                  <Radio.Button value={4} disabled>Technic</Radio.Button> */}
+                  <Radio.Button value={3}>
+                    <img
+                      src={ftbIcon}
+                      width="20px"
+                      css={`
+                        margin-right: 4px;
+                        cursor: pointer;
+                      `}
+                    />
+                    FTB
+                  </Radio.Button>
                   <Radio.Button value={2}>
                     <FontAwesomeIcon
                       icon={faArchive}

@@ -13,6 +13,7 @@ import {
   MICROSOFT_XBOX_LOGIN_URL,
   MICROSOFT_XSTS_AUTH_URL,
   MINECRAFT_SERVICES_URL,
+  FTB_API_URL,
   PASTEBIN_API_KEY,
 } from "./utils/constants";
 import { sortByDate } from "./utils";
@@ -30,7 +31,7 @@ export const msExchangeCodeForAccessToken = (
     qs.stringify({
       grant_type: "authorization_code",
       client_id: clientId,
-      scope: "xboxlive.signin xboxlive.offline_access",
+      scope: "offline_access xboxlive.signin xboxlive.offline_access",
       redirect_uri: redirectUrl,
       code,
       code_verifier: codeVerifier,
@@ -38,6 +39,7 @@ export const msExchangeCodeForAccessToken = (
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        "X-Skip-Origin": "skip",
       },
     }
   );
@@ -96,13 +98,14 @@ export const msOAuthRefresh = (clientId, refreshToken) => {
     `${MICROSOFT_LIVE_LOGIN_URL}/oauth20_token.srf`,
     qs.stringify({
       grant_type: "refresh_token",
-      scope: "xboxlive.signin xboxlive.offline_access",
+      scope: "offline_access xboxlive.signin xboxlive.offline_access",
       client_id: clientId,
       refresh_token: refreshToken,
     }),
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        "X-Skip-Origin": "skip",
       },
     }
   );
@@ -293,4 +296,28 @@ export const getSearch = (
     gameVersion: gameVersion || "",
   };
   return axios.get(url, { params });
+};
+
+export const getFTBModpackData = async (modpackId) => {
+  try {
+    const url = `${FTB_API_URL}/modpack/${modpackId}`;
+    const { data } = await axios.get(url);
+    return data;
+  } catch {
+    return { status: "error" };
+  }
+};
+export const getFTBChangelog = (addonID, fileID) => {
+  const url = `https://api.modpacks.ch/public/modpack/${addonID}/${fileID}/changelog`;
+  return axios.get(url);
+};
+
+export const getFTBMostPlayed = async () => {
+  const url = `${FTB_API_URL}/modpack/popular/plays/1000`;
+  return axios.get(url);
+};
+
+export const getFTBSearch = async (searchText) => {
+  const url = `${FTB_API_URL}/modpack/search/1000?term=${searchText}`;
+  return axios.get(url);
 };

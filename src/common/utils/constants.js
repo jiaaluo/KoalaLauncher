@@ -3,13 +3,15 @@ export const MC_MANIFEST_URL =
 export const MC_RESOURCES_URL = "http://resources.download.minecraft.net";
 export const FABRIC_APIS = "https://meta.fabricmc.net/v2";
 export const LEGACYJAVAFIXER_URL =
-  "https://cdn.crankysupertoon.live/koala/fmllibs/legacyjavafixer-1.0.jar";
+  "cdn.crankysupertoon.live/koala/fmllibs/legacyjavafixer-1.0.jar";
 export const MOJANG_APIS = "https://authserver.mojang.com";
 export const JAVA_MANIFEST_URL =
   "https://cdn.crankysupertoon.live/koala/openjdk8.json";
 export const MAVEN_REPO = "http://central.maven.org/maven2";
 export const MC_LIBRARIES_URL = "https://libraries.minecraft.net";
 export const FORGESVC_URL = "https://addons-ecs.forgesvc.net/api/v2";
+export const FTB_API_URL = "https://api.modpacks.ch/public";
+export const FTB_MODPACK_URL = "https://feed-the-beast.com/modpack";
 export const FORGESVC_CATEGORIES =
   "https://addons-ecs.forgesvc.net/api/v2/category?gameId=432";
 export const NEWS_URL =
@@ -33,5 +35,6 @@ export const MICROSOFT_LIVE_LOGIN_URL = "https://login.live.com";
 export const MICROSOFT_XBOX_LOGIN_URL = "https://user.auth.xboxlive.com";
 export const MICROSOFT_XSTS_AUTH_URL = "https://xsts.auth.xboxlive.com";
 export const MICROSOFT_OAUTH_CLIENT_ID = "b9336bf8-c6bb-4344-aabe-63d0bfa8db2e";
-export const MICROSOFT_OAUTH_REDIRECT_URL = "http://localhost:3000";
+export const MICROSOFT_OAUTH_REDIRECT_URL =
+  "https://login.microsoftonline.com/common/oauth2/nativeclient";
 export const MINECRAFT_SERVICES_URL = "https://api.minecraftservices.com";
