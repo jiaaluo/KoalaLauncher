@@ -34,6 +34,14 @@ const Changelogs = () => {
           <div>
             <ul>
               <li>
+                The Settings Menu has been redone to make it cleaner for the end
+                user.
+              </li>
+              <li>
+                We changed the default font due to licensing reasons. Hopefully
+                it looks nice
+              </li>
+              <li>
                 You can now import Modpack ZIPs by dragging them on top of the
                 launcher.
               </li>
@@ -50,22 +58,27 @@ const Changelogs = () => {
           </SectionTitle>
           <div>
             <ul>
-              <li>Instances should now properly close when being exited.</li>
+              <li>
+                Instances should now properly close when being exited. We know
+                it was annoying
+              </li>
             </ul>
             <ul>
               <li>
-                Fixed duplicate news posts by using the official RSS Endpoint
+                Fixed duplicate news posts by using the official RSS Endpoint.
+                Not like anyone reads the news anyways.
               </li>
             </ul>
             <ul>
               <li>
                 Default memory is now set to 6GB. Most packs will not run with
-                4GB anymore.
+                4GB anymore. Is this really how bad memory management has
+                become.
               </li>
             </ul>
             <ul>
               <li>
-                Alot of work has been done on the backend to clean up the
+                A lot of work has been done on the backend to clean up the
                 codebase to improve stability. Thank you all for being patient
                 with us.
               </li>

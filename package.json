@@ -152,6 +152,8 @@
   },
   "dependencies": {
     "7zip-bin": "^5.0.3",
+    "@fontsource/averia-sans-libre": "^4.1.0",
+    "@fontsource/averia-sans-libre/": "^4.1.0",
     "@loadable/babel-plugin": "^5.13.0",
     "antd": "4.3.5",
     "axios": "https://github.com/KoalaDevs/axios.git#62786f2b6c4c813d4dc0159744bcdce7342e365d",
@@ -164,7 +166,6 @@
     "electron-store": "^6.0.0",
     "electron-updater": "^4.3.4",
     "fast-xml-parser": "^3.17.6",
-    "@fontsource/averia-sans-libre/": "^4.1.0",
     "fs-extra": "^9.0.1",
     "get-stream": "^6.0.0",
     "history": "^4.10.1",

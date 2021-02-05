@@ -3,7 +3,6 @@ import { Button } from "antd";
 import { ipcRenderer } from "electron";
 import creeper from "../../common/assets/creeper.png";
 
-
 export default class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
