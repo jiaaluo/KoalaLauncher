@@ -20,7 +20,7 @@ jobs:
     - name: Set Node Version
       uses: actions/setup-node@v1
       with:
-        node-version: '14.8.0'
+        node-version: '15.6.0'
 
     # Set Python Version
     - name: Set Python Version
