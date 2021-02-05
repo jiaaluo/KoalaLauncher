@@ -257,7 +257,7 @@ const SystemNavbar = () => {
           <div>
             <DevtoolButton />
             <a
-              href="https://koala.crankysupertoon.live/"
+              href="https://koalalauncher.com/"
               rel="noopener noreferrer"
               css={`
                 margin-top: 5px;
@@ -266,8 +266,8 @@ const SystemNavbar = () => {
             >
               <img
                 src={Logo}
-                height="32px"
-                width="32px"
+                height="40px"
+                width="40px"
                 alt="Logo"
                 draggable="false"
                 pointerCursor

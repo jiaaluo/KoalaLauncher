@@ -26,6 +26,7 @@ import makeDir from "make-dir";
 import { parse } from "semver";
 import { generate as generateRandomString } from "randomstring";
 import fxp from "fast-xml-parser";
+import * as ActionTypes from "./actionTypes";
 import {
   // NEWS_URL,
   NEWS_URL_RSS,
@@ -111,7 +112,6 @@ import { UPDATE_MODAL } from "./modals/actionTypes";
 import PromiseQueue from "../../app/desktop/utils/PromiseQueue";
 import fmlLibsMapping from "../../app/desktop/utils/fmllibs";
 import { openModal } from "./modals/actions";
-import * as ActionTypes from "./actionTypes";
 
 export function initManifests() {
   return async (dispatch, getState) => {
@@ -1012,6 +1012,7 @@ export function addToQueue(
   return async (dispatch, getState) => {
     const state = getState();
     const { currentDownload } = state;
+
     dispatch({
       type: ActionTypes.ADD_DOWNLOAD_TO_QUEUE,
       instanceName,

@@ -20,7 +20,7 @@ const AutoUpdatesNotAvailable = () => {
         >
           Please, update KoalaLauncher through your package manager or download
           the new version from our website{" "}
-          <a href="https://koala.crankysupertoon.live">here</a>
+          <a href="https://koalalauncher.com">here</a>
         </div>
       </Container>
     </Modal>
