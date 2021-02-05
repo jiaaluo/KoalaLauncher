@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { memo, useState } from 'react';
-import styled from 'styled-components';
-import ReactHtmlParser from 'react-html-parser';
-import { Select } from 'antd';
-import Modal from '../components/Modal';
-import { getAddonFileChangelog } from '../api';
+import React, { memo, useState } from "react";
+import styled from "styled-components";
+import ReactHtmlParser from "react-html-parser";
+import { Select } from "antd";
+import Modal from "../components/Modal";
+import { getAddonFileChangelog } from "../api";
 
 let latest = {};
 const ModChangelog = ({ modpackId, files }) => {
@@ -12,7 +12,7 @@ const ModChangelog = ({ modpackId, files }) => {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const loadChangelog = async id => {
+  const loadChangelog = async (id) => {
     const myLatest = {};
     latest = myLatest;
     setLoading(true);
@@ -30,13 +30,13 @@ const ModChangelog = ({ modpackId, files }) => {
 
   const getStateText = () => {
     if (!selectedId) {
-      return '';
+      return "";
     }
     if (loading) {
-      return 'Loading';
+      return "Loading";
     }
     if (!changelog) {
-      return 'Missing changelog';
+      return "Missing changelog";
     }
   };
 
@@ -46,7 +46,7 @@ const ModChangelog = ({ modpackId, files }) => {
         height: 500px;
         width: 650px;
       `}
-      title="Changelog"
+      title="Changelogs"
     >
       <div
         css={`
@@ -63,13 +63,13 @@ const ModChangelog = ({ modpackId, files }) => {
             width: 400px;
             margin: 10px;
           `}
-          onChange={v => {
+          onChange={(v) => {
             setSelectedId(v);
             loadChangelog(v);
           }}
           placeholder="Select a version"
         >
-          {files.map(v => (
+          {files.map((v) => (
             <Select.Option key={v.id} value={v.id}>
               {v.displayName}
             </Select.Option>
@@ -84,7 +84,7 @@ const ModChangelog = ({ modpackId, files }) => {
                   margin-bottom: 40px;
                 `}
               >
-                {files.find(v => v.id === selectedId)?.displayName}
+                {files.find((v) => v.id === selectedId)?.displayName}
               </div>
               {ReactHtmlParser(changelog)}
             </>
@@ -110,7 +110,7 @@ const Changelog = styled.div`
   transform-style: preserve-3d;
   height: 100%;
   width: 100%;
-  background: ${props => props.theme.palette.grey[900]};
+  background: ${(props) => props.theme.palette.grey[900]};
   word-break: break-all;
   overflow-x: hidden;
   overflow-y: scroll;

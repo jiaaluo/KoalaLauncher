@@ -1,25 +1,25 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
-import styled, { keyframes } from 'styled-components';
-import memoize from 'memoize-one';
-import path from 'path';
-import { promises as fs, watch } from 'fs';
-import makeDir from 'make-dir';
-import { ipcRenderer } from 'electron';
-import { FixedSizeList as List, areEqual } from 'react-window';
-import { Checkbox, Button, Switch } from 'antd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolder, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { faTwitch } from '@fortawesome/free-brands-svg-icons';
-import fse from 'fs-extra';
-import { _getInstancesPath } from '../../utils/selectors';
-import DragnDropEffect from '../../../ui/DragnDropEffect';
+import React, { memo, useState, useEffect, useCallback } from "react";
+import styled, { keyframes } from "styled-components";
+import memoize from "memoize-one";
+import path from "path";
+import { promises as fs, watch } from "fs";
+import makeDir from "make-dir";
+import { ipcRenderer } from "electron";
+import { FixedSizeList as List, areEqual } from "react-window";
+import { Checkbox, Button, Switch } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolder, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { faTwitch } from "@fortawesome/free-brands-svg-icons";
+import fse from "fs-extra";
+import { _getInstancesPath } from "../../utils/selectors";
+import DragnDropEffect from "../../../ui/DragnDropEffect";
 
 const Header = styled.div`
   height: 40px;
   width: 100%;
-  background: ${props => props.theme.palette.grey[700]};
+  background: ${(props) => props.theme.palette.grey[700]};
   display: flex;
   align-items: center;
   padding: 0 10px;
@@ -31,7 +31,7 @@ const TrashIcon = styled(({ selectedMods, ...props }) => (
   <FontAwesomeIcon {...props} />
 ))`
   margin: 0 10px;
-  ${props =>
+  ${(props) =>
     props.selectedMods > 0 &&
     `&:hover {
   cursor: pointer;
@@ -43,20 +43,20 @@ const TrashIcon = styled(({ selectedMods, ...props }) => (
 }`}
 `;
 
-const RowContainer = styled.div.attrs(props => ({
-  style: props.override
+const RowContainer = styled.div.attrs((props) => ({
+  style: props.override,
 }))`
   width: 100%;
-  background: ${props =>
+  background: ${(props) =>
     props.disabled || props.selected
-      ? 'transparent'
+      ? "transparent"
       : props.theme.palette.grey[800]};
 
-  ${props =>
+  ${(props) =>
     props.disabled &&
     !props.selected &&
     `box-shadow: inset 0 0 0 3px ${props.theme.palette.colors.red};`}
-  ${props =>
+  ${(props) =>
     props.selected &&
     `box-shadow: inset 0 0 0 3px ${props.theme.palette.primary.main};`}
       
@@ -87,7 +87,7 @@ const RowContainer = styled.div.attrs(props => ({
       margin-right: 10px;
     }
     &:hover {
-      color: ${props => props.theme.palette.text.primary};
+      color: ${(props) => props.theme.palette.text.primary};
     }
   }
   .rightPartContent {
@@ -107,7 +107,7 @@ const RowContainerBackground = styled.div`
   left: 0;
   z-index: -1;
 
-  ${props =>
+  ${(props) =>
     props.selected &&
     ` background: repeating-linear-gradient(
   45deg,
@@ -117,7 +117,7 @@ const RowContainerBackground = styled.div`
   ${props.theme.palette.primary.dark} 20px
   );`};
 
-  ${props =>
+  ${(props) =>
     props.disabled &&
     !props.selected &&
     `background: repeating-linear-gradient(
@@ -129,7 +129,7 @@ const RowContainerBackground = styled.div`
   );`};
   filter: brightness(60%);
   transition: opacity 0.1s ease-in-out;
-  opacity: ${props => (props.disabled || props.selected ? 1 : 0)};
+  opacity: ${(props) => (props.disabled || props.selected ? 1 : 0)};
 `;
 
 export const keyFrameMoveUpDown = keyframes`
@@ -151,7 +151,7 @@ const OpenFolderButton = styled(FontAwesomeIcon)`
     path {
       cursor: pointer;
       transition: color 0.1s ease-in-out;
-      color: ${props => props.theme.palette.primary.main};
+      color: ${(props) => props.theme.palette.primary.main};
     }
   }
 `;
@@ -159,11 +159,11 @@ const OpenFolderButton = styled(FontAwesomeIcon)`
 let watcher;
 
 const toggleResourcePackDisabled = async (c, instancePath, item) => {
-  const destFileName = c ? item.replace('.disabled', '') : `${item}.disabled`;
+  const destFileName = c ? item.replace(".disabled", "") : `${item}.disabled`;
 
   await fse.move(
-    path.join(instancePath, 'resourcepacks', item),
-    path.join(instancePath, 'resourcepacks', destFileName)
+    path.join(instancePath, "resourcepacks", item),
+    path.join(instancePath, "resourcepacks", destFileName)
   );
 };
 
@@ -173,7 +173,7 @@ const createItemData = memoize(
     instanceName,
     instancePath,
     selectedItems,
-    setSelectedItems
+    setSelectedItems,
   })
 );
 const NotItemsAvailable = styled.div`
@@ -184,14 +184,14 @@ const NotItemsAvailable = styled.div`
   justify-content: center;
 `;
 
-const ResourcePacks = ({ instanceName }) => {
+const ResourePacks = ({ instanceName }) => {
   const instancesPath = useSelector(_getInstancesPath);
   const [resourcePacks, setResourcePacks] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const resourcePacksPath = path.join(
     instancesPath,
     instanceName,
-    'resourcepacks'
+    "resourcepacks"
   );
   const [loading, setLoading] = useState(false);
 
@@ -205,11 +205,11 @@ const ResourcePacks = ({ instanceName }) => {
     ) => {
       if (item) {
         await fse.remove(
-          path.join(instancesPathh, instanceNamee, 'resourcepacks', item)
+          path.join(instancesPathh, instanceNamee, "resourcepacks", item)
         );
       } else if (selectedItemss.length > 0) {
         await Promise.all(
-          selectedItemss.map(async file => {
+          selectedItemss.map(async (file) => {
             await fse.remove(path.join(rscPacksPath, file));
           })
         );
@@ -225,7 +225,7 @@ const ResourcePacks = ({ instanceName }) => {
       instancePath,
       selectedItems: slcItems,
       setSelectedItems: setSlcItems,
-      resourcePacksPath: rscPacksPath
+      resourcePacksPath: rscPacksPath,
     } = data;
     const item = items[index];
     return (
@@ -235,34 +235,34 @@ const ResourcePacks = ({ instanceName }) => {
           ...style,
           top: style.top + 15,
           height: style.height - 15,
-          position: 'absolute',
-          width: '97%',
-          margin: '15px 0',
-          transition: 'height 0.2s ease-in-out'
+          position: "absolute",
+          width: "97%",
+          margin: "15px 0",
+          transition: "height 0.2s ease-in-out",
         }}
         selected={slcItems.includes(item)}
-        disabled={path.extname(item) === '.disabled'}
+        disabled={path.extname(item) === ".disabled"}
       >
         <div className="leftPartContent">
           <Checkbox
             checked={slcItems.includes(item)}
-            onChange={e => {
+            onChange={(e) => {
               if (e.target.checked) {
                 setSlcItems([...slcItems, item]);
               } else {
-                setSlcItems(slcItems.filter(v => v !== item));
+                setSlcItems(slcItems.filter((v) => v !== item));
               }
             }}
           />
           {item.fileID && <FontAwesomeIcon icon={faTwitch} />}
         </div>
-        <div className="rowCenterContent">{item.replace('.disabled', '')}</div>
+        <div className="rowCenterContent">{item.replace(".disabled", "")}</div>
         <div className="rightPartContent">
           <Switch
             size="small"
-            checked={path.extname(item) !== '.disabled'}
+            checked={path.extname(item) !== ".disabled"}
             disabled={loading}
-            onChange={async c => {
+            onChange={async (c) => {
               setLoading(true);
               await toggleResourcePackDisabled(c, instancePath, item);
               setTimeout(() => setLoading(false), 500);
@@ -278,28 +278,28 @@ const ResourcePacks = ({ instanceName }) => {
         </div>
         <RowContainerBackground
           selected={slcItems.includes(item)}
-          disabled={path.extname(item) === '.disabled'}
+          disabled={path.extname(item) === ".disabled"}
         />
       </RowContainer>
     );
   }, areEqual);
 
   const openFolderDialog = async () => {
-    const dialog = await ipcRenderer.invoke('openFileDialog', [
-      { name: 'Resource Pack', extensions: ['zip'] },
-      { name: 'All', extensions: ['*'] }
+    const dialog = await ipcRenderer.invoke("openFileDialog", [
+      { name: "Resource Pack", extensions: ["zip"] },
+      { name: "All", extensions: ["*"] },
     ]);
     if (dialog.canceled) return;
     const fileName = path.basename(dialog.filePaths[0]);
     await fse.copy(
       dialog.filePaths[0],
-      path.join(instancesPath, instanceName, 'resourcepacks', fileName)
+      path.join(instancesPath, instanceName, "resourcepacks", fileName)
     );
   };
 
-  const openFolder = async p => {
+  const openFolder = async (p) => {
     await makeDir(p);
-    ipcRenderer.invoke('openFolder', p);
+    ipcRenderer.invoke("openFolder", p);
   };
 
   const startListener = async () => {
@@ -310,8 +310,8 @@ const ResourcePacks = ({ instanceName }) => {
       if (filename) {
         const resourcePackFiles = await fs.readdir(resourcePacksPath);
         setResourcePacks(resourcePackFiles);
-        setSelectedItems(prev => {
-          return prev.filter(v => resourcePackFiles.includes(v));
+        setSelectedItems((prev) => {
+          return prev.filter((v) => resourcePackFiles.includes(v));
         });
       }
     });
@@ -378,10 +378,10 @@ const ResourcePacks = ({ instanceName }) => {
           <OpenFolderButton
             onClick={async () => {
               await makeDir(
-                path.join(instancesPath, instanceName, 'resourcepacks')
+                path.join(instancesPath, instanceName, "resourcepacks")
               );
               openFolder(
-                path.join(instancesPath, instanceName, 'resourcepacks')
+                path.join(instancesPath, instanceName, "resourcepacks")
               );
             }}
             icon={faFolder}
@@ -396,7 +396,7 @@ const ResourcePacks = ({ instanceName }) => {
             openFolderDialog();
           }}
         >
-          Add ResourcePack
+          Add Resource Packs
         </Button>
       </Header>
 
@@ -406,7 +406,9 @@ const ResourcePacks = ({ instanceName }) => {
         fileList={resourcePacks}
       >
         {resourcePacks.length === 0 && (
-          <NotItemsAvailable>No ResourcePacks Available</NotItemsAvailable>
+          <NotItemsAvailable>
+            <h2>No Resoure Packs Available</h2>
+          </NotItemsAvailable>
         )}
         <AutoSizer>
           {({ height, width }) => (
@@ -426,4 +428,4 @@ const ResourcePacks = ({ instanceName }) => {
   );
 };
 
-export default memo(ResourcePacks);
+export default memo(ResourePacks);

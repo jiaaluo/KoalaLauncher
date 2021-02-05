@@ -1,9 +1,9 @@
-import { combineReducers } from 'redux';
-import * as ActionTypes from './actionTypes';
+import { combineReducers } from "redux";
+import * as ActionTypes from "./actionTypes";
 
 function accounts(state = [], action) {
   const index = state.findIndex(
-    account => account && account.selectedProfile.id === action.id
+    (account) => account && account.selectedProfile.id === action.id
   );
   switch (action.type) {
     case ActionTypes.UPDATE_ACCOUNT:
@@ -12,7 +12,7 @@ function accounts(state = [], action) {
         : [...state, action.account];
     case ActionTypes.REMOVE_ACCOUNT:
       return state.filter(
-        account => account && account.selectedProfile.id !== action.id
+        (account) => account && account.selectedProfile.id !== action.id
       );
     default:
       return state;
@@ -111,5 +111,5 @@ export default combineReducers({
   curseforgeCategories,
   clientToken,
   isNewUser,
-  lastUpdateVersion
+  lastUpdateVersion,
 });

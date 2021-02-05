@@ -1,10 +1,10 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   html {
     height: 100%;
   }
-
+  
   body {
     height: 100%;   
     overflow: hidden;
@@ -14,7 +14,7 @@ export default createGlobalStyle`
   }
   
   #root {
-    font-family: Inter, Roboto, Helvetica, sans-serif;
+    font-family: Averia Sans Libre, Roboto, Helvetica, sans-serif;
     font-size: 14px;
     height: 100%;
     overflow: hidden;
@@ -67,12 +67,12 @@ export default createGlobalStyle`
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: ${props => props.theme.palette.grey[200]};
+    background-color: ${(props) => props.theme.palette.grey[200]};
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-track {
-    background-color: ${props => props.theme.palette.grey[900]};
+    background-color: ${(props) => props.theme.palette.grey[900]};
     border-radius: 1px;
   }
 
@@ -85,11 +85,11 @@ export default createGlobalStyle`
   }
 
   .react-contextmenu {
-    background: ${props => props.theme.palette.grey[700]};
+    background: ${(props) => props.theme.palette.grey[700]};
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 4px;
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
     font-size: 16px;
     min-width: 180px;
     outline: none;
@@ -111,7 +111,7 @@ export default createGlobalStyle`
   
   .react-contextmenu-item {
     background: 0 0;
-    color: ${props => props.theme.palette.text.primary};
+    color: ${(props) => props.theme.palette.text.primary};
     cursor: pointer;
     font-weight: 400;
     line-height: 1.5;
@@ -119,7 +119,7 @@ export default createGlobalStyle`
     text-align: left;
     white-space: nowrap;
     span {
-      color: ${props => props.theme.palette.text.primary};
+      color: ${(props) => props.theme.palette.text.primary};
       width: 25px;
     }
   }
@@ -141,11 +141,11 @@ export default createGlobalStyle`
   .react-contextmenu-item.react-contextmenu-item--disabled,
   .react-contextmenu-item.react-contextmenu-item--disabled:hover {
     background-color: transparent;
-    color: ${props => props.theme.palette.text.disabled};
+    color: ${(props) => props.theme.palette.text.disabled};
   }
   
   .react-contextmenu-item--divider {
-    border-bottom: 1px solid ${props => props.theme.palette.grey[600]};
+    border-bottom: 1px solid ${(props) => props.theme.palette.grey[600]};
     cursor: inherit;
     margin-bottom: 3px;
     padding: 2px 0;

@@ -1,13 +1,13 @@
-const { promisify } = require('util');
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const zlib = require('zlib');
-const makeDir = require('make-dir');
-const { pipeline } = require('stream');
-const fse = require('fs-extra');
-const electronBuilder = require('electron-builder');
-const dotenv = require('dotenv');
+const { promisify } = require("util");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
+const zlib = require("zlib");
+const makeDir = require("make-dir");
+const { pipeline } = require("stream");
+const fse = require("fs-extra");
+const electronBuilder = require("electron-builder");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -16,10 +16,10 @@ const stat = promisify(fs.stat);
 
 const type = process.argv[2];
 
-const getFiles = async dir => {
+const getFiles = async (dir) => {
   const subdirs = await readdir(dir);
   const files = await Promise.all(
-    subdirs.map(async subdir => {
+    subdirs.map(async (subdir) => {
       const res = path.resolve(dir, subdir);
       return (await stat(res)).isDirectory() ? getFiles(res) : res;
     })
@@ -27,19 +27,19 @@ const getFiles = async dir => {
   return files.reduce((a, f) => a.concat(f), []);
 };
 
-const getSha1 = async filePath => {
+const getSha1 = async (filePath) => {
   // Calculate sha1 on original file
-  const algorithm = 'sha1';
+  const algorithm = "sha1";
   const shasum = crypto.createHash(algorithm);
 
   const s = fs.ReadStream(filePath);
-  s.on('data', data => {
+  s.on("data", (data) => {
     shasum.update(data);
   });
 
-  const hash = await new Promise(resolve => {
-    s.on('end', () => {
-      resolve(shasum.digest('hex'));
+  const hash = await new Promise((resolve) => {
+    s.on("end", () => {
+      resolve(shasum.digest("hex"));
     });
   });
   return hash;
@@ -47,33 +47,33 @@ const getSha1 = async filePath => {
 
 const winReleaseFolder = path.resolve(
   __dirname,
-  '../',
-  './release',
+  "../",
+  "./release",
   `win-unpacked`
 );
-const deployFolder = path.resolve(__dirname, '../', 'deploy');
+const deployFolder = path.resolve(__dirname, "../", "deploy");
 
 const createDeployFiles = async () => {
   const files = await getFiles(winReleaseFolder);
   const mappedFiles = await Promise.all(
-    files.map(async v => {
+    files.map(async (v) => {
       // Compress
       const hash = await getSha1(v);
 
       const gzip = zlib.createGzip();
       const source = fs.createReadStream(v);
 
-      const isAppAsar = path.basename(v) === 'app.asar';
+      const isAppAsar = path.basename(v) === "app.asar";
 
       const destinationPath = path.join(
         deployFolder,
-        `win_${path.relative(winReleaseFolder, v).replace(path.sep, '-')}.gz`
+        `win_${path.relative(winReleaseFolder, v).replace(path.sep, "-")}.gz`
       );
       await makeDir(path.dirname(destinationPath));
       const destination = fs.createWriteStream(destinationPath);
 
       await new Promise((resolve, reject) => {
-        pipeline(source, gzip, destination, err => {
+        pipeline(source, gzip, destination, (err) => {
           if (err) {
             reject();
           }
@@ -88,7 +88,7 @@ const createDeployFiles = async () => {
         sha1: hash,
         compressedFile: path.basename(destinationPath),
         compressedSha1,
-        ...(isAppAsar && { isAppAsar: true })
+        ...(isAppAsar && { isAppAsar: true }),
       };
     })
   );
@@ -102,66 +102,75 @@ const createDeployFiles = async () => {
 const commonConfig = {
   config: {
     publish: {
-      owner: 'gorilla-devs',
-      repo: 'GDLauncher',
-      provider: 'github',
-      private: false
+      owner: "KoalaDevs",
+      repo: "KoalaLauncher",
+      provider: "github",
+      private: false,
     },
     generateUpdatesFilesForAllChannels: true,
-    productName: 'GDLauncher',
-    appId: 'org.gorilladevs.GDLauncher',
+    productName: "KoalaLauncher",
+    appId: "com.crankysupertoon.KoalaLauncher",
     files: [
-      '!node_modules/**/*',
-      'node_modules/7zip-bin/linux/x64/7za',
-      'node_modules/7zip-bin/mac/7za',
-      'node_modules/7zip-bin/win/x64/7za.exe',
-      'build/**/*',
-      'package.json',
-      'public/icon.png'
+      "!node_modules/**/*",
+      "node_modules/7zip-bin/linux/x64/7za",
+      "node_modules/7zip-bin/mac/7za",
+      "node_modules/7zip-bin/win/x64/7za.exe",
+      "build/**/*",
+      "package.json",
+      "public/icon.png",
     ],
     extraFiles:
-      process.platform === 'win32'
+      // eslint-disable-next-line no-nested-ternary
+      process.platform === "win32"
         ? [
             {
-              from: 'vcredist/',
-              to: './',
-              filter: '**/*'
-            }
+              from: "vcredist/",
+              to: "./",
+              filter: "**/*",
+            },
+          ]
+        : process.platform === "linux"
+        ? [
+            {
+              from: "public/icon.png",
+              to: "./",
+              filter: "**/*",
+            },
           ]
         : [],
     asar: {
-      smartUnpack: false
+      smartUnpack: false,
     },
     dmg: {
       contents: [
         {
           x: 130,
-          y: 220
+          y: 220,
         },
         {
           x: 410,
           y: 220,
-          type: 'link',
-          path: '/Applications'
-        }
-      ]
+          type: "link",
+          path: "/Applications",
+        },
+      ],
     },
     nsisWeb: {
       oneClick: true,
-      installerIcon: './public/icon.ico',
-      uninstallerIcon: './public/icon.ico',
-      installerHeader: './public/installerHeader.bmp',
-      installerSidebar: './public/installerSidebar.bmp',
-      installerHeaderIcon: './public/icon.ico',
+      installerIcon: "./public/icon.ico",
+      uninstallerIcon: "./public/icon.ico",
+      installerHeader: "./public/installerHeader.bmp",
+      installerSidebar: "./public/installerSidebar.bmp",
+      installerHeaderIcon: "./public/icon.ico",
       deleteAppDataOnUninstall: true,
       allowToChangeInstallationDirectory: false,
       perMachine: false,
       differentialPackage: true,
-      include: './public/installer.nsh'
+      include: "./public/installer.nsh",
     },
     mac: {
-      entitlements: './entitlements.mac.plist',
-      entitlementsInherit: './entitlements.mac.plist'
+      entitlements: "./entitlements.mac.plist",
+      entitlementsInherit: "./entitlements.mac.plist",
     },
     /* eslint-disable */
     artifactName: `${'${productName}'}-${'${os}'}-${
@@ -169,42 +178,41 @@ const commonConfig = {
     }.${'${ext}'}`,
     /* eslint-enable */
     linux: {
-      category: 'Game'
+      category: "Game",
     },
     directories: {
-      buildResources: 'public',
-      output: 'release'
+      buildResources: "public",
+      output: "release",
     },
     protocols: [
       {
-        name: 'gdlauncher',
-        role: 'Viewer',
-        schemes: ['gdlauncher']
-      }
-    ]
+        name: "koalalauncher",
+        role: "Viewer",
+        schemes: ["koalalauncher"],
+      },
+    ],
   },
-  ...((!process.env.RELEASE_TESTING || process.platform === 'linux') && {
+  ...((!process.env.RELEASE_TESTING || process.platform === "linux") && {
     linux:
-      type === 'setup'
-        ? ['appimage:x64', 'zip:x64', 'deb:x64', 'rpm:x64']
-        : ['snap:x64']
+      type === "setup" ? ["appimage:x64", "zip:x64", "deb:x64", "rpm:x64"] : [],
   }),
-  ...((!process.env.RELEASE_TESTING || process.platform === 'win32') && {
-    win: [type === 'setup' ? 'nsis-web:x64' : 'zip:x64']
+  ...((!process.env.RELEASE_TESTING || process.platform === "win32") && {
+    win: type === "setup" ? ["nsis-web:x64"] : ["zip:x64"],
   }),
-  ...((!process.env.RELEASE_TESTING || process.platform === 'darwin') && {
-    mac: type === 'setup' ? ['dmg:x64'] : []
-  })
+
+  ...((!process.env.RELEASE_TESTING || process.platform === "darwin") && {
+    mac: type === "setup" ? ["dmg:x64", "pkg:x64"] : [],
+  }),
 };
 
 const main = async () => {
-  const releasesFolder = path.resolve(__dirname, '../', './release');
+  const releasesFolder = path.resolve(__dirname, "../", "./release");
   await fse.remove(releasesFolder);
   await makeDir(deployFolder);
   await electronBuilder.build(commonConfig);
   if (
-    type === 'portable' &&
-    (process.platform === 'win32' || !process.env.RELEASE_TESTING)
+    type === "portable" &&
+    (process.platform === "win32" || !process.env.RELEASE_TESTING)
   ) {
     await createDeployFiles();
   }
@@ -214,7 +222,7 @@ const main = async () => {
   const { productName } = commonConfig.config;
 
   const { version } = await fse.readJson(
-    path.resolve(__dirname, '../', 'package.json')
+    path.resolve(__dirname, "../", "package.json")
   );
 
   const nsisWeb7z = `${productName}-${version}-${process.arch}.nsis.7z`;
@@ -224,42 +232,42 @@ const main = async () => {
       darwin: [
         `${productName}-mac-${type}.dmg`,
         `${productName}-mac-${type}.dmg.blockmap`,
-        'latest-mac.yml'
+        "latest-mac.yml",
       ],
       win32: [
-        path.join('nsis-web', `${productName}-win-${type}.exe`),
-        path.join('nsis-web', nsisWeb7z),
-        path.join('nsis-web', 'latest.yml')
+        path.join("nsis-web", `${productName}-win-${type}.exe`),
+        path.join("nsis-web", nsisWeb7z),
+        path.join("nsis-web", "latest.yml"),
       ],
       linux: [
         `${productName}-linux-${type}.zip`,
         `${productName}-linux-${type}.AppImage`,
         `${productName}-linux-${type}.deb`,
         `${productName}-linux-${type}.rpm`,
-        'latest-linux.yml'
-      ]
+        "latest-linux.yml",
+      ],
     },
     portable: {
       darwin: [],
       win32: [`${productName}-win-${type}.zip`],
-      linux: [`${productName}-linux-${type}.snap`]
-    }
+      linux: [],
+    },
   };
 
   if (!process.env.RELEASE_TESTING) {
     const filesToMove = allFiles[type];
 
     await Promise.all(
-      Object.values(filesToMove).map(async target => {
+      Object.values(filesToMove).map(async (target) => {
         return Promise.all(
-          target.map(async file => {
+          target.map(async (file) => {
             const stats = await fs.promises.stat(
               path.join(releasesFolder, file)
             );
             if (stats.isFile()) {
               await fse.move(
                 path.join(releasesFolder, file),
-                path.join(deployFolder, file.replace('nsis-web', ''))
+                path.join(deployFolder, file.replace("nsis-web", ""))
               );
             }
           })
@@ -270,12 +278,12 @@ const main = async () => {
     const filesToMove = allFiles[type][process.platform];
 
     await Promise.all(
-      filesToMove.map(async file => {
+      filesToMove.map(async (file) => {
         const stats = await fs.promises.stat(path.join(releasesFolder, file));
         if (stats.isFile()) {
           await fse.move(
             path.join(releasesFolder, file),
-            path.join(deployFolder, file.replace('nsis-web', ''))
+            path.join(deployFolder, file.replace("nsis-web", ""))
           );
         }
       })
@@ -285,7 +293,7 @@ const main = async () => {
   await fse.remove(releasesFolder);
 };
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });

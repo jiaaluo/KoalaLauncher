@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-const withScroll = Component => {
-  return props => {
+const withScroll = (Component) => {
+  return (props) => {
     return (
       <div
         css={`

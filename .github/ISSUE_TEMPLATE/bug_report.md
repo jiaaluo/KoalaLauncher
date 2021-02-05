@@ -23,9 +23,11 @@ Some ideas of how you would solve this issue, if possible
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Operating System:**
+**System Info:**
  - OS: [e.g. Windows]
- - Version [e.g. 10]
+ - Koala Version [e.g. 1.0.0]
+ - CPU: [e.g. Ryzen 5 2600X]
+ - Video Card: [e.g. Gefore 2080 Ti]
 
 **Additional context**
 Add any other context about the problem here.

@@ -1,13 +1,13 @@
-import path from 'path';
-import fse from 'fs-extra';
-import pMap from 'p-map';
-import { getDirectories } from '.';
+import path from "path";
+import fse from "fs-extra";
+import pMap from "p-map";
+import { getDirectories } from ".";
 
-const getInstances = async instancesPath => {
-  const mapFolderToInstance = async instance => {
+const getInstances = async (instancesPath) => {
+  const mapFolderToInstance = async (instance) => {
     try {
       const configPath = path.join(
-        path.join(instancesPath, instance, 'config.json')
+        path.join(instancesPath, instance, "config.json")
       );
       const config = await fse.readJSON(configPath);
       if (!config.modloader) {
@@ -16,7 +16,7 @@ const getInstances = async instancesPath => {
 
       return {
         ...config,
-        name: instance
+        name: instance,
       };
     } catch (err) {
       console.error(err);
@@ -25,7 +25,7 @@ const getInstances = async instancesPath => {
   };
   const folders = await getDirectories(instancesPath);
   const instances = await pMap(folders, mapFolderToInstance, {
-    concurrency: 5
+    concurrency: 5,
   });
   const hashMap = {};
   // eslint-disable-next-line

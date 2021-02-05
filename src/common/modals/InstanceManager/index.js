@@ -74,6 +74,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  position: center;
 `;
 
 const Content = styled.div`
@@ -102,8 +103,8 @@ const InstanceBackground = styled.div`
   justify-content: center;
   align-items: center;
   width: 130px;
-  height: 100px;
-  border-radius: 10%;
+  height: 130px;
+  border-radius: 36px;
   margin-bottom: 20px;
   margin-top: 10px;
   background: ${props =>
@@ -111,7 +112,7 @@ const InstanceBackground = styled.div`
       ? `url(${props.imagePath}) center no-repeat`
       : `url(${instanceDefaultBackground}) center no-repeat`};
   background-size: 180px;
-  transition: opacity 0.2s ease;
+  transition: opacity 500ms ease;
   &:hover svg {
     opacity: 1;
     z-index: 2;
@@ -146,7 +147,6 @@ const menuEntries = {
   modpack: { name: 'Modpack', component: Modpack },
   notes: { name: 'Notes', component: Notes },
   resourcePacks: { name: 'Resource Packs', component: ResourcePacks },
-  // resourcePacks: { name: "Resource Packs", component: Overview },
   // worlds: { name: "Worlds", component: Overview },
   screenshots: { name: 'Screenshots', component: Screenshots }
   // settings: { name: "Settings", component: Overview },
@@ -237,13 +237,14 @@ const InstanceManager = ({ instanceName }) => {
           <SideMenu>
             <InstanceBackground onClick={openFileDialog} imagePath={background}>
               <Overlay />
-              <p>Change Icon</p>
+              <p>Edit Icon</p>
               {background && (
                 <FontAwesomeIcon
                   icon={faTimesCircle}
                   css={`
                     cursor: pointer;
-                    font-size: 20px;
+                    margin-bottom: 20px;
+                    font-size: 36px;
                   `}
                   onClick={e => {
                     e.stopPropagation();

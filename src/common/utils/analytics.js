@@ -1,7 +1,7 @@
-import { version } from '../../../package.json';
+import { version } from "../../../package.json";
 
 function queue(...args) {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     return window.ga ? window.ga(...args) : null;
   }
   return null;
@@ -9,26 +9,26 @@ function queue(...args) {
 
 class GAnalytics {
   constructor() {
-    this.curPage = 'N/A';
+    this.curPage = "N/A";
     this.userId = null;
     this.setProperties({
-      appVersion: version
+      appVersion: version,
     });
   }
 
   trackPage(page) {
     this.curPage = page;
-    this.setProperties({ '&dl': page });
-    queue('send', {
-      hitType: 'pageview',
-      page
+    this.setProperties({ "&dl": page });
+    queue("send", {
+      hitType: "pageview",
+      page,
     });
   }
 
   idle(page) {
     this.curPage = page;
     this.setProperties({ page });
-    queue('send', 'event', 'idleForFiveMinutes', page);
+    queue("send", "event", "idleForFiveMinutes", page);
   }
 
   /* eslint-disable */

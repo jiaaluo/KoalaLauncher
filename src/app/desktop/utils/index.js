@@ -1,96 +1,98 @@
-import { promises as fs } from 'fs';
-import originalFs from 'original-fs';
-import fse from 'fs-extra';
-import { extractFull } from 'node-7z';
-import jimp from 'jimp/es';
-import makeDir from 'make-dir';
-import { promisify } from 'util';
-import { ipcRenderer } from 'electron';
-import path from 'path';
-import crypto from 'crypto';
-import { exec, spawn } from 'child_process';
+import { promises as fs } from "fs";
+import originalFs from "original-fs";
+import fse from "fs-extra";
+import { extractFull } from "node-7z";
+import jimp from "jimp/es";
+import makeDir from "make-dir";
+import { promisify } from "util";
+import { ipcRenderer } from "electron";
+import path from "path";
+import crypto from "crypto";
+import { exec, spawn } from "child_process";
+import gt from "semver/functions/gt";
+import coerce from "semver/functions/coerce";
 import {
   MC_LIBRARIES_URL,
   FABRIC,
-  FORGE
-} from '../../../common/utils/constants';
+  FORGE,
+} from "../../../common/utils/constants";
 
 import {
   removeDuplicates,
-  sortByForgeVersionDesc
-} from '../../../common/utils';
-import { getAddonFile, mcGetPlayerSkin } from '../../../common/api';
-import { downloadFile } from './downloader';
+  sortByForgeVersionDesc,
+} from "../../../common/utils";
+import { getAddonFile, mcGetPlayerSkin } from "../../../common/api";
+import { downloadFile } from "./downloader";
 
-export const isDirectory = source =>
-  fs.lstat(source).then(r => r.isDirectory());
+export const isDirectory = (source) =>
+  fs.lstat(source).then((r) => r.isDirectory());
 
-export const getDirectories = async source => {
+export const getDirectories = async (source) => {
   const dirs = await fs.readdir(source);
   return Promise.all(
     dirs
-      .map(name => path.join(source, name))
+      .map((name) => path.join(source, name))
       .filter(isDirectory)
-      .map(dir => path.basename(dir))
+      .map((dir) => path.basename(dir))
   );
 };
 
 export const mavenToArray = (s, nativeString, forceExt) => {
-  const pathSplit = s.split(':');
+  const pathSplit = s.split(":");
   const fileName = pathSplit[3]
     ? `${pathSplit[2]}-${pathSplit[3]}`
     : pathSplit[2];
-  const finalFileName = fileName.includes('@')
-    ? fileName.replace('@', '.')
-    : `${fileName}${nativeString || ''}${forceExt || '.jar'}`;
+  const finalFileName = fileName.includes("@")
+    ? fileName.replace("@", ".")
+    : `${fileName}${nativeString || ""}${forceExt || ".jar"}`;
   const initPath = pathSplit[0]
-    .split('.')
+    .split(".")
     .concat(pathSplit[1])
-    .concat(pathSplit[2].split('@')[0])
+    .concat(pathSplit[2].split("@")[0])
     .concat(`${pathSplit[1]}-${finalFileName}`);
   return initPath;
 };
 
-export const convertOSToMCFormat = ElectronFormat => {
+export const convertOSToMCFormat = (ElectronFormat) => {
   switch (ElectronFormat) {
-    case 'win32':
-      return 'windows';
-    case 'darwin':
-      return 'osx';
-    case 'linux':
-      return 'linux';
+    case "win32":
+      return "windows";
+    case "darwin":
+      return "osx";
+    case "linux":
+      return "linux";
     default:
       return false;
   }
 };
 
-export const convertOSToJavaFormat = ElectronFormat => {
+export const convertOSToJavaFormat = (ElectronFormat) => {
   switch (ElectronFormat) {
-    case 'win32':
-      return 'windows';
-    case 'darwin':
-      return 'mac';
-    case 'linux':
-      return 'linux';
+    case "win32":
+      return "windows";
+    case "darwin":
+      return "mac";
+    case "linux":
+      return "linux";
     default:
       return false;
   }
 };
 
-export const skipLibrary = lib => {
+export const skipLibrary = (lib) => {
   let skip = false;
   if (lib.rules) {
     skip = true;
     lib.rules.forEach(({ action, os, features }) => {
       if (features) return true;
       if (
-        action === 'allow' &&
+        action === "allow" &&
         ((os && os.name === convertOSToMCFormat(process.platform)) || !os)
       ) {
         skip = false;
       }
       if (
-        action === 'disallow' &&
+        action === "disallow" &&
         ((os && os.name === convertOSToMCFormat(process.platform)) || !os)
       ) {
         skip = true;
@@ -103,32 +105,32 @@ export const skipLibrary = lib => {
 export const librariesMapper = (libraries, librariesPath) => {
   return removeDuplicates(
     libraries
-      .filter(v => !skipLibrary(v))
+      .filter((v) => !skipLibrary(v))
       .reduce((acc, lib) => {
         const tempArr = [];
         // Normal libs
         if (lib.downloads && lib.downloads.artifact) {
           let { url } = lib.downloads.artifact;
           // Handle special case for forge universal where the url is "".
-          if (lib.downloads.artifact.url === '') {
+          if (lib.downloads.artifact.url === "") {
             url = `https://files.minecraftforge.net/maven/${mavenToArray(
               lib.name
-            ).join('/')}`;
+            ).join("/")}`;
           }
           tempArr.push({
             url,
             path: path.join(librariesPath, lib.downloads.artifact.path),
-            sha1: lib.downloads.artifact.sha1
+            sha1: lib.downloads.artifact.sha1,
           });
         }
 
         const native = (
           (lib?.natives &&
             lib?.natives[convertOSToMCFormat(process.platform)]) ||
-          ''
+          ""
         ).replace(
-          '${arch}', // eslint-disable-line no-template-curly-in-string
-          '64'
+          "${arch}", // eslint-disable-line no-template-curly-in-string
+          "64"
         );
 
         // Vanilla native libs
@@ -140,7 +142,7 @@ export const librariesMapper = (libraries, librariesPath) => {
               lib.downloads.classifiers[native].path
             ),
             sha1: lib.downloads.classifiers[native].sha1,
-            natives: true
+            natives: true,
           });
         }
         if (tempArr.length === 0) {
@@ -148,14 +150,14 @@ export const librariesMapper = (libraries, librariesPath) => {
             url: `${lib.url || `${MC_LIBRARIES_URL}/`}${mavenToArray(
               lib.name,
               native && `-${native}`
-            ).join('/')}`,
+            ).join("/")}`,
             path: path.join(librariesPath, ...mavenToArray(lib.name, native)),
-            ...(native && { natives: true })
+            ...(native && { natives: true }),
           });
         }
         return acc.concat(tempArr);
       }, []),
-    'url'
+    "url"
   );
 };
 
@@ -166,107 +168,107 @@ export const getFilteredVersions = (
 ) => {
   const versions = [
     {
-      value: 'vanilla',
-      label: 'Vanilla',
+      value: "vanilla",
+      label: "Vanilla",
       children: [
         {
-          value: 'release',
-          label: 'Releases',
+          value: "release",
+          label: "Releases",
           children: vanillaManifest.versions
-            .filter(v => v.type === 'release')
-            .map(v => ({
+            .filter((v) => v.type === "release")
+            .map((v) => ({
               value: v.id,
-              label: v.id
-            }))
+              label: v.id,
+            })),
         },
         {
-          value: 'snapshot',
-          label: 'Snapshots',
+          value: "snapshot",
+          label: "Snapshots",
           children: vanillaManifest.versions
-            .filter(v => v.type === 'snapshot')
-            .map(v => ({
+            .filter((v) => v.type === "snapshot")
+            .map((v) => ({
               value: v.id,
-              label: v.id
-            }))
+              label: v.id,
+            })),
         },
         {
-          value: 'old_beta',
-          label: 'Old Beta',
+          value: "old_beta",
+          label: "Beta",
           children: vanillaManifest.versions
-            .filter(v => v.type === 'old_beta')
-            .map(v => ({
+            .filter((v) => v.type === "old_beta")
+            .map((v) => ({
               value: v.id,
-              label: v.id
-            }))
+              label: v.id,
+            })),
         },
         {
-          value: 'old_alpha',
-          label: 'Old Alpha',
+          value: "old_alpha",
+          label: "Alpha",
           children: vanillaManifest.versions
-            .filter(v => v.type === 'old_alpha')
-            .map(v => ({
+            .filter((v) => v.type === "old_alpha")
+            .map((v) => ({
               value: v.id,
-              label: v.id
-            }))
-        }
-      ]
+              label: v.id,
+            })),
+        },
+      ],
     },
     {
-      value: 'forge',
-      label: 'Forge',
+      value: "forge",
+      label: "Forge",
       children: Object.entries(forgeManifest).map(([k, v]) => ({
         value: k,
         label: k,
-        children: v.sort(sortByForgeVersionDesc).map(child => ({
-          value: child,
-          label: child.split('-')[1]
-        }))
-      }))
+        children: v.sort(sortByForgeVersionDesc).map((child) => ({
+          value: child.split("-")[1],
+          label: child.split("-")[1],
+        })),
+      })),
     },
     {
-      value: 'fabric',
-      label: 'Fabric',
+      value: "fabric",
+      label: "Fabric",
       children: [
         {
-          value: 'release',
-          label: 'Releases',
+          value: "release",
+          label: "Releases",
           children: fabricManifest.game
-            .filter(v => v.stable)
-            .map(v => ({
+            .filter((v) => v.stable)
+            .map((v) => ({
               value: v.version,
               label: v.version,
-              children: fabricManifest.loader.map(c => ({
+              children: fabricManifest.loader.map((c) => ({
                 value: c.version,
-                label: c.version
-              }))
-            }))
+                label: c.version,
+              })),
+            })),
         },
         {
-          value: 'snapshot',
-          label: 'Snapshots',
+          value: "snapshot",
+          label: "Snapshots",
           children: fabricManifest.game
-            .filter(v => !v.stable)
-            .map(v => ({
+            .filter((v) => !v.stable)
+            .map((v) => ({
               value: v.version,
               label: v.version,
-              children: fabricManifest.loader.map(c => ({
+              children: fabricManifest.loader.map((c) => ({
                 value: c.version,
-                label: c.version
-              }))
-            }))
-        }
-      ]
-    }
+                label: c.version,
+              })),
+            })),
+        },
+      ],
+    },
   ];
   return versions;
 };
 
 export const isLatestJavaDownloaded = async (meta, userData, retry) => {
   const javaOs = convertOSToJavaFormat(process.platform);
-  const javaMeta = meta.find(v => v.os === javaOs);
+  const javaMeta = meta.find((v) => v.os === javaOs);
   const javaFolder = path.join(
     userData,
-    'java',
+    "java",
     javaMeta.version_data.openjdk_version
   );
   // Check if it's downloaded, if it's latest version and if it's a valid download
@@ -274,8 +276,8 @@ export const isLatestJavaDownloaded = async (meta, userData, retry) => {
 
   const javaExecutable = path.join(
     javaFolder,
-    'bin',
-    `java${javaOs === 'windows' ? '.exe' : ''}`
+    "bin",
+    `java${javaOs === "windows" ? ".exe" : ""}`
   );
   try {
     await fs.access(javaFolder);
@@ -284,7 +286,7 @@ export const isLatestJavaDownloaded = async (meta, userData, retry) => {
     console.log(err);
 
     if (retry) {
-      if (process.platform !== 'win32') {
+      if (process.platform !== "win32") {
         try {
           await promisify(exec)(`chmod +x "${javaExecutable}"`);
           await promisify(exec)(`chmod 755 "${javaExecutable}"`);
@@ -303,29 +305,28 @@ export const isLatestJavaDownloaded = async (meta, userData, retry) => {
 
 export const get7zPath = async () => {
   // Get userData from ipc because we can't always get this from redux
-  const baseDir = await ipcRenderer.invoke('getUserData');
-  if (process.platform === 'darwin' || process.platform === 'linux') {
-    return path.join(baseDir, '7za');
+  const baseDir = await ipcRenderer.invoke("getUserData");
+  if (process.platform === "darwin" || process.platform === "linux") {
+    return path.join(baseDir, "7za");
   }
-  return path.join(baseDir, '7za.exe');
+  return path.join(baseDir, "7za.exe");
 };
 
-export const extractNatives = async (libraries, instancePath) => {
-  const extractLocation = path.join(instancePath, 'natives');
+export const extractNatives = async (libraryJar, extractLocation) => {
   const sevenZipPath = await get7zPath();
   await Promise.all(
-    libraries
-      .filter(l => l.natives)
-      .map(async l => {
+    libraryJar
+      .filter((l) => l.natives)
+      .map(async (l) => {
         const extraction = extractFull(l.path, extractLocation, {
           $bin: sevenZipPath,
-          $raw: ['-xr!META-INF']
+          $raw: ["-xr!META-INF"],
         });
         await new Promise((resolve, reject) => {
-          extraction.on('end', () => {
+          extraction.on("end", () => {
             resolve();
           });
-          extraction.on('error', err => {
+          extraction.on("error", (err) => {
             reject(err);
           });
         });
@@ -333,9 +334,26 @@ export const extractNatives = async (libraries, instancePath) => {
   );
 };
 
-export const copyAssetsToResources = async assets => {
+export const instanceNameSuffix = (name, instanceList) => {
+  const match = name.match(/^(.+ - copy )(\((\d+)\))$/);
+  const instancesArrayList = Object.keys(instanceList);
+  if (name && !instancesArrayList.includes(name)) {
+    return name;
+  }
+  const newName =
+    match && match[3] !== "5"
+      ? `${match[1]}(${parseInt(match[3], 10) + 1})`
+      : `${name} - copy (1)`;
+
+  if (newName && !instancesArrayList.includes(newName)) {
+    return newName;
+  }
+  return instanceNameSuffix(newName, instanceList);
+};
+
+export const copyAssetsToResources = async (assets) => {
   await Promise.all(
-    assets.map(async asset => {
+    assets.map(async (asset) => {
       try {
         await fs.access(asset.resourcesPath);
       } catch {
@@ -346,9 +364,22 @@ export const copyAssetsToResources = async assets => {
   );
 };
 
-export const copyAssetsToLegacy = async assets => {
+export const duplicateInstance = async (
+  folderPath,
+  instancesPath,
+  newInstanceName
+) => {
+  const name = path.basename(folderPath);
+  const newName = await instanceNameSuffix(name, instancesPath);
+  await fse.copy(
+    folderPath,
+    path.join(folderPath, "..", newInstanceName || newName)
+  );
+};
+
+export const copyAssetsToLegacy = async (assets) => {
   await Promise.all(
-    assets.map(async asset => {
+    assets.map(async (asset) => {
       try {
         await fs.access(asset.legacyPath);
       } catch {
@@ -359,9 +390,10 @@ export const copyAssetsToLegacy = async assets => {
   );
 };
 
-const hiddenToken = '__HIDDEN_TOKEN__';
+const hiddenToken = "__HIDDEN_TOKEN__";
 export const getJVMArguments112 = (
   libraries,
+  nativeLibs,
   mcjar,
   instancePath,
   assetsPath,
@@ -373,13 +405,13 @@ export const getJVMArguments112 = (
   jvmOptions = []
 ) => {
   const args = [];
-  args.push('-cp');
+  args.push("-cp");
 
   args.push(
     [...libraries, mcjar]
-      .filter(l => !l.natives)
-      .map(l => `"${l.path}"`)
-      .join(process.platform === 'win32' ? ';' : ':')
+      .filter((l) => !l.natives)
+      .map((l) => `"${l.path}"`)
+      .join(process.platform === "win32" ? ";" : ":")
   );
 
   // if (process.platform === "darwin") {
@@ -390,16 +422,21 @@ export const getJVMArguments112 = (
   args.push(`-Xmx${memory}m`);
   args.push(`-Xms${memory}m`);
   args.push(...jvmOptions);
-  args.push(`-Djava.library.path="${path.join(instancePath, 'natives')}"`);
+  // args.push(`-Djava.library.path="${path.join(instancePath, "natives")}"`);
+  args.push(`-Djava.library.path="${nativeLibs}"`);
   args.push(`-Dminecraft.applet.TargetDirectory="${instancePath}"`);
 
   args.push(mcJson.mainClass);
-  if (resolution) {
-    args.push(`--width ${resolution.width}`);
-    args.push(`--height ${resolution.height}`);
+
+  // TODO: find a replacement for 1.5.2 and below. This doesn't work with older versions of mc and breaks username UUID.
+  if (gt(coerce(mcJson.id), coerce("1.5.2"))) {
+    if (resolution) {
+      args.push(`--width ${resolution.width}`);
+      args.push(`--height ${resolution.height}`);
+    }
   }
 
-  const mcArgs = mcJson.minecraftArguments.split(' ');
+  const mcArgs = mcJson.minecraftArguments.split(" ");
   const argDiscovery = /\${*(.*)}/;
 
   for (let i = 0; i < mcArgs.length; i += 1) {
@@ -407,41 +444,41 @@ export const getJVMArguments112 = (
       const identifier = mcArgs[i].match(argDiscovery)[1];
       let val = null;
       switch (identifier) {
-        case 'auth_player_name':
+        case "auth_player_name":
           val = account.selectedProfile.name.trim();
           break;
-        case 'version_name':
+        case "version_name":
           val = mcJson.id;
           break;
-        case 'game_directory':
+        case "game_directory":
           val = `"${instancePath}"`;
           break;
-        case 'assets_root':
+        case "assets_root":
           val = `"${assetsPath}"`;
           break;
-        case 'game_assets':
-          val = `"${path.join(assetsPath, 'virtual', 'legacy')}"`;
+        case "game_assets":
+          val = `"${path.join(assetsPath, "virtual", "legacy")}"`;
           break;
-        case 'assets_index_name':
+        case "assets_index_name":
           val = mcJson.assets;
           break;
-        case 'auth_uuid':
+        case "auth_uuid":
           val = account.selectedProfile.id.trim();
           break;
-        case 'auth_access_token':
+        case "auth_access_token":
           val = hideAccessToken ? hiddenToken : account.accessToken;
           break;
-        case 'auth_session':
+        case "auth_session":
           val = hideAccessToken ? hiddenToken : account.accessToken;
           break;
-        case 'user_type':
-          val = 'mojang';
+        case "user_type":
+          val = "mojang";
           break;
-        case 'version_type':
+        case "version_type":
           val = mcJson.type;
           break;
-        case 'user_properties':
-          val = '{}';
+        case "user_properties":
+          val = "{}";
           break;
         default:
           break;
@@ -459,6 +496,7 @@ export const getJVMArguments112 = (
 
 export const getJVMArguments113 = (
   libraries,
+  nativeLibs,
   mcjar,
   instancePath,
   assetsPath,
@@ -470,7 +508,7 @@ export const getJVMArguments113 = (
   jvmOptions = []
 ) => {
   const argDiscovery = /\${*(.*)}/;
-  let args = mcJson.arguments.jvm.filter(v => !skipLibrary(v));
+  let args = mcJson.arguments.jvm.filter((v) => !skipLibrary(v));
 
   // if (process.platform === "darwin") {
   //   args.push("-Xdock:name=instancename");
@@ -489,71 +527,72 @@ export const getJVMArguments113 = (
     args.push(`--height ${resolution.height}`);
   }
 
-  args.push(...mcJson.arguments.game.filter(v => !skipLibrary(v)));
+  args.push(...mcJson.arguments.game.filter((v) => !skipLibrary(v)));
 
   for (let i = 0; i < args.length; i += 1) {
-    if (typeof args[i] === 'object' && args[i].rules) {
-      if (typeof args[i].value === 'string') {
+    if (typeof args[i] === "object" && args[i].rules) {
+      if (typeof args[i].value === "string") {
         args[i] = `"${args[i].value}"`;
-      } else if (typeof args[i].value === 'object') {
-        args.splice(i, 1, ...args[i].value.map(v => `"${v}"`));
+      } else if (typeof args[i].value === "object") {
+        args.splice(i, 1, ...args[i].value.map((v) => `"${v}"`));
       }
       i -= 1;
-    } else if (typeof args[i] === 'string') {
+    } else if (typeof args[i] === "string") {
       if (argDiscovery.test(args[i])) {
         const identifier = args[i].match(argDiscovery)[1];
         let val = null;
         switch (identifier) {
-          case 'auth_player_name':
+          case "auth_player_name":
             val = account.selectedProfile.name.trim();
             break;
-          case 'version_name':
+          case "version_name":
             val = mcJson.id;
             break;
-          case 'game_directory':
+          case "game_directory":
             val = `"${instancePath}"`;
             break;
-          case 'assets_root':
+          case "assets_root":
             val = `"${assetsPath}"`;
             break;
-          case 'assets_index_name':
+          case "assets_index_name":
             val = mcJson.assets;
             break;
-          case 'auth_uuid':
+          case "auth_uuid":
             val = account.selectedProfile.id.trim();
             break;
-          case 'auth_access_token':
+          case "auth_access_token":
             val = hideAccessToken ? hiddenToken : account.accessToken;
             break;
-          case 'user_type':
-            val = 'mojang';
+          case "user_type":
+            val = "mojang";
             break;
-          case 'version_type':
+          case "version_type":
             val = mcJson.type;
             break;
-          case 'resolution_width':
+          case "resolution_width":
             val = 800;
             break;
-          case 'resolution_height':
+          case "resolution_height":
             val = 600;
             break;
-          case 'natives_directory':
-            val = args[i].replace(
-              argDiscovery,
-              `"${path.join(instancePath, 'natives')}"`
-            );
+          case "natives_directory":
+            // val = args[i].replace(
+            //   argDiscovery,
+            //   `"${path.join(instancePath, "natives")}"`
+            // );
+            val = args[i].replace(argDiscovery, `"${nativeLibs}"`);
             break;
-          case 'launcher_name':
-            val = args[i].replace(argDiscovery, 'GDLauncher');
+          case "launcher_name":
+            val = args[i].replace(argDiscovery, "KoalaLauncher");
             break;
-          case 'launcher_version':
-            val = args[i].replace(argDiscovery, '1.0');
+          case "launcher_version":
+            val = args[i].replace(argDiscovery, "1.0");
             break;
-          case 'classpath':
+          case "classpath":
             val = [...libraries, mcjar]
-              .filter(l => !l.natives)
-              .map(l => `"${l.path}"`)
-              .join(process.platform === 'win32' ? ';' : ':');
+              .filter((l) => !l.natives)
+              .map((l) => `"${l.path}"`)
+              .join(process.platform === "win32" ? ";" : ":");
             break;
           default:
             break;
@@ -565,7 +604,7 @@ export const getJVMArguments113 = (
     }
   }
 
-  args = args.filter(arg => {
+  args = args.filter((arg) => {
     return arg != null;
   });
 
@@ -573,17 +612,17 @@ export const getJVMArguments113 = (
 };
 
 export const readJarManifest = async (jarPath, sevenZipPath, property) => {
-  const list = extractFull(jarPath, '.', {
+  const list = extractFull(jarPath, ".", {
     $bin: sevenZipPath,
     toStdout: true,
-    $cherryPick: 'META-INF/MANIFEST.MF'
+    $cherryPick: "META-INF/MANIFEST.MF",
   });
 
   await new Promise((resolve, reject) => {
-    list.on('end', () => {
+    list.on("end", () => {
       resolve();
     });
-    list.on('error', error => {
+    list.on("error", (error) => {
       reject(error.stderr);
     });
   });
@@ -600,26 +639,26 @@ export const patchForge113 = async (
   updatePercentage
 ) => {
   const { processors } = forgeJson;
-  const replaceIfPossible = arg => {
-    const finalArg = arg.replace('{', '').replace('}', '');
+  const replaceIfPossible = (arg) => {
+    const finalArg = arg.replace("{", "").replace("}", "");
     if (forgeJson.data[finalArg]) {
       // Handle special case
-      if (finalArg === 'BINPATCH') {
+      if (finalArg === "BINPATCH") {
         return `"${path
           .join(librariesPath, ...mavenToArray(forgeJson.path))
-          .replace('.jar', '-clientdata.lzma')}"`;
+          .replace(".jar", "-clientdata.lzma")}"`;
       }
       // Return replaced string
       return forgeJson.data[finalArg].client;
     }
     // Return original string (checking for MINECRAFT_JAR)
-    return arg.replace('{MINECRAFT_JAR}', `"${mainJar}"`);
+    return arg.replace("{MINECRAFT_JAR}", `"${mainJar}"`);
   };
-  const computePathIfPossible = arg => {
-    if (arg[0] === '[') {
+  const computePathIfPossible = (arg) => {
+    if (arg[0] === "[") {
       return `"${path.join(
         librariesPath,
-        ...mavenToArray(arg.replace('[', '').replace(']', ''))
+        ...mavenToArray(arg.replace("[", "").replace("]", ""))
       )}"`;
     }
     return arg;
@@ -632,41 +671,41 @@ export const patchForge113 = async (
       const p = processors[key];
       const filePath = path.join(librariesPath, ...mavenToArray(p.jar));
       const args = p.args
-        .map(arg => replaceIfPossible(arg))
-        .map(arg => computePathIfPossible(arg));
+        .map((arg) => replaceIfPossible(arg))
+        .map((arg) => computePathIfPossible(arg));
 
       const classPaths = p.classpath.map(
-        cp => `"${path.join(librariesPath, ...mavenToArray(cp))}"`
+        (cp) => `"${path.join(librariesPath, ...mavenToArray(cp))}"`
       );
 
       const sevenZipPath = await get7zPath();
       const mainClass = await readJarManifest(
         filePath,
         sevenZipPath,
-        'Main-Class'
+        "Main-Class"
       );
 
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         const ps = spawn(
           `"${javaPath}"`,
           [
-            '-classpath',
+            "-classpath",
             [`"${filePath}"`, ...classPaths].join(path.delimiter),
             mainClass,
-            ...args
+            ...args,
           ],
           { shell: true }
         );
 
-        ps.stdout.on('data', data => {
+        ps.stdout.on("data", (data) => {
           console.log(data.toString());
         });
 
-        ps.stderr.on('data', data => {
+        ps.stderr.on("data", (data) => {
           console.error(`ps stderr: ${data}`);
         });
 
-        ps.on('close', code => {
+        ps.on("close", (code) => {
           if (code !== 0) {
             console.log(`process exited with code ${code}`);
             resolve();
@@ -687,29 +726,29 @@ export const importAddonZip = async (
   instanceTempPath,
   tempPath
 ) => {
-  const tempZipFile = path.join(instanceTempPath, 'addon.zip');
+  const tempZipFile = path.join(instanceTempPath, "addon.zip");
   await makeDir(instanceTempPath);
   if (zipPath.includes(tempPath)) {
     await fse.move(zipPath, tempZipFile);
   } else {
     await fse.copyFile(zipPath, tempZipFile);
   }
-  const instanceManifest = path.join(instancePath, 'manifest.json');
+  const instanceManifest = path.join(instancePath, "manifest.json");
   // Wait 500ms to avoid `The process cannot access the file because it is being used by another process.`
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     setTimeout(() => resolve(), 500);
   });
   const sevenZipPath = await get7zPath();
   const extraction = extractFull(tempZipFile, instancePath, {
     $bin: sevenZipPath,
     yes: true,
-    $cherryPick: 'manifest.json'
+    $cherryPick: "manifest.json",
   });
   await new Promise((resolve, reject) => {
-    extraction.on('end', () => {
+    extraction.on("end", () => {
       resolve();
     });
-    extraction.on('error', err => {
+    extraction.on("error", (err) => {
       reject(err.stderr);
     });
   });
@@ -719,24 +758,24 @@ export const importAddonZip = async (
 
 export const downloadAddonZip = async (id, fileId, instancePath, tempPath) => {
   const { data } = await getAddonFile(id, fileId);
-  const instanceManifest = path.join(instancePath, 'manifest.json');
-  const zipFile = path.join(tempPath, 'addon.zip');
+  const instanceManifest = path.join(instancePath, "manifest.json");
+  const zipFile = path.join(tempPath, "addon.zip");
   await downloadFile(zipFile, data.downloadUrl);
   // Wait 500ms to avoid `The process cannot access the file because it is being used by another process.`
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     setTimeout(() => resolve(), 500);
   });
   const sevenZipPath = await get7zPath();
   const extraction = extractFull(zipFile, instancePath, {
     $bin: sevenZipPath,
     yes: true,
-    $cherryPick: 'manifest.json'
+    $cherryPick: "manifest.json",
   });
   await new Promise((resolve, reject) => {
-    extraction.on('end', () => {
+    extraction.on("end", () => {
       resolve();
     });
-    extraction.on('error', err => {
+    extraction.on("error", (err) => {
       reject(err.stderr);
     });
   });
@@ -744,48 +783,53 @@ export const downloadAddonZip = async (id, fileId, instancePath, tempPath) => {
   return manifest;
 };
 
-export const getPlayerSkin = async uuid => {
+export const getPlayerSkin = async (uuid) => {
   const playerSkin = await mcGetPlayerSkin(uuid);
   const { data } = playerSkin;
   const base64 = data.properties[0].value;
-  const decoded = JSON.parse(Buffer.from(base64, 'base64').toString());
+  const decoded = JSON.parse(Buffer.from(base64, "base64").toString());
   return decoded?.textures?.SKIN?.url;
 };
 
-export const extractFace = async buffer => {
+export const extractFace = async (buffer) => {
   const image = await jimp.read(buffer);
+  const layar = await jimp.read(buffer);
   image.crop(8, 8, 8, 8);
+  layar.crop(40, 8, 8, 8);
+  image.composite(layar, 0, 0);
   image.scale(10, jimp.RESIZE_NEAREST_NEIGHBOR);
+  layar.scale(10, jimp.RESIZE_NEAREST_NEIGHBOR);
   const imageBuffer = await image.getBufferAsync(jimp.MIME_PNG);
-  return imageBuffer.toString('base64');
+  return imageBuffer.toString("base64");
 };
 
-export const normalizeModData = (data, projectID, modName) => {
+export const normalizeModData = (data, projectID, modName, categorySection) => {
   const temp = data;
   temp.name = modName;
+  temp.categorySection = { path: categorySection.path };
   if (data.projectID && data.fileID) return temp;
   if (data.id) {
     temp.projectID = projectID;
     temp.fileID = data.id;
     delete temp.id;
-    delete temp.projectId;
-    delete temp.fileId;
+    delete temp.projectId; // CurseForge ProjectID
+    delete temp.fileId; // CurseForge FileID
   }
   return temp;
 };
 
-export const reflect = p =>
+export const reflect = (p) =>
   p.then(
-    v => ({ v, status: true }),
-    e => ({ e, status: false })
+    (v) => ({ v, status: true }),
+    (e) => ({ e, status: false })
   );
 
 export const convertCompletePathToInstance = (f, instancesPath) => {
-  const escapeRegExp = stringToGoIntoTheRegex => {
-    return stringToGoIntoTheRegex.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const escapeRegExp = (stringToGoIntoTheRegex) => {
+    return stringToGoIntoTheRegex.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
   };
 
-  return f.replace(new RegExp(escapeRegExp(instancesPath), 'gi'), '');
+  return f.replace(new RegExp(escapeRegExp(instancesPath), "gi"), "");
 };
 
 export const isMod = (fileName, instancesPath) =>
@@ -798,16 +842,16 @@ export const isInstanceFolderPath = (f, instancesPath) =>
     convertCompletePathToInstance(f, instancesPath)
   );
 
-export const isFileModFabric = file => {
+export const isFileModFabric = (file) => {
   return (
-    (file.gameVersion.includes('Fabric') ||
-      file.modules.find(v => v.foldername === 'fabric.mod.json')) &&
-    !file.gameVersion.includes('Forge')
+    (file.gameVersion.includes("Fabric") ||
+      file.modules.find((v) => v.foldername === "fabric.mod.json")) &&
+    !file.gameVersion.includes("Forge")
   );
 };
 
 export const filterFabricFilesByVersion = (files, version) => {
-  return files.filter(v => {
+  return files.filter((v) => {
     if (Array.isArray(v.gameVersion)) {
       return v.gameVersion.includes(version) && isFileModFabric(v);
     }
@@ -816,7 +860,7 @@ export const filterFabricFilesByVersion = (files, version) => {
 };
 
 export const filterForgeFilesByVersion = (files, version) => {
-  return files.filter(v => {
+  return files.filter((v) => {
     if (Array.isArray(v.gameVersion)) {
       return v.gameVersion.includes(version) && !isFileModFabric(v);
     }
@@ -830,7 +874,7 @@ export const getFirstPreferredCandidate = (files, release) => {
   let latestFile = null;
   while (counter <= 3 && !latestFile) {
     const c = counter;
-    const latest = files.find(v => v.releaseType <= c);
+    const latest = files.find((v) => v.releaseType <= c);
     if (latest) {
       latestFile = latest;
     }
@@ -839,27 +883,27 @@ export const getFirstPreferredCandidate = (files, release) => {
   return latestFile;
 };
 
-export const getFileHash = async (filePath, algorithm = 'sha1') => {
+export const getFileHash = async (filePath, algorithm = "sha1") => {
   // Calculate sha1 on original file
   const shasum = crypto.createHash(algorithm);
 
   const s = originalFs.ReadStream(filePath);
-  s.on('data', data => {
+  s.on("data", (data) => {
     shasum.update(data);
   });
 
-  const hash = await new Promise(resolve => {
-    s.on('end', () => {
-      resolve(shasum.digest('hex'));
+  const hash = await new Promise((resolve) => {
+    s.on("end", () => {
+      resolve(shasum.digest("hex"));
     });
   });
   return hash;
 };
 
-export const getFilesRecursive = async dir => {
+export const getFilesRecursive = async (dir) => {
   const subdirs = await originalFs.promises.readdir(dir);
   const files = await Promise.all(
-    subdirs.map(async subdir => {
+    subdirs.map(async (subdir) => {
       const res = path.resolve(dir, subdir);
       return (await originalFs.promises.stat(res)).isDirectory()
         ? getFilesRecursive(res)
@@ -874,16 +918,18 @@ export const convertcurseForgeToCanonical = (
   mcVersion,
   forgeManifest
 ) => {
-  const patchedCurseForge = curseForge.replace('forge-', '');
-  const forgeEquivalent = forgeManifest[mcVersion].find(v => {
-    return v.split('-')[1] === patchedCurseForge;
+  const patchedCurseForge = curseForge.replace("forge-", "");
+  const forgeEquivalent = forgeManifest[mcVersion].find((v) => {
+    return v.split("-")[1] === patchedCurseForge;
   });
   return forgeEquivalent;
 };
 
-export const getPatchedInstanceType = instance => {
+export const getPatchedInstanceType = (instance) => {
   const isForge = instance.modloader[0] === FORGE;
-  const hasJumpLoader = (instance.mods || []).find(v => v.projectID === 361988);
+  const hasJumpLoader = (instance.mods || []).find(
+    (v) => v.projectID === 361988
+  );
   if (isForge && !hasJumpLoader) {
     return FORGE;
   }

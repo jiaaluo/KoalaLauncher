@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+import { ipcRenderer } from "electron";
 
 export const sortByDate = (a, b) => {
   const dateA = new Date(a.fileDate);
@@ -7,9 +7,9 @@ export const sortByDate = (a, b) => {
 };
 
 export function sortByForgeVersionDesc(a, b) {
-  if (typeof a === 'string' && typeof b === 'string') {
-    const versionA = a.split('-')[1].split('.');
-    const versionB = b.split('-')[1].split('.');
+  if (typeof a === "string" && typeof b === "string") {
+    const versionA = a.split("-")[1].split(".");
+    const versionB = b.split("-")[1].split(".");
 
     for (let i = 0; i < versionA.length; i += 1) {
       const verNumA = Number(versionA[i]) || 0;
@@ -24,10 +24,10 @@ export function sortByForgeVersionDesc(a, b) {
   return 0;
 }
 
-export const formatNumber = number => {
+export const formatNumber = (number) => {
   // Alter numbers larger than 1k
   if (number >= 1e3) {
-    const units = ['k', 'M', 'B', 'T'];
+    const units = ["k", "M", "B", "T"];
 
     const unit = Math.floor((number.toFixed(0).length - 1) / 3) * 3;
     // Calculate the remainder
@@ -42,17 +42,17 @@ export const formatNumber = number => {
   return number.toLocaleString();
 };
 
-export const formatDate = date => {
+export const formatDate = (date) => {
   const parsedDate = Date.parse(date);
   return new Date(parsedDate).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
 
 export const getForgeFileIDFromAddonVersion = async (files, addonVersion) => {
-  const foundID = files.find(a => a.fileName.includes(addonVersion));
+  const foundID = files.find((a) => a.fileName.includes(addonVersion));
   return foundID ? foundID.id : null;
 };
 
@@ -64,14 +64,14 @@ export const generateRandomString = () => {
 };
 
 // Create the murmur hash of a mod
-export const getFileMurmurHash2 = async filePath => {
-  return ipcRenderer.invoke('calculateMurmur2FromPath', filePath);
+export const getFileMurmurHash2 = async (filePath) => {
+  return ipcRenderer.invoke("calculateMurmur2FromPath", filePath);
 };
 
-export const numberToRoundedWord = number => {
+export const numberToRoundedWord = (number) => {
   // Alter numbers larger than 1k
   if (number >= 1e3) {
-    const units = ['k', 'M', 'B', 'T'];
+    const units = ["k", "M", "B", "T"];
 
     // Divide to get SI Unit engineering style numbers (1e3,1e6,1e9, etc)
     const unit = Math.floor((number.toFixed(0).length - 1) / 3) * 3;
@@ -89,11 +89,11 @@ export const numberToRoundedWord = number => {
 
 export const removeDuplicates = (myArr, prop) => {
   return myArr.filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+    return arr.map((mapObj) => mapObj[prop]).indexOf(obj[prop]) === pos;
   });
 };
 
-export const convertMinutesToHumanTime = minutes => {
+export const convertMinutesToHumanTime = (minutes) => {
   const days = Math.floor(minutes / 1440); // 60*24
   const hours = Math.floor((minutes - days * 1440) / 60);
   const min = Math.round(minutes % 60);
@@ -122,8 +122,8 @@ export const convertMinutesToHumanTime = minutes => {
     case minutes === 1:
       return `1 minute`;
     case minutes === 0:
-      return '0 minutes';
+      return "0 minutes";
     default:
-      return '';
+      return "";
   }
 };

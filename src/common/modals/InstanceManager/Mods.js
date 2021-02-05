@@ -1,61 +1,62 @@
-import React, { memo, useState, useEffect, useMemo } from 'react';
-import { clipboard, ipcRenderer } from 'electron';
-import styled, { keyframes } from 'styled-components';
-import memoize from 'memoize-one';
-import { ContextMenuTrigger, ContextMenu, MenuItem } from 'react-contextmenu';
-import { Portal } from 'react-portal';
-import path from 'path';
-import pMap from 'p-map';
-import { FixedSizeList as List, areEqual } from 'react-window';
-import { Checkbox, Input, Button, Switch, Spin, Dropdown, Menu } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { memo, useState, useEffect, useMemo } from "react";
+import { clipboard, ipcRenderer } from "electron";
+import styled, { keyframes } from "styled-components";
+import memoize from "memoize-one";
+import { ContextMenuTrigger, ContextMenu, MenuItem } from "react-contextmenu";
+import { Portal } from "react-portal";
+import path from "path";
+import pMap from "p-map";
+import { FixedSizeList as List, areEqual } from "react-window";
+import { Checkbox, Input, Button, Switch, Spin, Dropdown, Menu } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
   faArrowDown,
   faDownload,
   faEllipsisV,
   faCopy,
-  faFolder
-} from '@fortawesome/free-solid-svg-icons';
-import { useSelector, useDispatch } from 'react-redux';
-import { Transition } from 'react-transition-group';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import { faTwitch } from '@fortawesome/free-brands-svg-icons';
-import fse from 'fs-extra';
-import makeDir from 'make-dir';
-import { _getInstance, _getInstancesPath } from '../../utils/selectors';
+  faFolder,
+  faFire,
+} from "@fortawesome/free-solid-svg-icons";
+import { useSelector, useDispatch } from "react-redux";
+import { Transition } from "react-transition-group";
+import AutoSizer from "react-virtualized-auto-sizer";
+import {} from "@fortawesome/free-brands-svg-icons";
+import fse from "fs-extra";
+import makeDir from "make-dir";
+import { _getInstance, _getInstancesPath } from "../../utils/selectors";
 import {
   updateInstanceConfig,
   deleteMod,
-  updateMod
-} from '../../reducers/actions';
-import { openModal } from '../../reducers/modals/actions';
+  updateMod,
+} from "../../reducers/actions";
+import { openModal } from "../../reducers/modals/actions";
 
 const Header = styled.div`
   height: 40px;
   width: 100%;
-  background: ${props => props.theme.palette.grey[700]};
+  background: ${(props) => props.theme.palette.grey[700]};
   display: flex;
   align-items: center;
   padding: 0 10px;
   justify-content: space-between;
 `;
 
-const RowContainer = styled.div.attrs(props => ({
-  style: props.override
+const RowContainer = styled.div.attrs((props) => ({
+  style: props.override,
 }))`
   width: 100%;
   height: 100%;
-  background: ${props =>
+  background: ${(props) =>
     props.disabled || props.selected
-      ? 'transparent'
+      ? "transparent"
       : props.theme.palette.grey[800]};
-  ${props =>
+  ${(props) =>
     props.disabled &&
     !props.selected &&
     `box-shadow: inset 0 0 0 3px ${props.theme.palette.colors.red};`}
-  ${props =>
+  ${(props) =>
     props.selected &&
     `box-shadow: inset 0 0 0 3px ${props.theme.palette.primary.main};`}
   transition: border 0.1s ease-in-out;
@@ -68,7 +69,7 @@ const RowContainer = styled.div.attrs(props => ({
   padding: 0 10px;
   &:hover {
     .rowCenterContent {
-      color: ${props => props.theme.palette.text.primary};
+      color: ${(props) => props.theme.palette.text.primary};
     }
   }
   .leftPartContent {
@@ -86,8 +87,8 @@ const RowContainer = styled.div.attrs(props => ({
     align-items: center;
     transition: color 0.1s ease-in-out;
     height: 100%;
-    ${props =>
-      props.isHovered ? `color: ${props.theme.palette.text.primary};` : ''}
+    ${(props) =>
+      props.isHovered ? `color: ${props.theme.palette.text.primary};` : ""}
     cursor: pointer;
     svg {
       margin-right: 10px;
@@ -110,7 +111,7 @@ const RowContainerBackground = styled.div`
   left: 0;
   z-index: -1;
 
-  ${props =>
+  ${(props) =>
     props.selected &&
     ` background: repeating-linear-gradient(
   45deg,
@@ -120,7 +121,7 @@ const RowContainerBackground = styled.div`
   ${props.theme.palette.primary.dark} 20px
   );`};
 
-  ${props =>
+  ${(props) =>
     props.disabled &&
     !props.selected &&
     `background: repeating-linear-gradient(
@@ -132,7 +133,7 @@ const RowContainerBackground = styled.div`
   );`};
   filter: brightness(60%);
   transition: opacity 0.1s ease-in-out;
-  opacity: ${props => (props.disabled || props.selected ? 1 : 0)};
+  opacity: ${(props) => (props.disabled || props.selected ? 1 : 0)};
 `;
 
 const DragEnterEffect = styled.div`
@@ -141,14 +142,14 @@ const DragEnterEffect = styled.div`
   flex-direction; column;
   justify-content: center;
   align-items: center;
-  border: solid 5px ${props => props.theme.palette.primary.main};
+  border: solid 5px ${(props) => props.theme.palette.primary.main};
   transition: opacity 0.2s ease-in-out;
   border-radius: 3px;
   width: 100%;
   height: 100%;
   margin-top: 3px;
-  z-index: ${props =>
-    props.transitionState !== 'entering' && props.transitionState !== 'entered'
+  z-index: ${(props) =>
+    props.transitionState !== "entering" && props.transitionState !== "entered"
       ? -1
       : 2};
   backdrop-filter: blur(4px);
@@ -158,7 +159,7 @@ const DragEnterEffect = styled.div`
     rgba(0, 0, 0, .3) 40%
   );
   opacity: ${({ transitionState }) =>
-    transitionState === 'entering' || transitionState === 'entered' ? 1 : 0};
+    transitionState === "entering" || transitionState === "entered" ? 1 : 0};
 `;
 
 const StyledDropdown = styled.div`
@@ -172,7 +173,7 @@ const StyledDropdown = styled.div`
   transition: background 0.2s ease-in-out;
   cursor: pointer;
   &:hover {
-    background: ${props => props.theme.palette.grey[400]};
+    background: ${(props) => props.theme.palette.grey[400]};
   }
 `;
 
@@ -195,25 +196,25 @@ const OpenFolderButton = styled(FontAwesomeIcon)`
     path {
       cursor: pointer;
       transition: color 0.1s ease-in-out;
-      color: ${props => props.theme.palette.primary.main};
+      color: ${(props) => props.theme.palette.primary.main};
     }
   }
 `;
 
 const DragArrow = styled(FontAwesomeIcon)`
-  ${props =>
-    props.fileDrag ? props.theme.palette.primary.main : 'transparent'};
+  ${(props) =>
+    props.fileDrag ? props.theme.palette.primary.main : "transparent"};
 
-  color: ${props => props.theme.palette.primary.main};
+  color: ${(props) => props.theme.palette.primary.main};
 
   animation: ${keyFrameMoveUpDown} 1.5s linear infinite;
 `;
 
 const CopyTitle = styled.h1`
-  ${props =>
-    props.fileDrag ? props.theme.palette.primary.main : 'transparent'};
+  ${(props) =>
+    props.fileDrag ? props.theme.palette.primary.main : "transparent"};
 
-  color: ${props => props.theme.palette.primary.main};
+  color: ${(props) => props.theme.palette.primary.main};
 
   animation: ${keyFrameMoveUpDown} 1.5s linear infinite;
 `;
@@ -223,7 +224,7 @@ const DeleteSelectedMods = styled(({ selectedMods, ...props }) => (
   <FontAwesomeIcon {...props} />
 ))`
   margin: 0 10px;
-  ${props =>
+  ${(props) =>
     props.selectedMods > 0 &&
     `&:hover {
   cursor: pointer;
@@ -242,14 +243,14 @@ const deleteMods = async (
   dispatch
 ) => {
   await dispatch(
-    updateInstanceConfig(instanceName, prev => ({
+    updateInstanceConfig(instanceName, (prev) => ({
       ...prev,
-      mods: prev.mods.filter(m => !selectedMods.includes(m.fileName))
+      mods: prev.mods.filter((m) => !selectedMods.includes(m.fileName)),
     }))
   );
   await Promise.all(
-    selectedMods.map(fileName =>
-      fse.remove(path.join(instancePath, 'mods', fileName))
+    selectedMods.map((fileName) =>
+      fse.remove(path.join(instancePath, "mods", fileName))
     )
   );
 };
@@ -262,25 +263,25 @@ const toggleModDisabled = async (
   dispatch
 ) => {
   const destFileName = c
-    ? mod.fileName.replace('.disabled', '')
+    ? mod.fileName.replace(".disabled", "")
     : `${mod.fileName}.disabled`;
   await dispatch(
-    updateInstanceConfig(instanceName, prev => ({
+    updateInstanceConfig(instanceName, (prev) => ({
       ...prev,
-      mods: prev.mods.map(m => {
+      mods: prev.mods.map((m) => {
         if (m.fileName === mod.fileName) {
           return {
             ...m,
-            fileName: destFileName
+            fileName: destFileName,
           };
         }
         return m;
-      })
+      }),
     }))
   );
   await fse.move(
-    path.join(instancePath, 'mods', mod.fileName),
-    path.join(instancePath, 'mods', destFileName)
+    path.join(instancePath, "mods", mod.fileName),
+    path.join(instancePath, "mods", destFileName)
   );
 };
 
@@ -289,7 +290,7 @@ const Row = memo(({ index, style, data }) => {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
+    (state) => state.settings.curseReleaseChannel
   );
   const {
     items,
@@ -298,7 +299,7 @@ const Row = memo(({ index, style, data }) => {
     gameVersion,
     selectedMods,
     setSelectedMods,
-    latestMods
+    latestMods,
   } = data;
   const item = items[index];
   const isUpdateAvailable =
@@ -308,9 +309,9 @@ const Row = memo(({ index, style, data }) => {
   const dispatch = useDispatch();
 
   const name = item.fileName
-    .replace('.jar', '')
-    .replace('.zip', '')
-    .replace('.disabled', '');
+    .replace(".jar", "")
+    .replace(".zip", "")
+    .replace(".disabled", "");
 
   return (
     <>
@@ -320,42 +321,42 @@ const Row = memo(({ index, style, data }) => {
           name={item.fileName}
           isHovered={isHovered}
           selected={selectedMods.includes(item.fileName)}
-          disabled={path.extname(item.fileName) === '.disabled'}
+          disabled={path.extname(item.fileName) === ".disabled"}
           override={{
             ...style,
             top: style.top + 15,
             height: style.height - 15,
-            position: 'absolute',
-            width: '97%',
-            margin: '15px 0',
-            transition: 'height 0.2s ease-in-out'
+            position: "absolute",
+            width: "97%",
+            margin: "15px 0",
+            transition: "height 0.2s ease-in-out",
           }}
         >
           <div className="leftPartContent">
             <Checkbox
               checked={selectedMods.includes(item.fileName)}
-              onChange={e => {
+              onChange={(e) => {
                 if (e.target.checked) {
                   setSelectedMods([...selectedMods, item.fileName]);
                 } else {
                   setSelectedMods(
-                    selectedMods.filter(v => v !== item.fileName)
+                    selectedMods.filter((v) => v !== item.fileName)
                   );
                 }
               }}
             />
-            {item.fileID && <FontAwesomeIcon icon={faTwitch} />}
+            {item.fileID && <FontAwesomeIcon icon={faFire} />}
           </div>
           <div
             onClick={() => {
               if (!item.fileID) return;
               dispatch(
-                openModal('ModOverview', {
+                openModal("ModOverview", {
                   projectID: item.projectID,
                   fileID: item.fileID,
                   fileName: item.fileName,
                   gameVersion,
-                  instanceName
+                  instanceName,
                 })
               );
             }}
@@ -375,7 +376,7 @@ const Row = memo(({ index, style, data }) => {
                       path {
                         cursor: pointer;
                         transition: all 0.1s ease-in-out;
-                        color: ${props => props.theme.palette.colors.green};
+                        color: ${(props) => props.theme.palette.colors.green};
                       }
                     }
                   `}
@@ -396,19 +397,19 @@ const Row = memo(({ index, style, data }) => {
               ))}
             <Switch
               size="small"
-              checked={path.extname(item.fileName) !== '.disabled'}
+              checked={path.extname(item.fileName) !== ".disabled"}
               disabled={loading || updateLoading}
-              onChange={async c => {
+              onChange={async (c) => {
                 setLoading(true);
                 const destFileName = c
-                  ? item.fileName.replace('.disabled', '')
+                  ? item.fileName.replace(".disabled", "")
                   : `${item.fileName}.disabled`;
                 const isCurrentlySelected = selectedMods.find(
-                  v => v === item.fileName
+                  (v) => v === item.fileName
                 );
 
                 if (isCurrentlySelected) {
-                  setSelectedMods(prev => [...prev, destFileName]);
+                  setSelectedMods((prev) => [...prev, destFileName]);
                 }
 
                 await toggleModDisabled(
@@ -419,8 +420,8 @@ const Row = memo(({ index, style, data }) => {
                   dispatch
                 );
                 if (isCurrentlySelected) {
-                  setSelectedMods(prev =>
-                    prev.filter(v => v !== item.fileName)
+                  setSelectedMods((prev) =>
+                    prev.filter((v) => v !== item.fileName)
                   );
                 }
 
@@ -436,7 +437,7 @@ const Row = memo(({ index, style, data }) => {
                   path {
                     cursor: pointer;
                     transition: all 0.1s ease-in-out;
-                    color: ${props => props.theme.palette.error.main};
+                    color: ${(props) => props.theme.palette.error.main};
                   }
                 }
               `}
@@ -450,7 +451,7 @@ const Row = memo(({ index, style, data }) => {
           </div>
           <RowContainerBackground
             selected={selectedMods.includes(item.fileName)}
-            disabled={path.extname(item.fileName) === '.disabled'}
+            disabled={path.extname(item.fileName) === ".disabled"}
           />
         </RowContainer>
       </ContextMenuTrigger>
@@ -474,7 +475,35 @@ const Row = memo(({ index, style, data }) => {
                 margin-right: 10px;
               `}
             />
-            Copy Name
+            Copy File Name
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              clipboard.writeText(item.displayName);
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCopy}
+              css={`
+                margin-right: 10px;
+              `}
+            />
+            Open CurseForge page
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              if (!loading && !updateLoading) {
+                dispatch(deleteMod(instanceName, item));
+              }
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faTrash}
+              css={`
+                margin-right: 10px;
+              `}
+            />
+            Remove Mod
           </MenuItem>
         </ContextMenu>
       </Portal>
@@ -498,25 +527,25 @@ const createItemData = memoize(
     gameVersion,
     selectedMods,
     setSelectedMods,
-    latestMods
+    latestMods,
   })
 );
 
-const sort = arr =>
+const sort = (arr) =>
   arr.slice().sort((a, b) => a.fileName.localeCompare(b.fileName));
 
 const filter = (arr, search) =>
   arr.filter(
-    mod =>
+    (mod) =>
       mod.fileName.toLowerCase().includes(search.toLowerCase()) ||
       mod.displayName.toLowerCase().includes(search.toLowerCase())
   );
 
-const getFileType = file => {
+const getFileType = (file) => {
   const fileName = file.name;
-  let fileType = '';
+  let fileType = "";
 
-  const splitFileName = fileName.split('.');
+  const splitFileName = fileName.split(".");
   if (splitFileName.length) {
     fileType = splitFileName[splitFileName.length - 1];
   }
@@ -525,15 +554,15 @@ const getFileType = file => {
 };
 
 const Mods = ({ instanceName }) => {
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
   const instancesPath = useSelector(_getInstancesPath);
   const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
+    (state) => state.settings.curseReleaseChannel
   );
-  const latestMods = useSelector(state => state.latestModManifests);
+  const latestMods = useSelector((state) => state.latestModManifests);
   const [mods, setMods] = useState(sort(instance.mods));
   const [selectedMods, setSelectedMods] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fileDrag, setFileDrag] = useState(false);
   const [fileDrop, setFileDrop] = useState(false);
@@ -543,9 +572,9 @@ const Mods = ({ instanceName }) => {
 
   const dispatch = useDispatch();
 
-  const openFolder = async p => {
+  const openFolder = async (p) => {
     await makeDir(p);
-    ipcRenderer.invoke('openFolder', p);
+    ipcRenderer.invoke("openFolder", p);
   };
 
   const antIcon = (
@@ -561,8 +590,8 @@ const Mods = ({ instanceName }) => {
     const modList = instance.mods;
 
     if (dragCompletedPopulated) {
-      const AllFilesAreCompleted = Object.keys(dragCompleted).every(x =>
-        modList.find(y => y.fileName === x)
+      const AllFilesAreCompleted = Object.keys(dragCompleted).every((x) =>
+        modList.find((y) => y.fileName === x)
       );
       setNumOfDraggedFiles(numOfDraggedFiles - 1);
 
@@ -575,13 +604,13 @@ const Mods = ({ instanceName }) => {
 
   useEffect(() => {
     setMods(filter(sort(instance.mods), search));
-    setSelectedMods(prev => {
-      return prev.filter(v => instance.mods.find(m => m.fileName === v));
+    setSelectedMods((prev) => {
+      return prev.filter((v) => instance.mods.find((m) => m.fileName === v));
     });
   }, [search, instance.mods]);
 
   const hasModUpdates = useMemo(() => {
-    return instance?.mods?.find(v => {
+    return instance?.mods?.find((v) => {
       const isUpdateAvailable =
         latestMods[v.projectID] &&
         latestMods[v.projectID].id !== v.fileID &&
@@ -600,22 +629,22 @@ const Mods = ({ instanceName }) => {
     latestMods
   );
 
-  const onDragOver = e => {
+  const onDragOver = (e) => {
     setFileDrag(true);
     e.preventDefault();
   };
 
-  const onDrop = async e => {
+  const onDrop = async (e) => {
     setFileDrop(true);
     const dragComp = {};
     const { files } = e.dataTransfer;
 
     await pMap(
       Object.values(files),
-      async file => {
+      async (file) => {
         const fileName = file.name;
         const fileType = getFileType(file);
-        const existingMods = itemData.items.map(item => item.fileName);
+        const existingMods = itemData.items.map((item) => item.fileName);
 
         dragComp[fileName] = false;
 
@@ -625,19 +654,19 @@ const Mods = ({ instanceName }) => {
 
         if (existingMods.includes(fileName)) {
           console.error(
-            'A mod with this name already exists in the instance.',
+            "A mod with this name already exists in the instance.",
             file.name
           );
           setFileDrop(false);
           setFileDrag(false);
-        } else if (fileType === 'jar' || fileType === 'disabled') {
+        } else if (fileType === "jar" || fileType === "disabled") {
           await fse.copy(
             filePath,
-            path.join(instancesPath, instanceName, 'mods', fileName)
+            path.join(instancesPath, instanceName, "mods", fileName)
           );
           dragComp[fileName] = true;
         } else {
-          console.error('This file is not a mod!', file);
+          console.error("This file is not a mod!", file);
           setFileDrop(false);
           setFileDrag(false);
         }
@@ -648,7 +677,7 @@ const Mods = ({ instanceName }) => {
     setDragCompleted(dragComp);
   };
 
-  const onDragEnter = e => {
+  const onDragEnter = (e) => {
     setFileDrag(true);
     e.preventDefault();
     e.stopPropagation();
@@ -662,13 +691,29 @@ const Mods = ({ instanceName }) => {
     <Menu>
       <Menu.Item
         key="0"
-        onClick={async () => {
-          dispatch(openModal('ModsUpdater', { instanceName }));
+        onClick={() => {
+          dispatch(openModal("ModsUpdater", { instanceName, mods: [] }));
           setIsMenuOpen(false);
         }}
         disabled={!hasModUpdates}
       >
         Update all mods
+      </Menu.Item>
+
+      <Menu.Item
+        key="1"
+        onClick={() => {
+          dispatch(
+            openModal("ModsUpdater", { instanceName, mods: selectedMods })
+          );
+          setSelectedMods([]);
+          setIsMenuOpen(false);
+        }}
+        disabled={
+          !selectedMods.length >= 1 && !selectedMods.length < mods.length
+        }
+      >
+        Update all selected mod
       </Menu.Item>
     </Menu>
   );
@@ -696,7 +741,7 @@ const Mods = ({ instanceName }) => {
             }
             onChange={() =>
               selectedMods.length !== mods.length
-                ? setSelectedMods(mods.map(v => v.fileName))
+                ? setSelectedMods(mods.map((v) => v.fileName))
                 : setSelectedMods([])
             }
           >
@@ -718,7 +763,7 @@ const Mods = ({ instanceName }) => {
           />
           <OpenFolderButton
             onClick={() =>
-              openFolder(path.join(instancesPath, instanceName, 'mods'))
+              openFolder(path.join(instancesPath, instanceName, "mods"))
             }
             icon={faFolder}
           />
@@ -733,7 +778,7 @@ const Mods = ({ instanceName }) => {
               overlay={menu}
               visible={isMenuOpen}
               onVisibleChange={setIsMenuOpen}
-              trigger={['click']}
+              trigger={["click"]}
             >
               <FontAwesomeIcon icon={faEllipsisV} />
             </Dropdown>
@@ -743,20 +788,20 @@ const Mods = ({ instanceName }) => {
           type="primary"
           onClick={() => {
             dispatch(
-              openModal('ModsBrowser', {
+              openModal("ModsBrowser", {
                 gameVersion: instance.modloader[1],
-                instanceName
+                instanceName,
               })
             );
           }}
         >
-          Add Mod
+          Add Mods
         </Button>
         <Input
           allowClear
           value={search}
           defaultValue={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
           css={`
             width: 200px;
           `}
@@ -771,7 +816,7 @@ const Mods = ({ instanceName }) => {
         `}
       >
         <Transition timeout={300} in={fileDrag}>
-          {transitionState => (
+          {(transitionState) => (
             <DragEnterEffect
               onDrop={onDrop}
               transitionState={transitionState}
@@ -795,7 +840,7 @@ const Mods = ({ instanceName }) => {
                     flex-direction: column;
                     align-items: center;
                   `}
-                  onDragLeave={e => e.stopPropagation()}
+                  onDragLeave={(e) => e.stopPropagation()}
                 >
                   <CopyTitle>Copy</CopyTitle>
                   <DragArrow icon={faArrowDown} size="3x" />

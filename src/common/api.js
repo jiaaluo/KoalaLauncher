@@ -1,6 +1,6 @@
 // @flow
-import axios from 'axios';
-import qs from 'querystring';
+import axios from "axios";
+import qs from "querystring";
 import {
   MOJANG_APIS,
   FORGESVC_URL,
@@ -12,9 +12,10 @@ import {
   MICROSOFT_LIVE_LOGIN_URL,
   MICROSOFT_XBOX_LOGIN_URL,
   MICROSOFT_XSTS_AUTH_URL,
-  MINECRAFT_SERVICES_URL
-} from './utils/constants';
-import { sortByDate } from './utils';
+  MINECRAFT_SERVICES_URL,
+  PASTEBIN_API_KEY,
+} from "./utils/constants";
+import { sortByDate } from "./utils";
 
 // Microsoft Auth
 
@@ -27,49 +28,49 @@ export const msExchangeCodeForAccessToken = (
   return axios.post(
     `${MICROSOFT_LIVE_LOGIN_URL}/oauth20_token.srf`,
     qs.stringify({
-      grant_type: 'authorization_code',
+      grant_type: "authorization_code",
       client_id: clientId,
-      scope: 'xboxlive.signin xboxlive.offline_access',
+      scope: "xboxlive.signin xboxlive.offline_access",
       redirect_uri: redirectUrl,
       code,
-      code_verifier: codeVerifier
+      code_verifier: codeVerifier,
     }),
     {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
   );
 };
 
-export const msAuthenticateXBL = accessToken => {
+export const msAuthenticateXBL = (accessToken) => {
   return axios.post(
     `${MICROSOFT_XBOX_LOGIN_URL}/user/authenticate`,
     {
       Properties: {
-        AuthMethod: 'RPS',
-        SiteName: 'user.auth.xboxlive.com',
-        RpsTicket: `d=${accessToken}` // your access token from step 2 here
+        AuthMethod: "RPS",
+        SiteName: "user.auth.xboxlive.com",
+        RpsTicket: `d=${accessToken}`, // your access token from step 2 here
       },
-      RelyingParty: 'http://auth.xboxlive.com',
-      TokenType: 'JWT'
+      RelyingParty: "http://auth.xboxlive.com",
+      TokenType: "JWT",
     },
     {
       headers: {
-        'x-xbl-contract-version': 1
-      }
+        "x-xbl-contract-version": 1,
+      },
     }
   );
 };
 
-export const msAuthenticateXSTS = xblToken => {
+export const msAuthenticateXSTS = (xblToken) => {
   return axios.post(`${MICROSOFT_XSTS_AUTH_URL}/xsts/authorize`, {
     Properties: {
-      SandboxId: 'RETAIL',
-      UserTokens: [xblToken]
+      SandboxId: "RETAIL",
+      UserTokens: [xblToken],
     },
-    RelyingParty: 'rp://api.minecraftservices.com/',
-    TokenType: 'JWT'
+    RelyingParty: "rp://api.minecraftservices.com/",
+    TokenType: "JWT",
   });
 };
 
@@ -77,16 +78,16 @@ export const msAuthenticateMinecraft = (uhsToken, xstsToken) => {
   return axios.post(
     `${MINECRAFT_SERVICES_URL}/authentication/login_with_xbox`,
     {
-      identityToken: `XBL3.0 x=${uhsToken};${xstsToken}`
+      identityToken: `XBL3.0 x=${uhsToken};${xstsToken}`,
     }
   );
 };
 
-export const msMinecraftProfile = mcAccessToken => {
+export const msMinecraftProfile = (mcAccessToken) => {
   return axios.get(`${MINECRAFT_SERVICES_URL}/minecraft/profile`, {
     headers: {
-      Authorization: `Bearer ${mcAccessToken}`
-    }
+      Authorization: `Bearer ${mcAccessToken}`,
+    },
   });
 };
 
@@ -94,15 +95,15 @@ export const msOAuthRefresh = (clientId, refreshToken) => {
   return axios.post(
     `${MICROSOFT_LIVE_LOGIN_URL}/oauth20_token.srf`,
     qs.stringify({
-      grant_type: 'refresh_token',
-      scope: 'xboxlive.signin xboxlive.offline_access',
+      grant_type: "refresh_token",
+      scope: "xboxlive.signin xboxlive.offline_access",
       client_id: clientId,
-      refresh_token: refreshToken
+      refresh_token: refreshToken,
     }),
     {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     }
   );
 };
@@ -114,15 +115,15 @@ export const mcAuthenticate = (username, password, clientToken) => {
     `${MOJANG_APIS}/authenticate`,
     {
       agent: {
-        name: 'Minecraft',
-        version: 1
+        name: "Minecraft",
+        version: 1,
       },
       username,
       password,
       clientToken,
-      requestUser: true
+      requestUser: true,
     },
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { "Content-Type": "application/json" } }
   );
 };
 
@@ -131,9 +132,9 @@ export const mcValidate = (accessToken, clientToken) => {
     `${MOJANG_APIS}/validate`,
     {
       accessToken,
-      clientToken
+      clientToken,
     },
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { "Content-Type": "application/json" } }
   );
 };
 
@@ -143,27 +144,46 @@ export const mcRefresh = (accessToken, clientToken) => {
     {
       accessToken,
       clientToken,
-      requestUser: true
+      requestUser: true,
     },
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { "Content-Type": "application/json" } }
   );
 };
 
-export const mcGetPlayerSkin = uuid => {
+export const mcGetPlayerSkin = (uuid) => {
   return axios.get(
     `https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`
   );
 };
 
+export const pasteBinPost = (code) => {
+  const bodyFormData = new FormData();
+  bodyFormData.append("api_dev_key", PASTEBIN_API_KEY);
+  bodyFormData.append("api_option", "paste");
+  bodyFormData.append("api_paste_code", code);
+
+  const config = {
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  };
+
+  return axios.post(
+    "https://pastebin.com/api/api_post.php",
+    bodyFormData,
+    config.headers
+  );
+};
+
 export const imgurPost = (image, onProgress) => {
   const bodyFormData = new FormData();
-  bodyFormData.append('image', image);
+  bodyFormData.append("image", image);
 
-  return axios.post('https://api.imgur.com/3/image', bodyFormData, {
+  return axios.post("https://api.imgur.com/3/image", bodyFormData, {
     headers: {
-      Authorization: `Client-ID ${IMGUR_CLIENT_ID}`
+      Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
     },
-    ...(onProgress && { onUploadProgress: onProgress })
+    ...(onProgress && { onUploadProgress: onProgress }),
   });
 };
 
@@ -172,9 +192,9 @@ export const mcInvalidate = (accessToken, clientToken) => {
     `${MOJANG_APIS}/invalidate`,
     {
       accessToken,
-      clientToken
+      clientToken,
     },
-    { headers: { 'Content-Type': 'application/json' } }
+    { headers: { "Content-Type": "application/json" } }
   );
 };
 
@@ -208,25 +228,25 @@ export const getFabricJson = ([, version, loader]) => {
 
 // FORGE ADDONS
 
-export const getAddon = addonID => {
+export const getAddon = (addonID) => {
   const url = `${FORGESVC_URL}/addon/${addonID}`;
   return axios.get(url);
 };
 
-export const getMultipleAddons = async addons => {
+export const getMultipleAddons = async (addons) => {
   const url = `${FORGESVC_URL}/addon`;
   return axios.post(url, addons);
 };
 
-export const getAddonFiles = addonID => {
+export const getAddonFiles = (addonID) => {
   const url = `${FORGESVC_URL}/addon/${addonID}/files`;
-  return axios.get(url).then(res => ({
+  return axios.get(url).then((res) => ({
     ...res,
-    data: res.data.sort(sortByDate)
+    data: res.data.sort(sortByDate),
   }));
 };
 
-export const getAddonDescription = addonID => {
+export const getAddonDescription = (addonID) => {
   const url = `${FORGESVC_URL}/addon/${addonID}/description`;
   return axios.get(url);
 };
@@ -236,7 +256,7 @@ export const getAddonFile = (addonID, fileID) => {
   return axios.get(url);
 };
 
-export const getAddonsByFingerprint = fingerprints => {
+export const getAddonsByFingerprint = (fingerprints) => {
   const url = `${FORGESVC_URL}/fingerprint`;
   return axios.post(url, fingerprints);
 };
@@ -263,14 +283,14 @@ export const getSearch = (
   const url = `${FORGESVC_URL}/addon/search`;
   const params = {
     gameId: 432,
-    sectionId: type === 'mods' ? 6 : 4471,
+    sectionId: type === "mods" ? 6 : 4471,
     categoryId: categoryId || 0,
     pageSize,
     sort,
     isSortDescending,
     index,
     searchFilter,
-    gameVersion: gameVersion || ''
+    gameVersion: gameVersion || "",
   };
   return axios.get(url, { params });
 };

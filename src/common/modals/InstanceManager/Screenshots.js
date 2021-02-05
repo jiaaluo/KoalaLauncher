@@ -438,7 +438,7 @@ const Screenshots = ({ instanceName }) => {
             );
           })
         ) : (
-          <NoScreenAvailable>No Screenshot Available</NoScreenAvailable>
+            <NoScreenAvailable><h1>No Screenshots</h1></NoScreenAvailable>
         )}
       </Container>
     </ExternalContainer>

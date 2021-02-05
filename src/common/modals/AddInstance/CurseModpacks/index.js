@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBomb, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 
 let lastRequest;
-const TwitchModpacks = ({ setStep, setVersion, setModpack }) => {
+const CurseModpacks = ({ setStep, setVersion, setModpack }) => {
   const mcVersions = useSelector(state => state.app.vanillaManifest?.versions);
   const categories = useSelector(state => state.app.curseforgeCategories);
   const infiniteLoaderRef = useRef(null);
@@ -220,7 +220,7 @@ const TwitchModpacks = ({ setStep, setVersion, setModpack }) => {
   );
 };
 
-export default React.memo(TwitchModpacks);
+export default React.memo(CurseModpacks);
 
 const Container = styled.div`
   width: 100%;

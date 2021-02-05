@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { useDispatch } from 'react-redux';
-import Modal from '../../components/Modal';
-import General from './components/General';
-import Java from './components/Java';
-import CloseButton from '../../components/CloseButton';
-import { closeModal } from '../../reducers/modals/actions';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Button } from "antd";
+import { useDispatch } from "react-redux";
+import Modal from "../../components/Modal";
+import General from "./components/General";
+import Caching from "./components/Caching";
+import Privacy from "./components/Privacy";
+import Graphics from "./components/Graphics";
+import Java from "./components/Java";
+import CloseButton from "../../components/CloseButton";
+import { closeModal } from "../../reducers/modals/actions";
 
 const Container = styled.div`
   display: flex;
@@ -21,8 +24,8 @@ const SideMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  background: ${props => props.theme.palette.grey[800]};
-  padding-top: calc(${props => props.theme.sizes.height.systemNavbar} + 5px);
+  background: ${(props) => props.theme.palette.grey[800]};
+  padding-top: calc(${(props) => props.theme.sizes.height.systemNavbar} + 5px);
 `;
 
 const SettingsContainer = styled.div`
@@ -47,21 +50,21 @@ const SettingsButton = styled(({ active, ...props }) => <Button {...props} />)`
   border-radius: 4px 0 0 4px;
   font-size: 12px;
   white-space: nowrap;
-  background: ${props =>
+  background: ${(props) =>
     props.active
       ? props.theme.palette.grey[600]
       : props.theme.palette.grey[800]};
   border: 0px;
   text-align: left;
   animation-duration: 0s;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   &:hover {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[700]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[700]};
   }
   &:focus {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[600]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[600]};
   }
 `;
 
@@ -76,22 +79,28 @@ const SettingsTitle = styled.div`
   font-size: 12px;
   font-weight: 300;
   white-space: nowrap;
-  color: ${props => props.theme.palette.grey[50]};
+  color: ${(props) => props.theme.palette.grey[50]};
 `;
 
 function Page(page) {
   switch (page) {
-    case 'General':
+    case "General":
       return <General />;
-    case 'Java':
+    case "Java":
       return <Java />;
+    case "Caching":
+      return <Caching />;
+    case "Privacy":
+      return <Privacy />;
+    case "Graphics":
+      return <Graphics />;
     default:
       return null;
   }
 }
 
 export default function Settings() {
-  const [page, setPage] = useState('General');
+  const [page, setPage] = useState("General");
   const dispatch = useDispatch();
   return (
     <Modal
@@ -113,23 +122,36 @@ export default function Settings() {
         <SideMenu>
           <SettingsTitle>General</SettingsTitle>
           <SettingsButton
-            active={page === 'General'}
-            onClick={() => setPage('General')}
+            active={page === "General"}
+            onClick={() => setPage("General")}
           >
             General
           </SettingsButton>
           <SettingsButton
-            active={page === 'Java'}
-            onClick={() => setPage('Java')}
+            active={page === "Java"}
+            onClick={() => setPage("Java")}
           >
             Java
           </SettingsButton>
-          {/* <SettingsButton onClick={() => setPage("User Interface")}>
-            User Interface
+          <SettingsButton
+            active={page === "Caching"}
+            onClick={() => setPage("Caching")}
+          >
+            Caching
+          </SettingsButton>
+          <SettingsButton
+            active={page === "Privacy"}
+            onClick={() => setPage("Privacy")}
+          >
+            Privacy
           </SettingsButton>
           <SettingsTitle>Game Settings</SettingsTitle>
-          <SettingsButton>Graphic Settings</SettingsButton>
-          <SettingsButton>Sound Settings</SettingsButton> */}
+          <SettingsButton
+            active={page === "Graphics"}
+            onClick={() => setPage("Graphics")}
+          >
+            Graphics Settings
+          </SettingsButton>
         </SideMenu>
         <SettingsContainer>
           <SettingsColumn>

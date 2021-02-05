@@ -1,9 +1,9 @@
-import React from 'react';
-import { Tree } from 'antd';
-import { Transition } from 'react-transition-group';
-import styled from 'styled-components';
-import BackButton from './BackButton';
-import ContinueButton from './ContinueButton';
+import React from "react";
+import { Tree } from "antd";
+import { Transition } from "react-transition-group";
+import styled from "styled-components";
+import BackButton from "./BackButton";
+import ContinueButton from "./ContinueButton";
 
 export default function SecondStep({
   setSelectedFiles,
@@ -12,19 +12,19 @@ export default function SecondStep({
   instancePath,
   selectedFiles,
   inProp,
-  page
+  page,
 }) {
-  const onCheck = LcheckedKeys => {
+  const onCheck = (LcheckedKeys) => {
     setSelectedFiles(LcheckedKeys);
   };
-  const computeTranslate = state => {
+  const computeTranslate = (state) => {
     if (page === 0 || !page) {
-      if (state === 'exiting' || state === 'exited') {
+      if (state === "exiting" || state === "exited") {
         return 100;
       }
       return 0;
     }
-    if (state === 'exiting' || state === 'exited') {
+    if (state === "exiting" || state === "exited") {
       return -100;
     }
     return 0;
@@ -32,7 +32,7 @@ export default function SecondStep({
 
   return (
     <Transition in={inProp} timeout={200}>
-      {state => (
+      {(state) => (
         <Animation state={state} computeTranslate={computeTranslate}>
           <div
             css={`
@@ -61,8 +61,10 @@ export default function SecondStep({
                     height: calc(100% - 45px);
                     border-style: solid;
                     border-width: 2px;
-                    border-color: ${props => props.theme.palette.primary.dark};
-                    background-color: ${props => props.theme.palette.grey[800]};
+                    border-color: ${(props) =>
+                      props.theme.palette.primary.dark};
+                    background-color: ${(props) =>
+                      props.theme.palette.grey[800]};
                   `}
                 >
                   {treeData.length && (
