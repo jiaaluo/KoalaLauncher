@@ -10,9 +10,8 @@ import RootDev from "./Root-Dev";
 import RootWeb from "./Root-Web";
 import RootElectron from "./Root-Electron";
 import ModalsManager from "./common/components/ModalsManager";
-
 import "typeface-roboto";
-import "inter-ui";
+import "@fontsource/averia-sans-libre";
 import ErrorBoundary from "./app/desktop/ErrorBoundary";
 
 const Root =

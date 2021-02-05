@@ -6,7 +6,7 @@ import Modal from "../../components/Modal";
 import General from "./components/General";
 import Caching from "./components/Caching";
 import Privacy from "./components/Privacy";
-import Graphics from "./components/Graphics"
+import Graphics from "./components/Graphics";
 import Java from "./components/Java";
 import CloseButton from "../../components/CloseButton";
 import { closeModal } from "../../reducers/modals/actions";
