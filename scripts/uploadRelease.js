@@ -1,65 +1,61 @@
-const { promisify } = require('util');
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const fse = require('fs-extra');
-const pMap = require('p-map');
-const dotenv = require('dotenv');
+const { promisify } = require("util");
+const fs = require("fs");
+const path = require("path");
+const axios = require("axios");
+const fse = require("fs-extra");
+const pMap = require("p-map");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
-const deployFolder = path.resolve(__dirname, '../', 'deploy');
+const deployFolder = path.resolve(__dirname, "../", "deploy");
 
 const main = async () => {
   if (!process.env.GH_ACCESS_TOKEN_RELEASES) {
-    console.warn('Cannot upload artifacts. No auth token provided');
+    console.warn("Cannot upload artifacts. No auth token provided");
     return;
   }
   const { version } = await fse.readJson(
-    path.resolve(__dirname, '../', 'package.json')
+    path.resolve(__dirname, "../", "package.json")
   );
 
   let uploadUrl = null;
 
   try {
     const { data: releasesList } = await axios.default.get(
-      `https://api.github.com/repos/gorilla-devs/GDLauncher/releases`,
+      `https://api.github.com/repos/KoalaDevs/KoalaLauncher/releases`,
       {
         headers: {
-          Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`
-        }
+          Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`,
+        },
       }
     );
 
-    const lastRelease = releasesList.find(v => v.tag_name === `v${version}`);
+    const lastRelease = releasesList.find((v) => v.tag_name === `v${version}`);
 
     if (lastRelease) {
       uploadUrl = lastRelease.upload_url;
-      console.log('Found a release with this tag. Uploading there.');
+      console.log("Found a release with this tag. Uploading there.");
     } else {
-      throw new Error('Could not find release. Creating one.');
+      throw new Error("Could not find release. Creating one.");
     }
   } catch (err) {
     console.log(err);
     const { data: newRelease } = await axios.default.post(
-      'https://api.github.com/repos/gorilla-devs/GDLauncher/releases',
-      {
-        tag_name: `v${version}`,
-        name: `v${version}`,
-        draft: true,
-        prerelease: version.includes('beta')
-      },
+      "https://api.github.com/repos/KoalaDevs/KoalaLauncher/releases",
+      { tag_name: `v${version}`, name: `v${version}`, draft: true },
+
       {
         headers: {
-          Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`
-        }
+          Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`,
+        },
       }
     );
     uploadUrl = newRelease.upload_url;
-    console.log('New release tag created.');
+    console.log("New release tag created.");
   }
 
   const deployFiles = await readdir(deployFolder);
@@ -68,36 +64,36 @@ const main = async () => {
   let uploaded = 0;
   await pMap(
     deployFiles,
-    async file => {
-      const fileUploadUrl = uploadUrl.replace('{?name,label}', `?name=${file}`);
+    async (file) => {
+      const fileUploadUrl = uploadUrl.replace("{?name,label}", `?name=${file}`);
       const stats = await stat(path.join(deployFolder, file));
       const buffer = await fs.promises.readFile(path.join(deployFolder, file));
 
       let contentType = null;
 
       switch (path.extname(file)) {
-        case '.gz':
-          contentType = 'application/gzip';
+        case ".gz":
+          contentType = "application/gzip";
           break;
-        case '.zip':
-          contentType = 'application/zip';
+        case ".zip":
+          contentType = "application/zip";
           break;
-        case '.json':
-          contentType = 'application/json';
+        case ".json":
+          contentType = "application/json";
           break;
         default:
-          contentType = 'application/octet-stream';
+          contentType = "application/octet-stream";
       }
 
       try {
         await axios.default.post(fileUploadUrl, buffer, {
           headers: {
-            'Content-Length': stats.size,
-            'Content-Type': contentType,
-            Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`
+            "Content-Length": stats.size,
+            "Content-Type": contentType,
+            Authorization: `token ${process.env.GH_ACCESS_TOKEN_RELEASES}`,
           },
           maxContentLength: Infinity,
-          maxBodyLength: Infinity
+          maxBodyLength: Infinity,
         });
       } catch (err) {
         console.error(err.message);
@@ -110,7 +106,7 @@ const main = async () => {
   );
 };
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });

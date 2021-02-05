@@ -1,192 +1,55 @@
-import React, { memo, useEffect, useState } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import styled from 'styled-components';
-import InfiniteLoader from 'react-window-infinite-loader';
-import { Input, Select, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
-import { FixedSizeGrid as Grid } from 'react-window';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import Modal from '../components/Modal';
-import { getSearch, getAddonFiles } from '../api';
-import { openModal } from '../reducers/modals/actions';
-import { _getInstance } from '../utils/selectors';
-import { installMod } from '../reducers/actions';
-import { FABRIC, FORGE } from '../utils/constants';
+/* eslint-disable no-nested-ternary */
+import React, { memo, useEffect, useState, forwardRef } from "react";
+import AutoSizer from "react-virtualized-auto-sizer";
+import styled from "styled-components";
+import memoize from "memoize-one";
+import InfiniteLoader from "react-window-infinite-loader";
+import { Input, Select, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useDebouncedCallback } from "use-debounce";
+import { FixedSizeList as List } from "react-window";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBomb,
+  faExclamationCircle,
+  faDownload,
+  faWrench,
+} from "@fortawesome/free-solid-svg-icons";
+import Modal from "../components/Modal";
+import { getSearch, getAddonFiles } from "../api";
+import { openModal } from "../reducers/modals/actions";
+import { _getInstance } from "../utils/selectors";
+import { installMod } from "../reducers/actions";
+import { FABRIC, FORGE } from "../utils/constants";
 import {
   getFirstPreferredCandidate,
   filterFabricFilesByVersion,
   filterForgeFilesByVersion,
-  getPatchedInstanceType
-} from '../../app/desktop/utils';
+  getPatchedInstanceType,
+} from "../../app/desktop/utils";
 
-const CellContainer = styled.div.attrs(props => ({
-  style: props.override
-}))`
-  height: 100%;
-  width: 100%;
-  padding: 10px;
-  div {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    border-radius: 4px;
-    font-size: 24px;
-    cursor: pointer;
-    .hoverContainer {
-      position: absolute;
-      opacity: 0;
-      font-size: 20px;
-      display: flex;
-      text-align: center;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: calc(100% - 20px);
-      height: calc(100% - 20px);
-      margin: 0 auto;
-      padding: 10px;
-      backdrop-filter: blur(10px);
-      transition: opacity 150ms ease-in-out;
-      & > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 22px;
-        font-weight: 700;
-        transition: all 150ms ease-in-out;
-        color: ${props => props.theme.palette.text.primary};
-      }
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
+const RowInnerContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 18px;
+  color: ${(props) => props.theme.palette.text.secondary};
 `;
 
-const Cell = ({
-  columnIndex,
-  rowIndex,
-  style,
-  isNextPageLoading,
-  items,
-  version,
-  installedMods,
-  instanceName
-}) => {
-  const instance = useSelector(state => _getInstance(state)(instanceName));
-  const curseReleaseChannel = useSelector(
-    state => state.settings.curseReleaseChannel
-  );
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const dispatch = useDispatch();
-  if (3 * rowIndex + columnIndex >= items.length && !isNextPageLoading)
-    return <div />;
-
-  const mod = items[3 * rowIndex + columnIndex];
-  const primaryImage = (mod?.attachments || []).find(v => v.isDefault);
-  const isInstalled = installedMods.find(v => v.projectID === mod?.id);
-
-  return (
-    <CellContainer mod={mod} override={style}>
-      {isInstalled && (
-        <FontAwesomeIcon
-          icon={faCheck}
-          size="2x"
-          css={`
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: ${props => props.theme.palette.primary.main};
-          `}
-        />
-      )}
-      <div
-        onClick={() => {
-          dispatch(
-            openModal('ModOverview', {
-              gameVersion: version,
-              projectID: mod.id,
-              ...(isInstalled && { fileID: isInstalled.fileID }),
-              ...(isInstalled && { fileName: isInstalled.fileName }),
-              instanceName
-            })
-          );
-        }}
-        // eslint-disable-next-line
-        style={{
-          background: `linear-gradient(
-            rgba(0, 0, 0, 0.9),
-            rgba(0, 0, 0, 0.9)
-            ), url('${primaryImage?.thumbnailUrl}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <div className="hoverContainer">
-          <div>{mod?.name}</div>
-          {!isInstalled &&
-            (error || (
-              <Button
-                type="primary"
-                loading={loading}
-                onClick={async e => {
-                  setLoading(true);
-                  e.stopPropagation();
-                  const files = (await getAddonFiles(mod?.id)).data;
-
-                  const isFabric = getPatchedInstanceType(instance) === FABRIC;
-                  const isForge = getPatchedInstanceType(instance) === FORGE;
-
-                  let filteredFiles = [];
-
-                  if (isFabric) {
-                    filteredFiles = filterFabricFilesByVersion(files, version);
-                  } else if (isForge) {
-                    filteredFiles = filterForgeFilesByVersion(files, version);
-                  }
-
-                  const preferredFile = getFirstPreferredCandidate(
-                    filteredFiles,
-                    curseReleaseChannel
-                  );
-
-                  if (preferredFile === null) {
-                    setLoading(false);
-                    setError('Mod Not Available');
-                    console.error(
-                      `Could not find any release candidate for addon: ${mod?.id} / ${version}`
-                    );
-                    return;
-                  }
-
-                  await dispatch(
-                    installMod(
-                      mod?.id,
-                      preferredFile?.id,
-                      instanceName,
-                      version
-                    )
-                  );
-                  setLoading(false);
-                }}
-              >
-                INSTALL
-              </Button>
-            ))}
-        </div>
-        {mod?.name}
-      </div>
-    </CellContainer>
-  );
-};
-
-const MemoizedCell = memo(Cell);
+const RowContainerImg = styled.div`
+  width: 38px;
+  height: 38px;
+  background: ${(props) => `url('${props.img}')`};
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-right: 20px;
+`;
 
 const ModsListWrapper = ({
   // Are there more items to load?
@@ -205,90 +68,225 @@ const ModsListWrapper = ({
   searchQuery,
   width,
   height,
-  instance,
-  version,
-  installedMods,
-  instanceName
+  itemData,
 }) => {
   // If there are more items to be loaded then add an extra row to hold a loading indicator.
   const itemCount = hasNextPage ? items.length + 3 : items.length;
 
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
-  const loadMoreItems = loadNextPage;
+
+  // const loadMoreItems = loadNextPage;
+  const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
 
   // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = index => !hasNextPage || index < items.length;
+  const isItemLoaded = (index) => !hasNextPage || index < items.length;
+
+  const innerElementType = forwardRef(({ style, ...rest }, ref) => (
+    <div
+      ref={ref}
+      // eslint-disable-next-line react/forbid-dom-props
+      style={{
+        ...style,
+        paddingTop: 8,
+      }}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...rest}
+    />
+  ));
 
   return (
     <InfiniteLoader
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={() => loadMoreItems(searchQuery)}
-      threshold={20}
+      // threshold={20}
     >
       {({ onItemsRendered, ref }) => (
-        <Grid
+        <List
           ref={ref}
-          useIsScrolling
-          onItemsRendered={gridData => {
-            const useOverscanForLoading = true; // default is true
-
-            const {
-              visibleRowStartIndex,
-              visibleRowStopIndex,
-              visibleColumnStopIndex,
-              overscanRowStartIndex,
-              overscanRowStopIndex,
-              overscanColumnStopIndex
-            } = gridData;
-
-            const endCol =
-              (useOverscanForLoading
-                ? overscanColumnStopIndex
-                : visibleColumnStopIndex) + 1;
-
-            const startRow = useOverscanForLoading
-              ? overscanRowStartIndex
-              : visibleRowStartIndex;
-            const endRow = useOverscanForLoading
-              ? overscanRowStopIndex
-              : visibleRowStopIndex;
-
-            const visibleStartIndex = startRow * endCol;
-            const visibleStopIndex = endRow * endCol;
-
-            onItemsRendered({
-              // call onItemsRendered from InfiniteLoader so it can load more if needed
-              visibleStartIndex,
-              visibleStopIndex
-            });
-          }}
-          columnCount={3}
-          columnWidth={Math.floor(width / 3) - 10}
           height={height}
-          rowCount={
-            Math.floor(itemCount / 3) + Math.floor(itemCount % 3 !== 0 ? 1 : 0)
-          }
-          rowHeight={180}
+          items={items}
+          itemData={itemData}
+          itemCount={items.length}
+          itemSize={80}
           width={width}
+          useIsScrolling
+          onItemsRendered={onItemsRendered}
+          innerElementType={innerElementType}
         >
-          {p => (
-            <MemoizedCell
-              items={items}
-              version={version}
-              instance={instance}
-              isItemLoaded={isItemLoaded}
-              isNextPageLoading={isNextPageLoading}
-              installedMods={installedMods}
-              instanceName={instanceName}
-              // eslint-disable-next-line
-              {...p}
-            />
-          )}
-        </Grid>
+          {Row}
+        </List>
       )}
     </InfiniteLoader>
+  );
+};
+
+const createItemData = memoize(
+  (items, instanceName, gameVersion, installedMods, instance) => ({
+    items,
+    instanceName,
+    gameVersion,
+    installedMods,
+    instance,
+  })
+);
+
+const Row = ({ index, style, data }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const curseReleaseChannel = useSelector(
+    (state) => state.settings.curseReleaseChannel
+  );
+  const dispatch = useDispatch();
+  const { items, instanceName, gameVersion, installedMods, instance } = data;
+
+  const item = items[index];
+
+  const isInstalled = installedMods.find((v) => v.projectID === item?.id);
+
+  const ModInstalledIcon = styled(FontAwesomeIcon)`
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    color: ${(props) => props.theme.palette.colors.green};
+    font-size: 30px;
+    z-index: 1;
+  `;
+
+  const ModsIconBg = styled.div`
+    position: absolute;
+    top: -10px;
+    left: -5px;
+    background: ${(props) => props.theme.palette.grey[800]};
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 0;
+  `;
+
+  const RowContainer = styled.div`
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    right: 10px;
+    width: calc(100% - 20px) !important;
+    border-radius: 5px;
+
+    padding: 15px 25px;
+    background: ${(props) => props.theme.palette.grey[800]};
+    ${(props) =>
+      isInstalled && `border: 4px solid ${props.theme.palette.colors.green};`}
+  `;
+
+  const primaryImage = item.attachments.find((v) => v.isDefault);
+  return (
+    <RowContainer
+      style={{
+        ...style,
+        top: style.top + 15,
+        height: style.height - 15,
+        position: "absolute",
+        margin: "15px 0",
+        transition: "height 0.2s ease-in-out",
+      }}
+    >
+      {isInstalled && <ModInstalledIcon icon={faCheckCircle} />}
+      {isInstalled && <ModsIconBg />}
+      <RowInnerContainer>
+        <RowContainerImg img={primaryImage?.thumbnailUrl} />
+        <div
+          css={`
+            color: ${(props) => props.theme.palette.text.third};
+            &:hover {
+              color: ${(props) => props.theme.palette.text.primary};
+            }
+            transition: color 0.1s ease-in-out;
+          `}
+          onClick={() => {
+            dispatch(
+              openModal("ModOverview", {
+                gameVersion,
+                projectID: item.id,
+                ...(isInstalled && { fileID: isInstalled.fileID }),
+                ...(isInstalled && { fileName: isInstalled.fileName }),
+                instanceName,
+              })
+            );
+          }}
+        >
+          {item.name}
+        </div>
+      </RowInnerContainer>
+      {!isInstalled ? (
+        error || (
+          <Button
+            type="primary"
+            onClick={async (e) => {
+              setLoading(true);
+              e.stopPropagation();
+              const files = (await getAddonFiles(item?.id)).data;
+
+              const isFabric = getPatchedInstanceType(instance) === FABRIC;
+              const isForge = getPatchedInstanceType(instance) === FORGE;
+
+              let filteredFiles = [];
+
+              if (isFabric) {
+                filteredFiles = filterFabricFilesByVersion(files, gameVersion);
+              } else if (isForge) {
+                filteredFiles = filterForgeFilesByVersion(files, gameVersion);
+              }
+
+              const preferredFile = getFirstPreferredCandidate(
+                filteredFiles,
+                curseReleaseChannel
+              );
+
+              if (preferredFile === null) {
+                setLoading(false);
+                setError("Mod Not Available");
+                console.error(
+                  `Could not find any release candidate for addon: ${item?.id} / ${gameVersion}`
+                );
+                return;
+              }
+
+              await dispatch(
+                installMod(
+                  item?.id,
+                  preferredFile?.id,
+                  instanceName,
+                  gameVersion
+                )
+              );
+              setLoading(false);
+            }}
+            loading={loading}
+          >
+            <FontAwesomeIcon icon={faDownload} />
+          </Button>
+        )
+      ) : (
+        <Button
+          type="primary"
+          onClick={() => {
+            dispatch(
+              openModal("ModOverview", {
+                gameVersion,
+                projectID: item.id,
+                ...(isInstalled && { fileID: isInstalled.fileID }),
+                ...(isInstalled && { fileName: isInstalled.fileName }),
+                instanceName,
+              })
+            );
+          }}
+        >
+          <FontAwesomeIcon icon={faWrench} />
+        </Button>
+      )}
+    </RowContainer>
   );
 };
 
@@ -298,10 +296,12 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
 
   const [mods, setMods] = useState([]);
   const [areModsLoading, setAreModsLoading] = useState(false);
-  const [filterType, setFilterType] = useState('Featured');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState("Featured");
+  const [searchQuery, setSearchQuery] = useState("");
   const [hasNextPage, setHasNextPage] = useState(false);
-  const instance = useSelector(state => _getInstance(state)(instanceName));
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const instance = useSelector((state) => _getInstance(state)(instanceName));
 
   const installedMods = instance?.mods;
 
@@ -321,28 +321,49 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
     loadMoreMods();
   }, []);
 
-  const loadMoreMods = async (searchP = '', reset) => {
+  const loadMoreMods = async (searchP = "", reset) => {
     const reqObj = {};
     lastRequest = reqObj;
+    if (!loading) {
+      setLoading(true);
+    }
     const isReset = reset !== undefined ? reset : false;
     setAreModsLoading(true);
-    const { data } = await getSearch(
-      'mods',
-      searchP,
-      itemsNumber,
-      isReset ? 0 : mods.length,
-      filterType,
-      filterType !== 'Author' && filterType !== 'Name',
-      gameVersion,
-      getPatchedInstanceType(instance) === FABRIC ? 4780 : null
-    );
+    let data = null;
+    try {
+      if (error) {
+        setError(false);
+      }
+      ({ data } = await getSearch(
+        "mods",
+        searchP,
+        itemsNumber,
+        isReset ? 0 : mods.length,
+        filterType,
+        filterType !== "Author" && filterType !== "Name",
+        gameVersion,
+        getPatchedInstanceType(instance) === FABRIC ? 4780 : null
+      ));
+    } catch (err) {
+      setError(err);
+    }
+
     const newMods = reset ? data : mods.concat(data);
     if (lastRequest === reqObj) {
+      setLoading(false);
       setMods(newMods || []);
       setHasNextPage((newMods || []).length % itemsNumber === 0);
     }
     setAreModsLoading(false);
   };
+
+  const itemData = createItemData(
+    mods,
+    instanceName,
+    gameVersion,
+    installedMods,
+    instance
+  );
 
   return (
     <Modal
@@ -375,31 +396,77 @@ const ModsBrowser = ({ instanceName, gameVersion }) => {
             css={`
               height: 32px;
             `}
-            placeholder="Search for a mod"
+            placeholder="Search"
             value={searchQuery}
-            onChange={e => {
+            onChange={(e) => {
               setSearchQuery(e.target.value);
               loadMoreModsDebounced.callback(e.target.value, true);
             }}
             allowClear
           />
         </Header>
-        <AutoSizer>
-          {({ height, width }) => (
-            <ModsListWrapper
-              hasNextPage={hasNextPage}
-              isNextPageLoading={areModsLoading}
-              items={mods}
-              width={width}
-              height={height - 50}
-              loadNextPage={loadMoreMods}
-              searchQuery={searchQuery}
-              version={gameVersion}
-              installedMods={installedMods}
-              instanceName={instanceName}
-            />
-          )}
-        </AutoSizer>
+
+        {!error ? (
+          !loading && mods.length === 0 ? (
+            <div
+              css={`
+                margin-top: 120px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                font-size: 150px;
+              `}
+            >
+              <FontAwesomeIcon icon={faExclamationCircle} />
+              <div
+                css={`
+                  font-size: 20px;
+                  margin-top: 70px;
+                `}
+              >
+                No mods has been found with the current filters.
+              </div>
+            </div>
+          ) : (
+            <AutoSizer>
+              {({ height, width }) => (
+                <ModsListWrapper
+                  hasNextPage={hasNextPage}
+                  isNextPageLoading={areModsLoading}
+                  items={mods}
+                  width={width}
+                  height={height - 50}
+                  loadNextPage={loadMoreMods}
+                  searchQuery={searchQuery}
+                  version={gameVersion}
+                  installedMods={installedMods}
+                  instanceName={instanceName}
+                  itemData={itemData}
+                />
+              )}
+            </AutoSizer>
+          )
+        ) : (
+          <div
+            css={`
+              margin-top: 120px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              font-size: 150px;
+            `}
+          >
+            <FontAwesomeIcon icon={faBomb} />
+            <div
+              css={`
+                font-size: 20px;
+                margin-top: 70px;
+              `}
+            >
+              An error occurred while loading the mods list...
+            </div>
+          </div>
+        )}
       </Container>
     </Modal>
   );

@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
-import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { useKey } from 'rooks';
-import CloseButton from './CloseButton';
-import { closeModal } from '../reducers/modals/actions';
+import React, { memo } from "react";
+import { useDispatch } from "react-redux";
+import styled from "styled-components";
+import { useKey } from "rooks";
+import CloseButton from "./CloseButton";
+import { closeModal } from "../reducers/modals/actions";
 
 const HeaderComponent = styled.div`
   position: relative;
@@ -15,7 +15,7 @@ const HeaderComponent = styled.div`
   width: 100%;
   padding: 0 10px;
   height: 40px;
-  background: ${props => props.theme.palette.grey[800]};
+  background: ${(props) => props.theme.palette.grey[800]};
   border-radius: 4px;
   h3 {
     line-height: 40px;
@@ -30,21 +30,21 @@ const Modal = ({
   backBtn,
   children,
   className,
-  removePadding
+  removePadding,
 }) => {
   const dispatch = useDispatch();
 
-  useKey(['Escape'], () => dispatch(closeModal()));
+  useKey(["Escape"], () => dispatch(closeModal()));
 
   return (
     <div
-      onMouseDown={e => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
       transparentBackground={transparentBackground}
       className={className}
       css={`
-        background: ${props =>
+        background: ${(props) =>
           props.transparentBackground
-            ? 'transparent'
+            ? "transparent"
             : props.theme.palette.grey[700]};
         position: absolute;
         border-radius: 4px;
@@ -52,7 +52,7 @@ const Modal = ({
     >
       {(header === undefined || header === true) && (
         <HeaderComponent>
-          <h3>{title || 'Modal'}</h3>
+          <h3>{title || "Modal"}</h3>
           <CloseButton onClick={() => dispatch(closeModal())} />
         </HeaderComponent>
       )}
@@ -61,10 +61,10 @@ const Modal = ({
         removePadding={removePadding}
         css={`
           height: ${header === undefined || header === true
-            ? 'calc(100% - 40px)'
-            : '100%'};
+            ? "calc(100% - 40px)"
+            : "100%"};
           width: 100%;
-          padding: ${props =>
+          padding: ${(props) =>
             (props.header === undefined || props.header === true) &&
             !props.removePadding
               ? 20

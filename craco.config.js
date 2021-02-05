@@ -8,7 +8,7 @@
 
 /* eslint-disable no-param-reassign */
 
-const CracoAntDesignPlugin = require('craco-antd');
+const CracoAntDesignPlugin = require("craco-antd");
 
 module.exports = () => {
   // const isEnvDevelopment = env === 'development';
@@ -18,36 +18,36 @@ module.exports = () => {
     babel: {
       presets: [
         [
-          '@babel/preset-env',
+          "@babel/preset-env",
           {
             targets: {
-              node: '15'
-            }
-          }
+              node: "15",
+            },
+          },
         ],
-        '@babel/react'
+        "@babel/react",
       ],
       plugins: [
-        '@babel/plugin-proposal-class-properties',
-        '@babel/plugin-proposal-export-default-from',
-        '@babel/plugin-transform-runtime',
-        '@babel/plugin-syntax-dynamic-import',
-        '@loadable/babel-plugin',
-        'babel-plugin-macros',
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-export-default-from",
+        "@babel/plugin-transform-runtime",
+        "@babel/plugin-syntax-dynamic-import",
+        "@loadable/babel-plugin",
+        "babel-plugin-macros",
         [
-          'babel-plugin-styled-components',
+          "babel-plugin-styled-components",
           {
             ssr: true,
-            pure: true
-          }
-        ]
-      ]
+            pure: true,
+          },
+        ],
+      ],
     },
     webpack: {
-      devtool: 'eval-cheap-module-source-map',
-      configure: webpackConfig => {
+      devtool: "eval-cheap-module-source-map",
+      configure: (webpackConfig) => {
         webpackConfig.target =
-          process.env.APP_TYPE === 'electron' ? 'electron-renderer' : 'web';
+          process.env.APP_TYPE === "electron" ? "electron-renderer" : "web";
 
         // webpackConfig.output = {
         //   filename: isEnvProduction
@@ -60,7 +60,7 @@ module.exports = () => {
 
         webpackConfig.optimization.splitChunks = {
           name: false,
-          chunks: 'all',
+          chunks: "all",
           maxInitialRequests: Infinity,
           cacheGroups: {
             vendor: {
@@ -73,20 +73,20 @@ module.exports = () => {
                 )[1];
 
                 // npm package names are URL-safe, but some servers don't like @ symbols
-                return `npm.${packageName.replace('@', '')}`;
-              }
-            }
-          }
+                return `npm.${packageName.replace("@", "")}`;
+              },
+            },
+          },
         };
         webpackConfig.resolve.aliasFields = [];
-        webpackConfig.resolve.mainFields = ['module', 'main'];
+        webpackConfig.resolve.mainFields = ["module", "main"];
         return webpackConfig;
-      }
+      },
     },
     plugins: [
       {
-        plugin: CracoAntDesignPlugin
-      }
-    ]
+        plugin: CracoAntDesignPlugin,
+      },
+    ],
   };
 };

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import fse from 'fs-extra';
-import path from 'path';
-import { Button } from 'antd';
-import { useInterval } from 'rooks';
-import { useSelector, useDispatch } from 'react-redux';
-import Modal from '../components/Modal';
-import { _getInstancesPath, _getInstances } from '../utils/selectors';
-import { closeModal } from '../reducers/modals/actions';
+import React, { useState } from "react";
+import fse from "fs-extra";
+import path from "path";
+import { Button } from "antd";
+import { useInterval } from "rooks";
+import { useSelector, useDispatch } from "react-redux";
+import Modal from "../components/Modal";
+import { _getInstancesPath, _getInstances } from "../utils/selectors";
+import { closeModal } from "../reducers/modals/actions";
 
 const InstanceDeleteConfirmation = ({ instanceName }) => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const InstanceDeleteConfirmation = ({ instanceName }) => {
   const instances = useSelector(_getInstances);
 
   const { start, stop } = useInterval(() => {
-    if (!instances.find(instance => instance.name === instanceName)) {
+    if (!instances.find((instance) => instance.name === instanceName)) {
       stop();
       dispatch(closeModal());
     }
@@ -44,7 +44,7 @@ const InstanceDeleteConfirmation = ({ instanceName }) => {
           css={`
             font-style: italic;
             font-weight: 700;
-            color: ${props => props.theme.palette.error.main};
+            color: ${(props) => props.theme.palette.error.main};
           `}
         >
           {instanceName}

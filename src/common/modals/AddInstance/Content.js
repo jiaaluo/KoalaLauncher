@@ -5,16 +5,17 @@ import { Transition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faLongArrowAltRight,
-  faArchive
+  faArchive,
+  faFire,
 } from '@fortawesome/free-solid-svg-icons';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Radio } from 'antd';
-import CurseForgeModpacks from './CurseForgeModpacks';
+import CurseModpacks from './CurseModpacks';
 import FTBModpacks from './FTBModpacks';
 import Import from './Import';
 import NewInstance from './NewInstance';
 import minecraftIcon from '../../assets/minecraftIcon.png';
-import curseForgeIcon from '../../assets/curseforgeIcon.webp';
+import curseIcon from '../../assets/curseforgeIcon.webp';
 import ftbIcon from '../../assets/ftbIcon.webp';
 
 const Content = ({
@@ -32,7 +33,7 @@ const Content = ({
   const [loading, setLoading] = useState(false);
   let pages = [
     <NewInstance setVersion={setVersion} setModpack={setModpack} />,
-    <CurseForgeModpacks
+    <CurseModpacks
       setVersion={setVersion}
       setStep={setStep}
       setModpack={setModpack}
@@ -85,22 +86,22 @@ const Content = ({
                       src={minecraftIcon}
                       width="22px"
                       css={`
-                        margin-right: 4px;
+                        margin-right: 3px;
+                        margin-bottom: 5px;
                         cursor: pointer;
                       `}
                     />
-                    Vanilla
+                    Custom
                   </Radio.Button>
                   <Radio.Button value={1}>
-                    <img
-                      src={curseForgeIcon}
-                      width="20px"
-                      css={`
+                    <FontAwesomeIcon
+                        icon={faFire}
+                        css={`
                         margin-right: 4px;
                         cursor: pointer;
                       `}
                     />
-                    CurseForge
+                    Curse
                   </Radio.Button>
                   {/* <Radio.Button value={3} disabled>ATLauncher</Radio.Button>
                   <Radio.Button value={4} disabled>Technic</Radio.Button> */}

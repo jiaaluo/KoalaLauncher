@@ -1,16 +1,16 @@
-import path from 'path';
-import { promises as fs } from 'fs';
-import fse from 'fs-extra';
-import pMap from 'p-map';
-import { getDirectories, normalizeModData, isMod } from '.';
-import { getFileMurmurHash2 } from '../../../common/utils';
-import { getAddonsByFingerprint, getAddon } from '../../../common/api';
+import path from "path";
+import { promises as fs } from "fs";
+import fse from "fs-extra";
+import pMap from "p-map";
+import { getDirectories, normalizeModData, isMod } from ".";
+import { getFileMurmurHash2 } from "../../../common/utils";
+import { getAddonsByFingerprint, getAddon } from "../../../common/api";
 
-const modsFingerprintsScan = async instancesPath => {
-  const mapFolderToInstance = async instance => {
+const modsFingerprintsScan = async (instancesPath) => {
+  const mapFolderToInstance = async (instance) => {
     try {
       const configPath = path.join(
-        path.join(instancesPath, instance, 'config.json')
+        path.join(instancesPath, instance, "config.json")
       );
       const config = await fse.readJSON(configPath);
 
@@ -18,7 +18,7 @@ const modsFingerprintsScan = async instancesPath => {
         throw new Error(`Config for ${instance} could not be parsed`);
       }
 
-      const modsFolder = path.join(instancesPath, instance, 'mods');
+      const modsFolder = path.join(instancesPath, instance, "mods");
       const modsFolderExists = await fse.pathExists(modsFolder);
 
       if (!modsFolderExists) return { ...config, name: instance };
@@ -77,10 +77,10 @@ const modsFingerprintsScan = async instancesPath => {
             const matches = await Promise.all(
               Object.entries(missingMods).map(async ([fileName, hash]) => {
                 const exactMatch = (data.exactMatches || []).find(
-                  v => v.file.packageFingerprint === hash
+                  (v) => v.file.packageFingerprint === hash
                 );
                 const unmatched = (data.unmatchedFingerprints || []).find(
-                  v => v === hash
+                  (v) => v === hash
                 );
                 if (exactMatch) {
                   let addonData = null;
@@ -93,13 +93,13 @@ const modsFingerprintsScan = async instancesPath => {
                         exactMatch.file.projectId,
                         addonData.name
                       ),
-                      fileName
+                      fileName,
                     };
                   } catch {
                     return {
                       fileName,
                       displayName: fileName,
-                      packageFingerprint: hash
+                      packageFingerprint: hash,
                     };
                   }
                 }
@@ -107,7 +107,7 @@ const modsFingerprintsScan = async instancesPath => {
                   return {
                     fileName,
                     displayName: fileName,
-                    packageFingerprint: hash
+                    packageFingerprint: hash,
                   };
                 }
                 return null;
@@ -119,7 +119,7 @@ const modsFingerprintsScan = async instancesPath => {
           } catch (err) {
             console.error(err);
             tries += 1;
-            await new Promise(resolve => {
+            await new Promise((resolve) => {
               setTimeout(() => {
                 resolve();
               }, 5000);
@@ -129,12 +129,12 @@ const modsFingerprintsScan = async instancesPath => {
       }
 
       const filterMods = newMods
-        .filter(_ => _)
-        .filter(v => !fileNamesToRemove.includes(v.fileName));
+        .filter((_) => _)
+        .filter((v) => !fileNamesToRemove.includes(v.fileName));
 
       const newConfig = {
         ...config,
-        mods: filterMods
+        mods: filterMods,
       };
 
       if (JSON.stringify(config) !== JSON.stringify(newConfig)) {
@@ -150,7 +150,7 @@ const modsFingerprintsScan = async instancesPath => {
 
   const folders = await getDirectories(instancesPath);
   const instances = await pMap(folders, mapFolderToInstance, {
-    concurrency: 5
+    concurrency: 5,
   });
   const hashMap = {};
   // eslint-disable-next-line

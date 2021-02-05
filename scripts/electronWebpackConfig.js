@@ -2,12 +2,12 @@
  * Webpack config for production electron main process
  */
 
-const path = require('path');
+const path = require("path");
 // eslint-disable-next-line
 const webpack = require('webpack');
-const { merge } = require('webpack-merge');
-const TerserPlugin = require('terser-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { merge } = require("webpack-merge");
+const TerserPlugin = require("terser-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 
 const baseConfig = {
   externals: [],
@@ -16,65 +16,65 @@ const baseConfig = {
     rules: [
       {
         test: /\.node$/,
-        loader: 'native-ext-loader',
+        loader: "native-ext-loader",
         options: {
-          basePath: []
-        }
+          basePath: [],
+        },
       },
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
             cacheDirectory: true,
-            presets: [['@babel/preset-env', { targets: { node: '15' } }]],
+            presets: [["@babel/preset-env", { targets: { node: "15" } }]],
             plugins: [
-              '@babel/plugin-proposal-nullish-coalescing-operator',
-              '@babel/plugin-proposal-optional-chaining'
-            ]
-          }
-        }
-      }
-    ]
+              "@babel/plugin-proposal-nullish-coalescing-operator",
+              "@babel/plugin-proposal-optional-chaining",
+            ],
+          },
+        },
+      },
+    ],
   },
 
   output: {
-    path: path.join(__dirname, '..', 'build'),
+    path: path.join(__dirname, "..", "build"),
     // https://github.com/webpack/webpack/issues/1114
-    libraryTarget: 'commonjs2'
+    libraryTarget: "commonjs2",
   },
 
   /**
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
-    modules: [path.join(__dirname, '..', 'build'), 'node_modules']
+    extensions: [".js", ".jsx", ".json"],
+    modules: [path.join(__dirname, "..", "build"), "node_modules"],
   },
 
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: process.env.NODE_ENV,
-      REACT_APP_RELEASE_TYPE: process.env.REACT_APP_RELEASE_TYPE
+      REACT_APP_RELEASE_TYPE: process.env.REACT_APP_RELEASE_TYPE,
     }),
 
-    new webpack.NamedModulesPlugin()
-  ]
+    new webpack.NamedModulesPlugin(),
+  ],
 };
 
 module.exports = merge(baseConfig, {
-  devtool: 'eval-cheap-module-source-map',
+  devtool: "eval-cheap-module-source-map",
 
   mode: process.env.NODE_ENV,
 
-  target: 'electron-main',
+  target: "electron-main",
 
-  entry: './public/electron.js',
+  entry: "./public/electron.js",
 
   output: {
-    path: path.join(__dirname, '..'),
-    filename: './build/electron.js'
+    path: path.join(__dirname, ".."),
+    filename: "./build/electron.js",
   },
 
   optimization: {
@@ -82,16 +82,16 @@ module.exports = merge(baseConfig, {
       new TerserPlugin({
         parallel: true,
         sourceMap: true,
-        cache: true
-      })
-    ]
+        cache: true,
+      }),
+    ],
   },
 
   plugins: [
     new BundleAnalyzerPlugin({
       analyzerMode:
-        process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
-      openAnalyzer: process.env.OPEN_ANALYZER === 'true'
+        process.env.OPEN_ANALYZER === "true" ? "server" : "disabled",
+      openAnalyzer: process.env.OPEN_ANALYZER === "true",
     }),
 
     /**
@@ -104,10 +104,10 @@ module.exports = merge(baseConfig, {
      * development checks
      */
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production',
+      NODE_ENV: "production",
       DEBUG_PROD: false,
-      START_MINIMIZED: false
-    })
+      START_MINIMIZED: false,
+    }),
   ],
 
   /**
@@ -117,6 +117,6 @@ module.exports = merge(baseConfig, {
    */
   node: {
     __dirname: false,
-    __filename: false
-  }
+    __filename: false,
+  },
 });

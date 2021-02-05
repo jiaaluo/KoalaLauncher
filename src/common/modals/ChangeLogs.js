@@ -1,17 +1,17 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { memo, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Button } from 'antd';
-import { ipcRenderer } from 'electron';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-import Modal from '../components/Modal';
+import React, { memo, useState, useEffect } from "react";
+import styled from "styled-components";
+import { Button } from "antd";
+import { ipcRenderer } from "electron";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import Modal from "../components/Modal";
 
 const ChangeLogs = () => {
   const [version, setVersion] = useState(null);
 
   useEffect(() => {
-    ipcRenderer.invoke('getAppVersion').then(setVersion).catch(console.error);
+    ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
   }, []);
 
   return (
@@ -26,7 +26,7 @@ const ChangeLogs = () => {
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.green};
+              color: ${(props) => props.theme.palette.colors.green};
             `}
           >
             <span>New Features</span>
@@ -41,7 +41,7 @@ const ChangeLogs = () => {
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.red};
+              color: ${(props) => props.theme.palette.colors.red};
             `}
           >
             <span>Bug Fixes</span>
@@ -57,7 +57,7 @@ const ChangeLogs = () => {
         <Section>
           <SectionTitle
             css={`
-              color: ${props => props.theme.palette.colors.lavander};
+              color: ${(props) => props.theme.palette.colors.lavander};
             `}
           >
             <span>Join Our Community</span>
@@ -93,7 +93,7 @@ const Container = styled.div`
   height: 100%;
   text-align: center;
   overflow-y: auto;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
 `;
 
 const SectionTitle = styled.h2`
@@ -104,7 +104,7 @@ const SectionTitle = styled.h2`
   margin: 10px 0 20px;
 
   span {
-    background: ${props => props.theme.palette.secondary.main};
+    background: ${(props) => props.theme.palette.secondary.main};
     padding: 0 10px;
   }
 `;

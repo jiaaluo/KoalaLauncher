@@ -1,10 +1,10 @@
-import makeDir from 'make-dir';
-import fss from 'fs';
-import axios from 'axios';
-import pMap from 'p-map';
-import path from 'path';
-import adapter from 'axios/lib/adapters/http';
-import computeFileHash from './computeFileHash';
+import makeDir from "make-dir";
+import fss from "fs";
+import axios from "axios";
+import pMap from "p-map";
+import path from "path";
+import adapter from "axios/lib/adapters/http";
+import computeFileHash from "./computeFileHash";
 
 const fs = fss.promises;
 
@@ -16,17 +16,17 @@ export const downloadInstanceFiles = async (
   let downloaded = 0;
   await pMap(
     arr,
-    async item => {
+    async (item) => {
       let counter = 0;
       let res = false;
       if (!item.path || !item.url) {
-        console.warn('Skipping', item);
+        console.warn("Skipping", item);
         return;
       }
       do {
         counter += 1;
         if (counter !== 1) {
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          await new Promise((resolve) => setTimeout(resolve, 5000));
         }
         try {
           res = await downloadFileInstance(
@@ -67,30 +67,30 @@ const downloadFileInstance = async (fileName, url, sha1, legacyPath) => {
     }
 
     const { data } = await axios.get(url, {
-      responseType: 'stream',
+      responseType: "stream",
       responseEncoding: null,
-      adapter
+      adapter,
     });
     const wStream = fss.createWriteStream(fileName, {
-      encoding: null
+      encoding: null,
     });
 
     data.pipe(wStream);
     let wStreamLegacy;
     if (legacyPath) {
       wStreamLegacy = fss.createWriteStream(legacyPath, {
-        encoding: null
+        encoding: null,
       });
       data.pipe(wStreamLegacy);
     }
 
     await new Promise((resolve, reject) => {
-      data.on('error', err => {
+      data.on("error", (err) => {
         console.error(err);
         reject(err);
       });
 
-      data.on('end', () => {
+      data.on("end", () => {
         wStream.end();
         if (legacyPath) {
           wStreamLegacy.end();
@@ -111,18 +111,18 @@ export const downloadFile = async (fileName, url, onProgress) => {
   await makeDir(path.dirname(fileName));
 
   const { data, headers } = await axios.get(url, {
-    responseType: 'stream',
+    responseType: "stream",
     responseEncoding: null,
-    adapter
+    adapter,
   });
   const out = fss.createWriteStream(fileName, { encoding: null });
   data.pipe(out);
 
   // Save variable to know progress
   let receivedBytes = 0;
-  const totalBytes = parseInt(headers['content-length'], 10);
+  const totalBytes = parseInt(headers["content-length"], 10);
 
-  data.on('data', chunk => {
+  data.on("data", (chunk) => {
     // Update the received bytes
     receivedBytes += chunk.length;
     if (onProgress) {
@@ -131,12 +131,12 @@ export const downloadFile = async (fileName, url, onProgress) => {
   });
 
   return new Promise((resolve, reject) => {
-    data.on('end', () => {
+    data.on("end", () => {
       out.end();
       resolve();
     });
 
-    data.on('error', () => {
+    data.on("error", () => {
       reject();
     });
   });

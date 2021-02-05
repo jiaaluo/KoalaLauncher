@@ -1,42 +1,43 @@
-import React, { useState, useEffect, memo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ipcRenderer } from 'electron';
-import styled from 'styled-components';
-import { Transition } from 'react-transition-group';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect, memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ipcRenderer } from "electron";
+import styled from "styled-components";
+import { Transition } from "react-transition-group";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faExclamationCircle,
   faCheckCircle,
-  faExternalLinkAlt
-} from '@fortawesome/free-solid-svg-icons';
-import { Input, Button } from 'antd';
-import { useKey } from 'rooks';
-import axios from 'axios';
-import { login, loginOAuth } from '../../../common/reducers/actions';
-import { load, requesting } from '../../../common/reducers/loading/actions';
-import features from '../../../common/reducers/loading/features';
-import backgroundVideo from '../../../common/assets/background.webm';
-import HorizontalLogo from '../../../ui/HorizontalLogo';
-import { openModal } from '../../../common/reducers/modals/actions';
+  faExternalLinkAlt,
+  faSpinner,
+} from "@fortawesome/free-solid-svg-icons";
+import { Input, Button } from "antd";
+import { useKey } from "rooks";
+import axios from "axios";
+import { login, loginOAuth } from "../../../common/reducers/actions";
+import { load, requesting } from "../../../common/reducers/loading/actions";
+import features from "../../../common/reducers/loading/features";
+import backgroundVideo from "../../../common/assets/background.webm";
+import HorizontalLogo from "../../../ui/HorizontalLogo.png";
+import { openModal } from "../../../common/reducers/modals/actions";
 
 const LoginButton = styled(Button)`
   border-radius: 4px;
   font-size: 22px;
-  background: ${props =>
-    props.active ? props.theme.palette.grey[600] : 'transparent'};
+  background: ${(props) =>
+    props.active ? props.theme.palette.grey[600] : "transparent"};
   border: 0;
   height: auto;
   margin-top: 40px;
   text-align: center;
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   &:hover {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[600]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[600]};
   }
   &:focus {
-    color: ${props => props.theme.palette.text.primary};
-    background: ${props => props.theme.palette.grey[600]};
+    color: ${(props) => props.theme.palette.text.primary};
+    background: ${(props) => props.theme.palette.grey[600]};
   }
 `;
 
@@ -54,43 +55,40 @@ const Container = styled.div`
 const LeftSide = styled.div`
   position: relative;
   width: 300px;
-  padding: 40px;
+  padding: 20px;
   height: 100%;
-  transition: 0.3s ease-in-out;
+  transition: 1s ease-in-out;
   transform: translateX(
     ${({ transitionState }) =>
-      transitionState === 'entering' || transitionState === 'entered'
+      transitionState === "entering" || transitionState === "entered"
         ? -300
         : 0}px
   );
-  background: ${props => props.theme.palette.secondary.main};
+  background: ${(props) => props.theme.palette.secondary.main};
   & div {
-    margin: 10px 0;
+    margin: 2px 0;
   }
   p {
     margin-top: 1em;
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
 `;
 
 const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   align-items: center;
-  margin: 40px 0 !important;
 `;
 
 const Background = styled.div`
   width: 100%;
   display: flex;
+  text-align: center;
   justify-content: center;
   align-items: center;
   video {
-    transition: 0.3s ease-in-out;
+    transition: 1s ease-in-out;
     transform: translateX(
       ${({ transitionState }) =>
-        transitionState === 'entering' || transitionState === 'entered'
+        transitionState === "entering" || transitionState === "entered"
           ? -300
           : 0}px
     );
@@ -120,17 +118,17 @@ const Status = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: ${props => props.theme.palette.text.third};
+  color: ${(props) => props.theme.palette.text.third};
 `;
 
 const FooterLinks = styled.div`
   font-size: 0.75rem;
   margin: 0 !important;
   a {
-    color: ${props => props.theme.palette.text.third};
+    color: ${(props) => props.theme.palette.text.third};
   }
   a:hover {
-    color: ${props => props.theme.palette.text.secondary};
+    color: ${(props) => props.theme.palette.text.secondary};
   }
 `;
 
@@ -146,21 +144,21 @@ const Loading = styled.div`
   font-size: 40px;
   transition: 0.3s ease-in-out;
   opacity: ${({ transitionState }) =>
-    transitionState === 'entering' || transitionState === 'entered' ? 1 : 0};
+    transitionState === "entering" || transitionState === "entered" ? 1 : 0};
 `;
 const LoginFailMessage = styled.div`
-  color: ${props => props.theme.palette.colors.red};
+  color: ${(props) => props.theme.palette.colors.red};
 `;
 
 const StatusIcon = ({ color }) => {
   return (
     <FontAwesomeIcon
-      icon={color === 'red' ? faExclamationCircle : faCheckCircle}
+      icon={color === "red" ? faExclamationCircle : faCheckCircle}
       color={color}
       css={`
         margin: 0 5px;
-        color: ${props =>
-          props.color === 'green'
+        color: ${(props) =>
+          props.color === "green"
             ? props.theme.palette.colors.green
             : props.theme.palette.error.main};
       `}
@@ -176,16 +174,16 @@ const Login = () => {
   const [loginFailed, setLoginFailed] = useState(false);
   const [status, setStatus] = useState({});
   const loading = useSelector(
-    state => state.loading.accountAuthentication.isRequesting
+    (state) => state.loading.accountAuthentication.isRequesting
   );
 
   const authenticate = () => {
     if (!email || !password) return;
-    dispatch(requesting('accountAuthentication'));
+    dispatch(requesting("accountAuthentication"));
     setTimeout(() => {
       dispatch(
         load(features.mcAuthentication, dispatch(login(email, password)))
-      ).catch(e => {
+      ).catch((e) => {
         console.error(e);
         setLoginFailed(e);
         setPassword(null);
@@ -194,11 +192,11 @@ const Login = () => {
   };
 
   const authenticateMicrosoft = () => {
-    dispatch(requesting('accountAuthentication'));
+    dispatch(requesting("accountAuthentication"));
 
     setTimeout(() => {
       dispatch(load(features.mcAuthentication, dispatch(loginOAuth()))).catch(
-        e => {
+        (e) => {
           console.error(e);
           setLoginFailed(e);
         }
@@ -207,26 +205,33 @@ const Login = () => {
   };
 
   const fetchStatus = async () => {
-    const { data } = await axios.get('https://status.mojang.com/check');
+    const { data } = await axios.get("https://status.mojang.com/check");
     const result = {};
     Object.assign(result, ...data);
     setStatus(result);
   };
 
-  useKey(['Enter'], authenticate);
+  useKey(["Enter"], authenticate);
 
   useEffect(() => {
-    ipcRenderer.invoke('getAppVersion').then(setVersion).catch(console.error);
+    ipcRenderer.invoke("getAppVersion").then(setVersion).catch(console.error);
     fetchStatus().catch(console.error);
   }, []);
 
   return (
     <Transition in={loading} timeout={300}>
-      {transitionState => (
+      {(transitionState) => (
         <Container>
           <LeftSide transitionState={transitionState}>
             <Header>
-              <HorizontalLogo size={200} />
+              <img
+                src={HorizontalLogo}
+                height="95px"
+                width="220px"
+                alt="Logo"
+                draggable="false"
+                pointerCursor
+              />{" "}
             </Header>
             <p>Sign in with your Mojang Account</p>
             <Form>
@@ -249,25 +254,30 @@ const Login = () => {
                 <LoginFailMessage>{loginFailed?.message}</LoginFailMessage>
               )}
               <LoginButton color="primary" onClick={authenticate}>
-                Sign In
-                <FontAwesomeIcon
-                  css={`
-                    margin-left: 6px;
-                  `}
-                  icon={faArrowRight}
-                />
+                <h5>
+                  Sign In
+                  <FontAwesomeIcon
+                    css={`
+                      margin-top: 0;
+                      margin-left: 6px;
+                    `}
+                    icon={faArrowRight}
+                  />
+                </h5>
               </LoginButton>
               <MicrosoftLoginButton
                 color="primary"
                 onClick={authenticateMicrosoft}
               >
-                Sign in with Microsoft
-                <FontAwesomeIcon
-                  css={`
-                    margin-left: 6px;
-                  `}
-                  icon={faExternalLinkAlt}
-                />
+                <h5>
+                  Sign in with Microsoft
+                  <FontAwesomeIcon
+                    css={`
+                      margin-left: 6px;
+                    `}
+                    icon={faExternalLinkAlt}
+                  />
+                </h5>
               </MicrosoftLoginButton>
             </Form>
             <Footer>
@@ -281,12 +291,12 @@ const Login = () => {
               >
                 <FooterLinks>
                   <div>
-                    <a href="https://my.minecraft.net/en-us/store/minecraft/#register">
+                    <a href="https://www.minecraft.net/en-us/store/minecraft-java-edition/buy">
                       CREATE AN ACCOUNT
                     </a>
                   </div>
                   <div>
-                    <a href="https://my.minecraft.net/en-us/password/forgot/">
+                    <a href="https://www.minecraft.net/en-us/password/forgot/">
                       FORGOT PASSWORD
                     </a>
                   </div>
@@ -295,16 +305,16 @@ const Login = () => {
                   css={`
                     cursor: pointer;
                   `}
-                  onClick={() => dispatch(openModal('ChangeLogs'))}
+                  onClick={() => dispatch(openModal("Changelogs"))}
                 >
                   v{version}
                 </div>
               </div>
               <Status>
-                Auth: <StatusIcon color={status['authserver.mojang.com']} />
-                Session: <StatusIcon color={status['session.minecraft.net']} />
-                Skins: <StatusIcon color={status['textures.minecraft.net']} />
-                API: <StatusIcon color={status['api.mojang.com']} />
+                Auth: <StatusIcon color={status["authserver.mojang.com"]} />
+                Session: <StatusIcon color={status["session.minecraft.net"]} />
+                Skins: <StatusIcon color={status["textures.minecraft.net"]} />
+                API: <StatusIcon color={status["api.mojang.com"]} />
               </Status>
             </Footer>
           </LeftSide>
@@ -313,7 +323,10 @@ const Login = () => {
               <source src={backgroundVideo} type="video/webm" />
             </video>
           </Background>
-          <Loading transitionState={transitionState}>Loading...</Loading>
+          <Loading transitionState={transitionState}>
+            {" "}
+            <FontAwesomeIcon spin size="4x" icon={faSpinner} />
+          </Loading>
         </Container>
       )}
     </Transition>

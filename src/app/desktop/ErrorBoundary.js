@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from 'antd';
-import { ipcRenderer } from 'electron';
-import creeper from '../../common/assets/creeper.png';
+import React from "react";
+import { Button } from "antd";
+import { ipcRenderer } from "electron";
+import creeper from "../../common/assets/creeper.png";
 
 export default class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) {
@@ -15,13 +15,13 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return {
         ...prevState,
         error: prevState.error
           ? `${prevState.error} / ${error.message}`
           : error.message,
-        info: info.componentStack || prevState.info
+        info: info.componentStack || prevState.info,
       };
     });
   }
@@ -49,10 +49,10 @@ export default class ErrorBoundary extends React.Component {
           <img src={creeper} alt="creeper" />
           <h1
             css={`
-              color: ${props => props.theme.palette.text.primary};
+              color: ${(props) => props.theme.palette.text.primary};
             `}
           >
-            WE’RE SSSSSSORRY. GDLauncher ran into a creeper and blew up..
+            KoalaLauncher encountered a Fatal Error!
           </h1>
           <div
             css={`
@@ -65,13 +65,13 @@ export default class ErrorBoundary extends React.Component {
           <Button
             type="primary"
             onClick={() => {
-              ipcRenderer.invoke('appRestart');
+              ipcRenderer.invoke("appRestart");
             }}
             css={`
               margin-top: 30px;
             `}
           >
-            Restart GDLauncher
+            Restart KoalaLauncher
           </Button>
         </div>
       );

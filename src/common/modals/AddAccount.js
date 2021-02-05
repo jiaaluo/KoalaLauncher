@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { Input, Button } from 'antd';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Modal from '../components/Modal';
-import { load } from '../reducers/loading/actions';
-import features from '../reducers/loading/features';
-import { login, loginOAuth } from '../reducers/actions';
-import { closeModal } from '../reducers/modals/actions';
-import { ACCOUNT_MICROSOFT, ACCOUNT_MOJANG } from '../utils/constants';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { Input, Button } from "antd";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal from "../components/Modal";
+import { load } from "../reducers/loading/actions";
+import features from "../reducers/loading/features";
+import { login, loginOAuth } from "../reducers/actions";
+import { closeModal } from "../reducers/modals/actions";
+import { ACCOUNT_MICROSOFT, ACCOUNT_MOJANG } from "../utils/constants";
 
 const AddAccount = ({ username }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState(username || '');
-  const [password, setPassword] = useState('');
-  const [accountType, setAccountType] = useState('');
+  const [email, setEmail] = useState(username || "");
+  const [password, setPassword] = useState("");
+  const [accountType, setAccountType] = useState("");
   const [loginFailed, setloginFailed] = useState();
 
   const addAccount = () => {
@@ -29,7 +29,7 @@ const AddAccount = ({ username }) => {
   const addMicrosoftAccount = () => {
     dispatch(load(features.mcAuthentication, dispatch(loginOAuth(false))))
       .then(() => dispatch(closeModal()))
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         setloginFailed(error);
       });
@@ -49,13 +49,13 @@ const AddAccount = ({ username }) => {
           disabled={!!username}
           placeholder="Email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <StyledInput
           type="password"
           placeholder="Password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </FormContainer>
       <FormContainer>
@@ -131,7 +131,7 @@ const AddAccount = ({ username }) => {
       `}
       title=" "
     >
-      {accountType === '' ? renderChooseAccountType() : null}
+      {accountType === "" ? renderChooseAccountType() : null}
       {accountType === ACCOUNT_MOJANG ? renderAddMojangAccount() : null}
       {accountType === ACCOUNT_MICROSOFT ? renderAddMicrosoftAccount() : null}
     </Modal>
@@ -149,7 +149,7 @@ const StyledInput = styled(Input)`
 `;
 
 const LoginFailMessage = styled.div`
-  color: ${props => props.theme.palette.colors.red};
+  color: ${(props) => props.theme.palette.colors.red};
 `;
 
 const StyledAccountButton = styled(StyledButton)`

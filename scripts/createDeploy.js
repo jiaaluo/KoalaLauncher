@@ -1,13 +1,13 @@
 // const { promisify } = require('util');
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 // const crypto = require('crypto');
 // const zlib = require('zlib');
-const makeDir = require('make-dir');
+const makeDir = require("make-dir");
 // const { pipeline } = require('stream');
-const fse = require('fs-extra');
-const electronBuilder = require('electron-builder');
-const dotenv = require('dotenv');
+const fse = require("fs-extra");
+const electronBuilder = require("electron-builder");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -51,7 +51,7 @@ const type = process.argv[2];
 //   './release',
 //   `win-unpacked`
 // );
-const deployFolder = path.resolve(__dirname, '../', 'deploy');
+const deployFolder = path.resolve(__dirname, "../", "deploy");
 
 // const createDeployFiles = async () => {
 //   const files = await getFiles(winReleaseFolder);
@@ -102,66 +102,75 @@ const deployFolder = path.resolve(__dirname, '../', 'deploy');
 const commonConfig = {
   config: {
     publish: {
-      owner: 'gorilla-devs',
-      repo: 'GDLauncher',
-      provider: 'github',
-      private: false
+      owner: "KoalaDevs",
+      repo: "KoalaLauncher",
+      provider: "github",
+      private: false,
     },
     generateUpdatesFilesForAllChannels: true,
-    productName: 'GDLauncher',
-    appId: 'org.gorilladevs.GDLauncher',
+    productName: "KoalaLauncher",
+    appId: "com.crankysupertoon.KoalaLauncher",
     files: [
-      '!node_modules/**/*',
-      'node_modules/7zip-bin/linux/x64/7za',
-      'node_modules/7zip-bin/mac/7za',
-      'node_modules/7zip-bin/win/x64/7za.exe',
-      'build/**/*',
-      'package.json',
-      'public/icon.png'
+      "!node_modules/**/*",
+      "node_modules/7zip-bin/linux/x64/7za",
+      "node_modules/7zip-bin/mac/7za",
+      "node_modules/7zip-bin/win/x64/7za.exe",
+      "build/**/*",
+      "package.json",
+      "public/icon.png",
     ],
     extraFiles:
-      process.platform === 'win32'
+      // eslint-disable-next-line no-nested-ternary
+      process.platform === "win32"
         ? [
             {
-              from: 'vcredist/',
-              to: './',
-              filter: '**/*'
-            }
+              from: "vcredist/",
+              to: "./",
+              filter: "**/*",
+            },
+          ]
+        : process.platform === "linux"
+        ? [
+            {
+              from: "public/icon.png",
+              to: "./",
+              filter: "**/*",
+            },
           ]
         : [],
     asar: {
-      smartUnpack: false
+      smartUnpack: false,
     },
     dmg: {
       contents: [
         {
           x: 130,
-          y: 220
+          y: 220,
         },
         {
           x: 410,
           y: 220,
-          type: 'link',
-          path: '/Applications'
-        }
-      ]
+          type: "link",
+          path: "/Applications",
+        },
+      ],
     },
     nsisWeb: {
       oneClick: true,
-      installerIcon: './public/icon.ico',
-      uninstallerIcon: './public/icon.ico',
-      installerHeader: './public/installerHeader.bmp',
-      installerSidebar: './public/installerSidebar.bmp',
-      installerHeaderIcon: './public/icon.ico',
+      installerIcon: "./public/icon.ico",
+      uninstallerIcon: "./public/icon.ico",
+      installerHeader: "./public/installerHeader.bmp",
+      installerSidebar: "./public/installerSidebar.bmp",
+      installerHeaderIcon: "./public/icon.ico",
       deleteAppDataOnUninstall: true,
       allowToChangeInstallationDirectory: false,
       perMachine: false,
       differentialPackage: true,
-      include: './public/installer.nsh'
+      include: "./public/installer.nsh",
     },
     mac: {
-      entitlements: './entitlements.mac.plist',
-      entitlementsInherit: './entitlements.mac.plist'
+      entitlements: "./entitlements.mac.plist",
+      entitlementsInherit: "./entitlements.mac.plist",
     },
     /* eslint-disable */
     artifactName: `${'${productName}'}-${'${os}'}-${
@@ -169,36 +178,34 @@ const commonConfig = {
     }.${'${ext}'}`,
     /* eslint-enable */
     linux: {
-      category: 'Game'
+      category: "Game",
     },
     directories: {
-      buildResources: 'public',
-      output: 'release'
+      buildResources: "public",
+      output: "release",
     },
     protocols: [
       {
-        name: 'gdlauncher',
-        role: 'Viewer',
-        schemes: ['gdlauncher']
-      }
-    ]
+        name: "koalalauncher",
+        role: "Viewer",
+        schemes: ["koalalauncher"],
+      },
+    ],
   },
-  ...((!process.env.RELEASE_TESTING || process.platform === 'linux') && {
+  ...((!process.env.RELEASE_TESTING || process.platform === "linux") && {
     linux:
-      type === 'setup'
-        ? ['appimage:x64', 'zip:x64', 'deb:x64', 'rpm:x64']
-        : ['snap:x64']
+      type === "setup" ? ["appimage:x64", "zip:x64", "deb:x64", "rpm:x64"] : [],
   }),
-  ...((!process.env.RELEASE_TESTING || process.platform === 'win32') && {
-    win: [type === 'setup' ? 'nsis:x64' : 'zip:x64']
+  ...((!process.env.RELEASE_TESTING || process.platform === "win32") && {
+    win: type === "setup" ? ["nsis-web:x64"] : ["zip:x64"],
   }),
-  ...((!process.env.RELEASE_TESTING || process.platform === 'darwin') && {
-    mac: type === 'setup' ? ['dmg:x64'] : []
-  })
+  ...((!process.env.RELEASE_TESTING || process.platform === "win32") && {
+    win: [type === "setup" ? "nsis:x64" : "zip:x64"],
+  }),
 };
 
 const main = async () => {
-  const releasesFolder = path.resolve(__dirname, '../', './release');
+  const releasesFolder = path.resolve(__dirname, "../", "./release");
   await fse.remove(releasesFolder);
   await makeDir(deployFolder);
   await electronBuilder.build(commonConfig);
@@ -224,20 +231,20 @@ const main = async () => {
       darwin: [
         `${productName}-mac-${type}.dmg`,
         `${productName}-mac-${type}.dmg.blockmap`,
-        'latest-mac.yml'
+        "latest-mac.yml",
       ],
       win32: [
         path.join(`${productName}-win-${type}.exe`),
         path.join(`${productName}-win-${type}.exe.blockmap`),
-        path.join('latest.yml')
+        path.join("latest.yml"),
       ],
       linux: [
         `${productName}-linux-${type}.zip`,
         `${productName}-linux-${type}.AppImage`,
         `${productName}-linux-${type}.deb`,
         `${productName}-linux-${type}.rpm`,
-        'latest-linux.yml'
-      ]
+        "latest-linux.yml",
+      ],
     },
     // portable: {
     //   darwin: [],
@@ -247,17 +254,17 @@ const main = async () => {
     portable: {
       darwin: [],
       win32: [],
-      linux: []
-    }
+      linux: [],
+    },
   };
 
   if (!process.env.RELEASE_TESTING) {
     const filesToMove = allFiles[type];
 
     await Promise.all(
-      Object.values(filesToMove).map(async target => {
+      Object.values(filesToMove).map(async (target) => {
         return Promise.all(
-          target.map(async file => {
+          target.map(async (file) => {
             const stats = await fs.promises.stat(
               path.join(releasesFolder, file)
             );
@@ -275,7 +282,7 @@ const main = async () => {
     const filesToMove = allFiles[type][process.platform];
 
     await Promise.all(
-      filesToMove.map(async file => {
+      filesToMove.map(async (file) => {
         const stats = await fs.promises.stat(path.join(releasesFolder, file));
         if (stats.isFile()) {
           await fse.move(
@@ -290,7 +297,7 @@ const main = async () => {
   await fse.remove(releasesFolder);
 };
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });

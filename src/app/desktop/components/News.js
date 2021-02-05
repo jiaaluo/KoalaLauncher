@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import ContentLoader from 'react-content-loader';
-import styled, { ThemeContext } from 'styled-components';
-import { shell } from 'electron';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import ContentLoader from "react-content-loader";
+import styled, { ThemeContext } from "styled-components";
+import { shell } from "electron";
+import { useSelector } from "react-redux";
 
 const Carousel = styled.div`
   width: 100%;
   height: 180px;
   overflow: hidden;
-  border-radius: ${props => props.theme.shape.borderRadius};
+  border-radius: 24px;
   cursor: pointer;
   display: inline-block;
 `;
@@ -19,7 +19,7 @@ const ImageSlider = styled.div`
   align-items: stretch;
   object-fit: covert;
   overflow: hidden;
-  border-radius: ${props => props.theme.shape.borderRadius};
+  border-radius: 24px;
   justify-content: space-between;
   padding: 0;
   margin: 0;
@@ -27,7 +27,7 @@ const ImageSlider = styled.div`
   width: 1000%;
   height: 100%;
   z-index: 0;
-  transform: translate(${props => `${props.currentImageIndex}px`});
+  transform: translate(${(props) => `${props.currentImageIndex}px`});
   transition: transform 0.3s ease-in-out;
 `;
 
@@ -37,8 +37,8 @@ const ImageSlide = styled.div`
   top: 0;
   height: 100%;
   width: 100%;
-  border-radius: ${props => props.theme.shape.borderRadius};
-  background-image: url('${props => (props.image ? props.image : null)}');
+  border-radius: 24px;
+  background-image: url("${(props) => (props.image ? props.image : null)}");
   background-position: center;
   background-size: cover;
   transition: transform 0.2s ease-in-out;
@@ -60,7 +60,7 @@ const Slide = styled.div`
 const Gradient = styled.div`
   height: 100%;
   width: 100%;
-  border-radius: ${props => props.theme.shape.borderRadius};
+  border-radius: ${(props) => props.theme.shape.borderRadius};
   background-image: linear-gradient(
     0deg,
     rgba(0, 0, 0, 1) 0%,
@@ -91,36 +91,36 @@ const SelectElement = styled.div`
   flex: 1;
   margin: 0 2px 0 2px;
   cursor: pointer;
-  background: ${props => props.theme.palette.grey[50]};
+  background: ${(props) => props.theme.palette.grey[50]};
   opacity: 0.6;
   transition: flex-grow 0.2s ease-in-out;
   border-radius: 2px;
   &:hover {
     margin: 0 2px 0 2px;
     flex-grow: 2;
-    background: ${props => props.theme.palette.grey[50]};
+    background: ${(props) => props.theme.palette.grey[50]};
     opacity: 0.79;
     vertical-align: middle;
   }
   &:active {
     margin: 0 2px 0 2px;
     flex-grow: 2;
-    background: ${props => props.theme.palette.grey[50]};
+    background: ${(props) => props.theme.palette.grey[50]};
     opacity: 1;
     vertical-align: middle;
   }
 
-  &:nth-child(${props => props.currentImageIndex}) {
+  &:nth-child(${(props) => props.currentImageIndex}) {
     margin: 0 2px 0 2px;
     flex-grow: 2;
-    background: ${props => props.theme.palette.grey[50]};
+    background: ${(props) => props.theme.palette.grey[50]};
     opacity: 1;
     vertical-align: middle;
   }
 `;
 
 const Title = styled.h1`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   position: absolute;
   bottom: 50px;
   left: 15px;
@@ -128,7 +128,7 @@ const Title = styled.h1`
 `;
 
 const SubTitle = styled.p`
-  color: ${props => props.theme.palette.text.primary};
+  color: ${(props) => props.theme.palette.text.primary};
   position: absolute;
   bottom: 30px;
   left: 15px;
@@ -141,8 +141,8 @@ function openNews(e, inf) {
 }
 
 function ImageList({ currentImageIndex, news }) {
-  const listImages = news.map(inf => (
-    <Slide key={inf.title} onClick={e => openNews(e, inf)}>
+  const listImages = news.map((inf) => (
+    <Slide key={inf.title} onClick={(e) => openNews(e, inf)}>
       <Title>{inf.title}</Title>
       <SubTitle>{inf.description}</SubTitle>
       <Gradient />
@@ -194,7 +194,7 @@ function useInterval(callback, delay) {
 function News({ style, news }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const ContextTheme = useContext(ThemeContext);
-  const showNews = useSelector(state => state.settings.showNews);
+  const showNews = useSelector((state) => state.settings.showNews);
 
   useInterval(
     () => {

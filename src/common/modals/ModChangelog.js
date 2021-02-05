@@ -1,11 +1,11 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { memo, useState } from 'react';
-import styled from 'styled-components';
-import ReactHtmlParser from 'react-html-parser';
-import { Select } from 'antd';
-import ReactMarkdown from 'react-markdown';
-import Modal from '../components/Modal';
-import { getAddonFileChangelog, getFTBChangelog } from '../api';
+import React, { memo, useState } from "react";
+import styled from "styled-components";
+import ReactHtmlParser from "react-html-parser";
+import { Select } from "antd";
+import ReactMarkdown from "react-markdown";
+import Modal from "../components/Modal";
+import { getAddonFileChangelog, getFTBChangelog } from "../api";
 
 let latest = {};
 const ModChangelog = ({ modpackId, files, type, modpackName }) => {
@@ -13,13 +13,13 @@ const ModChangelog = ({ modpackId, files, type, modpackName }) => {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  const loadChangelog = async id => {
+  const loadChangelog = async (id) => {
     const myLatest = {};
     latest = myLatest;
     setLoading(true);
     let data;
     try {
-      if (type === 'ftb') {
+      if (type === "ftb") {
         ({ data } = await getFTBChangelog(modpackId, id));
       } else {
         ({ data } = await getAddonFileChangelog(modpackId, id));
@@ -35,13 +35,13 @@ const ModChangelog = ({ modpackId, files, type, modpackName }) => {
 
   const getStateText = () => {
     if (!selectedId) {
-      return '';
+      return "";
     }
     if (loading) {
-      return 'Loading';
+      return "Loading";
     }
     if (!changelog) {
-      return 'Missing changelog';
+      return "Missing changelog";
     }
   };
 
@@ -51,7 +51,7 @@ const ModChangelog = ({ modpackId, files, type, modpackName }) => {
         height: 500px;
         width: 650px;
       `}
-      title="Changelog"
+      title="Changelogs"
     >
       <div
         css={`
@@ -68,21 +68,21 @@ const ModChangelog = ({ modpackId, files, type, modpackName }) => {
             width: 400px;
             margin: 10px;
           `}
-          onChange={v => {
+          onChange={(v) => {
             setSelectedId(v);
             loadChangelog(v);
           }}
           placeholder="Select a version"
         >
-          {(files || []).map(v => (
+          {(files || []).map((v) => (
             <Select.Option
               title={
-                type === 'ftb' ? `${modpackName} - ${v.name}` : v.displayName
+                type === "ftb" ? `${modpackName} - ${v.name}` : v.displayName
               }
               key={v.id}
               value={v.id}
             >
-              {type === 'ftb' ? `${modpackName} - ${v.name}` : v.displayName}
+              {type === "ftb" ? `${modpackName} - ${v.name}` : v.displayName}
             </Select.Option>
           ))}
         </Select>
@@ -95,13 +95,13 @@ const ModChangelog = ({ modpackId, files, type, modpackName }) => {
                   margin-bottom: 40px;
                 `}
               >
-                {type === 'ftb'
+                {type === "ftb"
                   ? `${modpackName} - ${
-                      (files || []).find(v => v.id === selectedId)?.name
+                      (files || []).find((v) => v.id === selectedId)?.name
                     }`
-                  : (files || []).find(v => v.id === selectedId)?.displayName}
+                  : (files || []).find((v) => v.id === selectedId)?.displayName}
               </div>
-              {type === 'ftb' ? (
+              {type === "ftb" ? (
                 <ReactMarkdown
                   css={`
                     font-size: 15px;
@@ -136,7 +136,7 @@ const Changelog = styled.div`
   transform-style: preserve-3d;
   height: 100%;
   width: 100%;
-  background: ${props => props.theme.palette.grey[900]};
+  background: ${(props) => props.theme.palette.grey[900]};
   word-break: break-all;
   overflow-x: hidden;
   overflow-y: scroll;

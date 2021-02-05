@@ -1,7 +1,7 @@
 {
-  "name": "gdlauncher",
-  "version": "1.1.0-beta.2",
-  "description": "GDLauncher is simple, yet powerful Minecraft custom launcher with a strong focus on the user experience",
+  "name": "koalalauncher",
+  "version": "1.0.12",
+  "description": "KoalaLauncher is simple, yet powerful custom Minecraft launcher with a strong focus on the user experience",
   "keywords": [
     "minecraft",
     "launcher",
@@ -14,17 +14,17 @@
     "webpack"
   ],
   "bugs": {
-    "url": "https://github.com/gorilla-devs/GDLauncher/issues"
+    "url": "https://github.com/KoalaDevs/KoalaLauncher/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gorilla-devs/GDLauncher.git"
+    "url": "git+https://github.com/KoalaDevs/KoalaLauncher.git"
   },
   "license": "GPL-3.0",
   "author": {
-    "name": "GorillaDevs",
-    "email": "davide@gdevs.io",
-    "url": "https://gdevs.io"
+    "name": "KoalaDevs",
+    "email": "crankysupertoon@gmail.com",
+    "url": "https://koala.crankysupertoon.live"
   },
   "private": false,
   "homepage": "./",
@@ -41,7 +41,7 @@
     "build-electron:setup": "cross-env-shell NODE_ENV=production REACT_APP_RELEASE_TYPE=setup ./node_modules/.bin/webpack --config ./scripts/electronWebpackConfig.js --color && npm run moveBuildEntryPoint",
     "build-electron:dev": "cross-env-shell NODE_ENV=development REACT_APP_RELEASE_TYPE=setup ./node_modules/.bin/webpack --config ./scripts/electronWebpackConfig.js --color && npm run moveBuildEntryPoint",
     "moveBuildEntryPoint": "node ./scripts/moveNativesToBuild.js",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "dev": "npm run build-electron:dev && cross-env-shell NODE_ENV=development APP_TYPE=electron BROWSER=none \"npm run start-electron\"",
     "dev-web": "cross-env-shell NODE_ENV=development APP_TYPE=web npm run start",
     "postinstall": "npm run rebuild",
@@ -167,18 +167,20 @@
     "electron-log": "^4.3.1",
     "electron-store": "^6.0.1",
     "electron-updater": "^4.3.5",
+    "fast-xml-parser": "^3.17.6",
+    "@fontsource/averia-sans-libre": "^4.1.0",
     "fs-extra": "^9.0.1",
     "get-stream": "^6.0.0",
     "history": "^4.10.1",
-    "inter-ui": "^3.15.0",
     "is-electron": "^2.2.0",
     "jimp": "^0.16.1",
     "lockfile": "^1.0.4",
     "lodash": "^4.17.20",
     "make-dir": "^3.1.0",
     "memoize-one": "^5.1.1",
-    "murmur2-calculator": "https://github.com/gorilla-devs/murmur2-calculator",
-    "node-7z": "^2.1.2",
+    "murmur2-calculator": "https://github.com/KoalaDevs/murmur2-calculator",
+    "ncp": "^2.0.0",
+    "node-7z": "^2.1.1",
     "node-machine-id": "^1.1.12",
     "nsfw": "^2.1.0",
     "p-map": "^4.0.0",

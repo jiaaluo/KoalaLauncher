@@ -1,37 +1,37 @@
-import { createSelector } from 'reselect';
-import path from 'path';
-import memoize from 'lodash/memoize';
-import { convertOSToJavaFormat } from '../../app/desktop/utils';
+import { createSelector } from "reselect";
+import path from "path";
+import memoize from "lodash/memoize";
+import { convertOSToJavaFormat } from "../../app/desktop/utils";
 
-const _instances = state => state.instances;
-const _accounts = state => state.app.accounts;
-const _java = state => state.settings.java;
-const _currentAccountId = state => state.app.currentAccountId;
-const _currentDownload = state => state.currentDownload;
-const _downloadQueue = state => state.downloadQueue;
-const _javaManifest = state => state.app.javaManifest;
-const _userData = state => state.userData;
+const _instances = (state) => state.instances;
+const _accounts = (state) => state.app.accounts;
+const _java = (state) => state.settings.java;
+const _currentAccountId = (state) => state.app.currentAccountId;
+const _currentDownload = (state) => state.currentDownload;
+const _downloadQueue = (state) => state.downloadQueue;
+const _javaManifest = (state) => state.app.javaManifest;
+const _userData = (state) => state.userData;
 
-export const _getInstances = createSelector(_instances, instances =>
+export const _getInstances = createSelector(_instances, (instances) =>
   Object.values(instances.list)
 );
 
-export const _getInstance = createSelector(_instances, instances =>
-  memoize(instance => instances.list[instance])
+export const _getInstance = createSelector(_instances, (instances) =>
+  memoize((instance) => instances.list[instance])
 );
 
 export const _getCurrentAccount = createSelector(
   _accounts,
   _currentAccountId,
   (accounts, currentAccountId) =>
-    accounts.find(account => account.selectedProfile.id === currentAccountId)
+    accounts.find((account) => account.selectedProfile.id === currentAccountId)
 );
 
-export const _getAccounts = createSelector(_accounts, accounts => accounts);
+export const _getAccounts = createSelector(_accounts, (accounts) => accounts);
 
 export const _getDownloadQueue = createSelector(
   _downloadQueue,
-  downloadQueue => downloadQueue
+  (downloadQueue) => downloadQueue
 );
 
 export const _getCurrentDownloadItem = createSelector(
@@ -50,39 +50,64 @@ export const _getJavaPath = createSelector(
     if (java.path) return java.path;
     const javaOs = convertOSToJavaFormat(process.platform);
     const javaMeta = javaManifest.find(
-      v =>
-        v.os === javaOs && v.architecture === 'x64' && v.binary_type === 'jre'
+      (v) =>
+        v.os === javaOs && v.architecture === "x64" && v.binary_type === "jre"
     );
     const {
-      version_data: { openjdk_version: version }
+      version_data: { openjdk_version: version },
     } = javaMeta;
-    const filename = process.platform === 'win32' ? 'java.exe' : 'java';
-    return path.join(userData, 'java', version, 'bin', filename);
+    const filename = process.platform === "win32" ? "java.exe" : "java";
+    return path.join(userData, "java", version, "bin", filename);
   }
 );
 
-export const _getInstancesPath = createSelector(_userData, userData =>
-  userData ? path.join(userData, 'instances') : null
+export const _getInstancesPath = createSelector(_userData, (userData) =>
+  userData ? path.join(userData, "instances") : null
 );
 
-export const _getTempPath = createSelector(_userData, userData =>
-  path.join(userData, 'temp')
+export const _getTempPath = createSelector(_userData, (userData) =>
+  path.join(userData, "temp")
 );
 
-export const _getDataStorePath = createSelector(_userData, userData =>
-  path.join(userData, 'datastore')
+export const _getDataStorePath = createSelector(_userData, (userData) =>
+  path.join(userData, "datastore")
 );
 
 export const _getLibrariesPath = createSelector(
   _getDataStorePath,
-  datastorePath => path.join(datastorePath, 'libraries')
+  (datastorePath) => path.join(datastorePath, "libraries")
 );
 
 export const _getMinecraftVersionsPath = createSelector(
   _getLibrariesPath,
-  librariesPath => path.join(librariesPath, 'net', 'minecraft')
+  (librariesPath) => path.join(librariesPath, "net", "minecraft")
 );
 
-export const _getAssetsPath = createSelector(_getDataStorePath, datastorePath =>
-  path.join(datastorePath, 'assets')
+export const _getAssetsPath = createSelector(
+  _getDataStorePath,
+  (datastorePath) => path.join(datastorePath, "assets")
+);
+
+export const _getNativeLibs = createSelector(
+  _getDataStorePath,
+  (datastorePath) => {
+    if (process.platform === "win32") {
+      return path.join(datastorePath, "natives", "windows");
+    }
+    if (process.platform === "darwin") {
+      return path.join(datastorePath, "natives", "MacOS");
+    }
+    if (process.platform === "linux") {
+      return path.join(datastorePath, "natives", "linux");
+    }
+    if (process.platform === "freebsd") {
+      return path.join(datastorePath, "natives", "freebsd");
+    }
+    return path.join(datastorePath, "natives", "undefinedOS");
+  }
+);
+
+export const _getModCachePath = createSelector(
+  _getDataStorePath,
+  (datastorePath) => path.join(datastorePath, "modCache")
 );
