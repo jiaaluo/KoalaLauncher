@@ -8,11 +8,13 @@ import {
   faArrowRight,
   faExclamationCircle,
   faCheckCircle,
+  faExternalLinkAlt,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { Input, Button } from "antd";
 import { useKey } from "rooks";
 import axios from "axios";
-import { login } from "../../../common/reducers/actions";
+import { login, loginOAuth } from "../../../common/reducers/actions";
 import { load, requesting } from "../../../common/reducers/loading/actions";
 import features from "../../../common/reducers/loading/features";
 import backgroundVideo from "../../../common/assets/background.webm";
@@ -39,6 +41,10 @@ const LoginButton = styled(Button)`
   }
 `;
 
+const MicrosoftLoginButton = styled(LoginButton)`
+  margin-top: 10px;
+`;
+
 const Container = styled.div`
   display: flex;
   width: 100%;
@@ -49,9 +55,9 @@ const Container = styled.div`
 const LeftSide = styled.div`
   position: relative;
   width: 300px;
-  padding: 40px;
+  padding: 20px;
   height: 100%;
-  transition: 0.3s ease-in-out;
+  transition: 1s ease-in-out;
   transform: translateX(
     ${({ transitionState }) =>
       transitionState === "entering" || transitionState === "entered"
@@ -60,7 +66,7 @@ const LeftSide = styled.div`
   );
   background: ${(props) => props.theme.palette.secondary.main};
   & div {
-    margin: 10px 0;
+    margin: 2px 0;
   }
   p {
     margin-top: 1em;
@@ -69,20 +75,17 @@ const LeftSide = styled.div`
 `;
 
 const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   align-items: center;
-  margin: 40px 0 !important;
 `;
 
 const Background = styled.div`
   width: 100%;
   display: flex;
+  text-align: center;
   justify-content: center;
   align-items: center;
   video {
-    transition: 0.3s ease-in-out;
+    transition: 1s ease-in-out;
     transform: translateX(
       ${({ transitionState }) =>
         transitionState === "entering" || transitionState === "entered"
@@ -188,6 +191,19 @@ const Login = () => {
     }, 1000);
   };
 
+  const authenticateMicrosoft = () => {
+    dispatch(requesting("accountAuthentication"));
+
+    setTimeout(() => {
+      dispatch(load(features.mcAuthentication, dispatch(loginOAuth()))).catch(
+        (e) => {
+          console.error(e);
+          setLoginFailed(e);
+        }
+      );
+    }, 1000);
+  };
+
   const fetchStatus = async () => {
     const { data } = await axios.get("https://status.mojang.com/check");
     const result = {};
@@ -210,8 +226,8 @@ const Login = () => {
             <Header>
               <img
                 src={HorizontalLogo}
-                height="85px"
-                width="200px"
+                height="95px"
+                width="220px"
                 alt="Logo"
                 draggable="false"
                 pointerCursor
@@ -238,14 +254,31 @@ const Login = () => {
                 <LoginFailMessage>{loginFailed?.message}</LoginFailMessage>
               )}
               <LoginButton color="primary" onClick={authenticate}>
-                Sign In
-                <FontAwesomeIcon
-                  css={`
-                    margin-left: 6px;
-                  `}
-                  icon={faArrowRight}
-                />
+                <h5>
+                  Sign In
+                  <FontAwesomeIcon
+                    css={`
+                      margin-top: 0;
+                      margin-left: 6px;
+                    `}
+                    icon={faArrowRight}
+                  />
+                </h5>
               </LoginButton>
+              <MicrosoftLoginButton
+                color="primary"
+                onClick={authenticateMicrosoft}
+              >
+                <h5>
+                  Sign in with Microsoft
+                  <FontAwesomeIcon
+                    css={`
+                      margin-left: 6px;
+                    `}
+                    icon={faExternalLinkAlt}
+                  />
+                </h5>
+              </MicrosoftLoginButton>
             </Form>
             <Footer>
               <div
@@ -258,12 +291,12 @@ const Login = () => {
               >
                 <FooterLinks>
                   <div>
-                    <a href="https://my.minecraft.net/en-us/store/minecraft/#register">
+                    <a href="https://www.minecraft.net/en-us/store/minecraft-java-edition/buy">
                       CREATE AN ACCOUNT
                     </a>
                   </div>
                   <div>
-                    <a href="https://my.minecraft.net/en-us/password/forgot/">
+                    <a href="https://www.minecraft.net/en-us/password/forgot/">
                       FORGOT PASSWORD
                     </a>
                   </div>
@@ -290,7 +323,10 @@ const Login = () => {
               <source src={backgroundVideo} type="video/webm" />
             </video>
           </Background>
-          <Loading transitionState={transitionState}>Loading...</Loading>
+          <Loading transitionState={transitionState}>
+            {" "}
+            <FontAwesomeIcon spin size="4x" icon={faSpinner} />
+          </Loading>
         </Container>
       )}
     </Transition>

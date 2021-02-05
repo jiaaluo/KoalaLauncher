@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Spin, Button, message } from "antd";
+import { Spin, message } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -12,9 +12,11 @@ import {
   loginWithAccessToken,
   updateAccount,
   removeAccount,
+  loginWithOAuthAccessToken,
 } from "../reducers/actions";
 import { load } from "../reducers/loading/actions";
 import features from "../reducers/loading/features";
+import { ACCOUNT_MICROSOFT } from "../utils/constants";
 
 const ProfileSettings = () => {
   const dispatch = useDispatch();
@@ -57,7 +59,11 @@ const ProfileSettings = () => {
                     dispatch(
                       load(
                         features.mcAuthentication,
-                        dispatch(loginWithAccessToken(false))
+                        dispatch(
+                          account.accountType === ACCOUNT_MICROSOFT
+                            ? loginWithOAuthAccessToken(false)
+                            : loginWithAccessToken(false)
+                        )
                       )
                     ).catch(() => {
                       dispatch(updateCurrentAccountId(currentId));
@@ -110,26 +116,17 @@ const ProfileSettings = () => {
                     }
                   `}
                 >
-                  <Button
-                    type="primary"
+                  <FontAwesomeIcon
                     onClick={async () => {
                       const result = await dispatch(
-                        openModal("ActionConfirmation", {
-                          message:
-                            "Are you sure you want to remove this account?",
-                          confirmCallback: removeAccount(
-                            account.selectedProfile.id
-                          ),
-                          title: "Confirm",
-                        })
+                        removeAccount(account.selectedProfile.id)
                       );
                       if (!result) {
                         dispatch(closeModal());
                       }
                     }}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
+                    icon={faTrash}
+                  />
                 </div>
               </AccountContainer>
             );

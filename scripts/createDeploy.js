@@ -168,6 +168,10 @@ const commonConfig = {
       differentialPackage: true,
       include: "./public/installer.nsh",
     },
+    mac: {
+      entitlements: "./entitlements.mac.plist",
+      entitlementsInherit: "./entitlements.mac.plist",
+    },
     /* eslint-disable */
     artifactName: `${'${productName}'}-${'${os}'}-${
       process.argv[2]
@@ -180,6 +184,13 @@ const commonConfig = {
       buildResources: "public",
       output: "release",
     },
+    protocols: [
+      {
+        name: "koalalauncher",
+        role: "Viewer",
+        schemes: ["koalalauncher"],
+      },
+    ],
   },
   ...((!process.env.RELEASE_TESTING || process.platform === "linux") && {
     linux:
