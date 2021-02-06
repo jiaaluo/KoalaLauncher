@@ -28,9 +28,9 @@ import { generate as generateRandomString } from "randomstring";
 import fxp from "fast-xml-parser";
 import * as ActionTypes from "./actionTypes";
 import {
-  // NEWS_URL,
-  NEWS_URL_RSS,
-  MC_RESOURCES_URL,
+  // MINECRAFT_NEWS_URL,
+  MINECRAFT_NEWS,
+  MINECRAFT_RESOURCES,
   LEGACYJAVAFIXER_URL,
   FORGE,
   FABRIC,
@@ -199,7 +199,7 @@ export function initNews() {
     } = getState();
     if (news.length === 0 && !minecraftNews.isRequesting) {
       try {
-        const { data: newsXml } = await axios.get(NEWS_URL_RSS);
+        const { data: newsXml } = await axios.get(MINECRAFT_NEWS);
         const newsArr =
           fxp.parse(newsXml)?.rss?.channel?.item?.map((newsEntry) => ({
             title: newsEntry.title,
@@ -1006,6 +1006,7 @@ export function addToQueue(
   instanceName,
   modloader,
   manifest,
+  newManifest,
   background,
   timePlayed
 ) {
@@ -1852,7 +1853,7 @@ export function downloadInstance(instanceName) {
 
       const assets = Object.entries(assetsJson.objects).map(
         ([assetKey, { hash }]) => ({
-          url: `${MC_RESOURCES_URL}/${hash.substring(0, 2)}/${hash}`,
+          url: `${MINECRAFT_RESOURCES}/${hash.substring(0, 2)}/${hash}`,
           type: "asset",
           sha1: hash,
           path: path.join(
@@ -2505,6 +2506,7 @@ export function launchInstance(instanceName) {
     );
 
     let errorLogs = "";
+    let stackTrace = "";
 
     const mcJson = await fse.readJson(
       path.join(_getMinecraftVersionsPath(state), `${modloader[1]}.json`)
@@ -2683,8 +2685,11 @@ export function launchInstance(instanceName) {
     });
 
     ps.stderr.on("data", (data) => {
+      const errorObj = {};
+      Error.captureStackTrace(errorObj);
       console.error(`ps stderr: ${data}`);
       errorLogs += data || "";
+      stackTrace = errorObj.stack || "";
     });
 
     ps.on("close", async (code) => {
@@ -2702,6 +2707,7 @@ export function launchInstance(instanceName) {
           openModal("InstanceCrashed", {
             code,
             errorLogs: errorLogs?.toString("utf8"),
+            stackTrace,
           })
         );
         console.warn(`Process exited with code ${code}. Not too good..`);

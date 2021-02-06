@@ -2,18 +2,18 @@
 import axios from "axios";
 import qs from "querystring";
 import {
-  MOJANG_APIS,
-  FORGESVC_URL,
-  MC_MANIFEST_URL,
-  FABRIC_APIS,
+  YGGDRASIL,
+  CURSEFORGE_API,
+  MINECRAFT_MANIFEST,
+  FABRIC_API,
   JAVA_MANIFEST_URL,
   IMGUR_CLIENT_ID,
-  FORGESVC_CATEGORIES,
+  CURSEFORGE_CATEGORIES,
   MICROSOFT_LIVE_LOGIN_URL,
   MICROSOFT_XBOX_LOGIN_URL,
   MICROSOFT_XSTS_AUTH_URL,
   MINECRAFT_SERVICES_URL,
-  FTB_API_URL,
+  MODPACKSCH_API,
   PASTEBIN_API_KEY,
 } from "./utils/constants";
 import { sortByDate } from "./utils";
@@ -115,7 +115,7 @@ export const msOAuthRefresh = (clientId, refreshToken) => {
 
 export const mcAuthenticate = (username, password, clientToken) => {
   return axios.post(
-    `${MOJANG_APIS}/authenticate`,
+    `${YGGDRASIL}/authenticate`,
     {
       agent: {
         name: "Minecraft",
@@ -132,7 +132,7 @@ export const mcAuthenticate = (username, password, clientToken) => {
 
 export const mcValidate = (accessToken, clientToken) => {
   return axios.post(
-    `${MOJANG_APIS}/validate`,
+    `${YGGDRASIL}/validate`,
     {
       accessToken,
       clientToken,
@@ -143,7 +143,7 @@ export const mcValidate = (accessToken, clientToken) => {
 
 export const mcRefresh = (accessToken, clientToken) => {
   return axios.post(
-    `${MOJANG_APIS}/refresh`,
+    `${YGGDRASIL}/refresh`,
     {
       accessToken,
       clientToken,
@@ -164,6 +164,8 @@ export const pasteBinPost = (code) => {
   bodyFormData.append("api_dev_key", PASTEBIN_API_KEY);
   bodyFormData.append("api_option", "paste");
   bodyFormData.append("api_paste_code", code);
+  bodyFormData.append("api_paste_expire_date", "N");
+  bodyFormData.append("api_results_limit", 1000);
 
   const config = {
     headers: {
@@ -192,7 +194,7 @@ export const imgurPost = (image, onProgress) => {
 
 export const mcInvalidate = (accessToken, clientToken) => {
   return axios.post(
-    `${MOJANG_APIS}/invalidate`,
+    `${YGGDRASIL}/invalidate`,
     {
       accessToken,
       clientToken,
@@ -202,7 +204,7 @@ export const mcInvalidate = (accessToken, clientToken) => {
 };
 
 export const getMcManifest = () => {
-  const url = `${MC_MANIFEST_URL}?timestamp=${new Date().getTime()}`;
+  const url = `${MINECRAFT_MANIFEST}?timestamp=${new Date().getTime()}`;
   return axios.get(url);
 };
 
@@ -212,7 +214,7 @@ export const getForgeManifest = () => {
 };
 
 export const getFabricManifest = () => {
-  const url = `${FABRIC_APIS}/versions`;
+  const url = `${FABRIC_API}/versions`;
   return axios.get(url);
 };
 
@@ -223,7 +225,7 @@ export const getJavaManifest = () => {
 
 export const getFabricJson = ([, version, loader]) => {
   return axios.get(
-    `${FABRIC_APIS}/versions/loader/${encodeURIComponent(
+    `${FABRIC_API}/versions/loader/${encodeURIComponent(
       version
     )}/${encodeURIComponent(loader)}/profile/json`
   );
@@ -232,17 +234,17 @@ export const getFabricJson = ([, version, loader]) => {
 // FORGE ADDONS
 
 export const getAddon = (addonID) => {
-  const url = `${FORGESVC_URL}/addon/${addonID}`;
+  const url = `${CURSEFORGE_API}/addon/${addonID}`;
   return axios.get(url);
 };
 
 export const getMultipleAddons = async (addons) => {
-  const url = `${FORGESVC_URL}/addon`;
+  const url = `${CURSEFORGE_API}/addon`;
   return axios.post(url, addons);
 };
 
 export const getAddonFiles = (addonID) => {
-  const url = `${FORGESVC_URL}/addon/${addonID}/files`;
+  const url = `${CURSEFORGE_API}/addon/${addonID}/files`;
   return axios.get(url).then((res) => ({
     ...res,
     data: res.data.sort(sortByDate),
@@ -250,27 +252,27 @@ export const getAddonFiles = (addonID) => {
 };
 
 export const getAddonDescription = (addonID) => {
-  const url = `${FORGESVC_URL}/addon/${addonID}/description`;
+  const url = `${CURSEFORGE_API}/addon/${addonID}/description`;
   return axios.get(url);
 };
 
 export const getAddonFile = (addonID, fileID) => {
-  const url = `${FORGESVC_URL}/addon/${addonID}/file/${fileID}`;
+  const url = `${CURSEFORGE_API}/addon/${addonID}/file/${fileID}`;
   return axios.get(url);
 };
 
 export const getAddonsByFingerprint = (fingerprints) => {
-  const url = `${FORGESVC_URL}/fingerprint`;
+  const url = `${CURSEFORGE_API}/fingerprint`;
   return axios.post(url, fingerprints);
 };
 
 export const getAddonFileChangelog = (addonID, fileID) => {
-  const url = `${FORGESVC_URL}/addon/${addonID}/file/${fileID}/changelog`;
+  const url = `${CURSEFORGE_API}/addon/${addonID}/file/${fileID}/changelog`;
   return axios.get(url);
 };
 
 export const getAddonCategories = () => {
-  return axios.get(FORGESVC_CATEGORIES);
+  return axios.get(CURSEFORGE_CATEGORIES);
 };
 
 export const getSearch = (
@@ -283,7 +285,7 @@ export const getSearch = (
   gameVersion,
   categoryId
 ) => {
-  const url = `${FORGESVC_URL}/addon/search`;
+  const url = `${CURSEFORGE_API}/addon/search`;
   const params = {
     gameId: 432,
     sectionId: type === "mods" ? 6 : 4471,
@@ -300,7 +302,7 @@ export const getSearch = (
 
 export const getFTBModpackData = async (modpackId) => {
   try {
-    const url = `${FTB_API_URL}/modpack/${modpackId}`;
+    const url = `${MODPACKSCH_API}/modpack/${modpackId}`;
     const { data } = await axios.get(url);
     return data;
   } catch {
@@ -310,7 +312,7 @@ export const getFTBModpackData = async (modpackId) => {
 
 export const getFTBModpackVersionData = async (modpackId, versionId) => {
   try {
-    const url = `${FTB_API_URL}/modpack/${modpackId}/${versionId}`;
+    const url = `${MODPACKSCH_API}/modpack/${modpackId}/${versionId}`;
     const { data } = await axios.get(url);
     return data;
   } catch {
@@ -324,11 +326,11 @@ export const getFTBChangelog = (modpackId, versionId) => {
 };
 
 export const getFTBMostPlayed = async () => {
-  const url = `${FTB_API_URL}/modpack/popular/plays/1000`;
+  const url = `${MODPACKSCH_API}/modpack/popular/plays/1000`;
   return axios.get(url);
 };
 
 export const getFTBSearch = async (searchText) => {
-  const url = `${FTB_API_URL}/modpack/search/1000?term=${searchText}`;
+  const url = `${MODPACKSCH_API}/modpack/search/1000?term=${searchText}`;
   return axios.get(url);
 };

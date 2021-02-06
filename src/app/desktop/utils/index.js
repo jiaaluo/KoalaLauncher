@@ -12,7 +12,7 @@ import { exec, spawn } from "child_process";
 import gt from "semver/functions/gt";
 import coerce from "semver/functions/coerce";
 import {
-  MC_LIBRARIES_URL,
+  MINECRAFT_LIBRARIES,
   FABRIC,
   FORGE,
 } from "../../../common/utils/constants";
@@ -147,7 +147,7 @@ export const librariesMapper = (libraries, librariesPath) => {
         }
         if (tempArr.length === 0) {
           tempArr.push({
-            url: `${lib.url || `${MC_LIBRARIES_URL}/`}${mavenToArray(
+            url: `${lib.url || `${MINECRAFT_LIBRARIES}/`}${mavenToArray(
               lib.name,
               native && `-${native}`
             ).join("/")}`,

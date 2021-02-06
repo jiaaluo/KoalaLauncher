@@ -35,7 +35,6 @@ const InstanceName = ({
   importZipPath,
   step
 }) => {
-  
   const mcName = () => {
     // Version array output will be =>
     // ["vanilla", "release", "1.16.4"] or
@@ -75,35 +74,21 @@ const InstanceName = ({
 
   useEffect(() => {
     // Checks user input for invalid input.
-    const regex = /^[\sa-zA-Z0-9_.-]+$/;
-    const finalWhiteSpace = /[^\s]$/;
-    if (
-      !regex.test(instanceName) ||
-      !finalWhiteSpace.test(instanceName) ||
-      (instanceName).length >= 45 ||
-      instanceName === ''
-    ) {
-      setInvalidName(true);
-      setAlreadyExists(false);
-      // Don't need to run any more checks since name is invalid.
-      return;
-    } else {
-      setInvalidName(false);
-    }
-      // Checks for instances dir for folder name usage.
-    useEffect(() => {
-      fse
-          .pathExists(path.join(instancesPath, instanceName || mcName))
-          .then(exists => {
-            instanceNameSuffix(instanceName || mcName).then(x =>
-                setInstanceNameSufx(x)
-            );
-
-            setAlreadyExists(exists);
-            setInvalidName(false);
-          });
-    }, [step]);
-  }, [instanceName, step]);
+      const regex = /^[\sa-zA-Z0-9_.-]+$/;
+      const finalWhiteSpace = /[^\s]$/;
+      if (
+        !regex.test(instanceName || mcName) ||
+        !finalWhiteSpace.test(instanceName || mcName) ||
+        (instanceName || mcName).length >= 45 ||
+        instanceName === ''
+      ) {
+        setInvalidName(true);
+        setAlreadyExists(false);
+        return;
+      } else {
+        setInvalidName(false);  
+      }
+      }, [instanceName, step]);
 
   const imageURL = useMemo(() => {
     if (!modpack) return null;
@@ -336,7 +321,7 @@ const InstanceName = ({
                       onChange={async e => {
                         setInstanceName(e.target.value);
                       }}
-                      css={`
+                        css={`
                         opacity: ${({ state }) =>
                           state === 'entering' || state === 'entered' ? 0 : 1};
                         transition: 0.1s ease-in-out;
@@ -345,8 +330,10 @@ const InstanceName = ({
                       `}
                     />
                     <div
+                      show={invalidName || alreadyExists}
                       css={`
                         visibility: ${(invalidName || alreadyExists) ? 'visible' : 'hidden'};
+                        opacity: ${props => (props.show ? 1 : 0)};
                         color: ${props => props.theme.palette.error.main};
                         font-weight: 700;
                         font-size: 14px;
@@ -360,7 +347,7 @@ const InstanceName = ({
                           transparentize(0.7, props.theme.palette.grey[700])};
                       `}
                     >
-                      {invalidName && (
+{invalidName && (
                         <div>
                           Instance name is not valid or too long. Please try another one
                         </div>)
