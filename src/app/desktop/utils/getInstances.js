@@ -10,7 +10,7 @@ const getInstances = async (instancesPath) => {
         path.join(instancesPath, instance, "config.json")
       );
       const config = await fse.readJSON(configPath);
-      if (!config.modloader) {
+      if (!config.laoder) {
         throw new Error(`Config for ${instance} could not be parsed`);
       }
 

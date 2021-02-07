@@ -270,20 +270,18 @@ const Overview = ({ instanceName, background, manifest }) => {
             title="Minecraft Version"
             color={(props) => props.theme.palette.colors.darkYellow}
             instanceName={instanceName}
-            defaultValue={config?.modloader}
+            defaultValue={config?.laoder}
             icon={<FontAwesomeIcon icon={faCog} />}
           >
-            {config?.modloader[0] === "vanilla" ? "Vanilla " : ""}
-            {config?.modloader[0] === "fabric" ? "Fabric " : ""}
-            {config?.modloader[0] === "forge" ? "Forge " : ""}
-            {config?.modloader[1]}
-            {config?.modloader[0] === "fabric" ? " - " : ""}
-            {config?.modloader[0] === "fabric"
-              ? config?.modloader[2] || "-"
-              : ""}
-            {config?.modloader[0] === "forge" ? " - " : ""}
-            {config?.modloader[0] === "forge"
-              ? config?.modloader[2]?.split("-")[1]
+            {config?.laoder[0] === "vanilla" ? "Vanilla " : ""}
+            {config?.laoder[0] === "fabric" ? "Fabric " : ""}
+            {config?.laoder[0] === "forge" ? "Forge " : ""}
+            {config?.laoder[1]}
+            {config?.laoder[0] === "fabric" ? " - " : ""}
+            {config?.laoder[0] === "fabric" ? config?.laoder[2] || "-" : ""}
+            {config?.laoder[0] === "forge" ? " - " : ""}
+            {config?.laoder[0] === "forge"
+              ? config?.laoder[2]?.split("-")[1]
               : ""}
           </Card>
         </OverviewCard>
@@ -314,7 +312,7 @@ const Overview = ({ instanceName, background, manifest }) => {
             {config?.lastPlayed ? computeLastPlayed(config?.lastPlayed) : "-"}
           </Card>
         </OverviewCard>
-        {config?.modloader.slice(3, 5).length === 2 && manifest && (
+        {config?.laoder.slice(3, 5).length === 2 && manifest && (
           <Card
             title="CurseForge Modpack"
             color={`linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), ${

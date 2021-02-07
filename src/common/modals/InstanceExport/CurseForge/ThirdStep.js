@@ -52,46 +52,46 @@ export default function ThirdStep({
   page,
 }) {
   const [isCompleted, setIsCompleted] = useState(false);
-  const { modloader, mods } = instanceConfig;
-  const mcVersion = modloader[1];
-  const modloaderName = modloader[0];
+  const { laoder, mods } = instanceConfig;
+  const mcVersion = laoder[1];
+  const laoderName = laoder[0];
   const dispatch = useDispatch();
   const tempExport = path.join(tempPath, instanceName);
 
   // Construct manifest contents
   const createManifest = async (modsArray = mods) => {
     let loader = {};
-    switch (modloaderName) {
+    switch (laoderName) {
       case FORGE:
         loader = {
-          id: `${modloaderName}-${modloader[2].slice(mcVersion.length + 1)}`,
+          id: `${laoderName}-${laoder[2].slice(mcVersion.length + 1)}`,
           primary: true,
         };
         break;
       case FABRIC:
         loader = {
-          id: modloaderName,
-          yarn: modloader[2],
-          loader: modloader[3],
+          id: laoderName,
+          yarn: laoder[2],
+          loader: laoder[3],
           primary: true,
         };
         break;
       case VANILLA:
         loader = {
-          id: modloaderName,
+          id: laoderName,
           primary: true,
         };
         break;
       default:
         throw new Error(
-          `Unknown loader type. Cannot export modloaderName: ${modloaderName}`
+          `Unknown loader type. Cannot export laoderName: ${laoderName}`
         );
     }
 
     return {
       minecraft: {
         version: mcVersion,
-        modLoaders: [loader],
+        laoders: [loader],
       },
       manifestType: "minecraftModpack",
       overrides: "overrides",
@@ -99,8 +99,8 @@ export default function ThirdStep({
       version: packVersion,
       author: packAuthor,
       projectID:
-        modloaderName === "forge" && modloader.length > 3
-          ? parseInt(modloader[3], 10)
+        laoderName === "forge" && laoder.length > 3
+          ? parseInt(laoder[3], 10)
           : undefined,
       name: packZipName,
       files: modsArray

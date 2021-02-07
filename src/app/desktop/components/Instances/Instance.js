@@ -286,7 +286,7 @@ const Instance = ({ instanceName }) => {
 
                   {convertMinutesToHumanTime(instance.timePlayed)}
                 </TimePlayed>
-                <MCVersion>Minecraft {(instance.modloader || [])[1]}</MCVersion>
+                <MCVersion>Minecraft {(instance.laoder || [])[1]}</MCVersion>
               </>
             )}
           </HoverContainer>
@@ -336,9 +336,9 @@ const Instance = ({ instanceName }) => {
             disabled={
               Boolean(isInQueue) ||
               !(
-                instance.modloader[0] === FORGE ||
-                instance.modloader[0] === FABRIC ||
-                instance.modloader[0] === VANILLA
+                instance.laoder[0] === FORGE ||
+                instance.laoder[0] === FABRIC ||
+                instance.laoder[0] === VANILLA
               )
             }
           >

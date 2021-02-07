@@ -103,15 +103,15 @@ const Import = ({
     } else {
       setModpack({ name: manifest.name });
     }
-    const isForge = (manifest?.minecraft?.modLoaders || []).find(
+    const isForge = (manifest?.minecraft?.laoders || []).find(
       v => v.id.includes(FORGE) && v.primary
     );
 
-    const isFabric = (manifest?.minecraft?.modLoaders || []).find(
+    const isFabric = (manifest?.minecraft?.laoders || []).find(
       v => v.id.includes(FABRIC) && v.primary
     );
 
-    const isVanilla = (manifest?.minecraft?.modLoaders || []).find(
+    const isVanilla = (manifest?.minecraft?.laoders || []).find(
       v => v.id.includes(VANILLA) && v.primary
     );
 
@@ -121,17 +121,17 @@ const Import = ({
       return;
     }
 
-    const modloader = [];
-    if (isForge) modloader.push(FORGE);
-    else if (isFabric) modloader.push(FABRIC);
-    else if (isVanilla) modloader.push(VANILLA);
+    const laoder = [];
+    if (isForge) laoder.push(FORGE);
+    else if (isFabric) laoder.push(FABRIC);
+    else if (isVanilla) laoder.push(VANILLA);
 
     if (manifest.projectID) {
-      modloader.push(manifest.projectID);
-      modloader.push(null);
+      laoder.push(manifest.projectID);
+      laoder.push(null);
     }
 
-    setVersion(modloader);
+    setVersion(laoder);
     if (isUrlRegex) {
       setImportZipPath(tempFilePath);
     }

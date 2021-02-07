@@ -79,10 +79,9 @@ const McVersionChanger = ({ instanceName, defaultValue }) => {
                 DISCLAIMER
               </div>
               <div>
-                Changing modloader (forge -&gt; fabric...) will result in the
-                loss of the modpack metadata. You won&apos;t be able to change
-                the modpack version or recognize this instance as a modpack
-                anymore.
+                Changing laoder (forge -&gt; fabric...) will result in the loss
+                of the modpack metadata. You won&apos;t be able to change the
+                modpack version or recognize this instance as a modpack anymore.
               </div>
             </div>
           )}

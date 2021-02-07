@@ -622,7 +622,7 @@ const Mods = ({ instanceName }) => {
     mods,
     instanceName,
     path.join(instancesPath, instanceName),
-    instance.modloader[1],
+    instance.laoder[1],
     selectedMods,
     setSelectedMods,
     latestMods
@@ -788,7 +788,7 @@ const Mods = ({ instanceName }) => {
           onClick={() => {
             dispatch(
               openModal("ModsBrowser", {
-                gameVersion: instance.modloader[1],
+                gameVersion: instance.laoder[1],
                 instanceName,
               })
             );

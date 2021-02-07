@@ -94,10 +94,10 @@ const InstanceName = ({
     if (!modpack) return null;
     // Curseforge
     if (!modpack.synopsis) {
-      return modpack.attachments.find(v => v.isDefault).thumbnailUrl;
+      return modpack?.attachments?.find(v => v.isDefault).thumbnailUrl;
     } else {
       // FTB
-      const image = modpack.art.reduce((prev, curr) => {
+      const image = modpack?.art?.reduce((prev, curr) => {
         if (!prev || curr.size < prev.size) return curr;
         return prev;
       });
@@ -144,11 +144,11 @@ const InstanceName = ({
         imageURL
       );
       if (version[0] === FORGE) {
-        const modloader = [
+        const laoder = [
           version[0],
           manifest.minecraft.version,
           convertcurseForgeToCanonical(
-            manifest.minecraft.modLoaders.find(v => v.primary).id,
+            manifest.minecraft.laoders.find(v => v.primary).id,
             manifest.minecraft.version,
             forgeManifest
           ),
@@ -158,30 +158,30 @@ const InstanceName = ({
         dispatch(
           addToQueue(
             localInstanceName,
-            modloader,
+            laoder,
             manifest,
             `background${path.extname(imageURL)}`
           )
         );
       } else if (version[0] === FABRIC) {
-        const modloader = [
+        const laoder = [
           version[0],
           manifest.minecraft.version,
-          manifest.minecraft.modLoaders[0].yarn,
-          manifest.minecraft.modLoaders[0].loader,
+          manifest.minecraft.laoders[0].yarn,
+          manifest.minecraft.laoders[0].loader,
           version[1],
           version[2]
         ];
         dispatch(
           addToQueue(
             localInstanceName,
-            modloader,
+            laoder,
             manifest,
             `background${path.extname(imageURL)}`
           )
         );
       } else if (version[0] === VANILLA) {
-        const modloader = [
+        const laoder = [
           version[0],
           manifest.minecraft.version,
           version[1],
@@ -190,7 +190,7 @@ const InstanceName = ({
         dispatch(
           addToQueue(
             localInstanceName,
-            modloader,
+            laoder,
             manifest,
             `background${path.extname(imageURL)}`
           )
@@ -199,13 +199,13 @@ const InstanceName = ({
     } else if (isFTBModpack) {
       // Fetch mc version
       const data = await getFTBModpackVersionData(version[1], version[2]);
-      const forgeModloader = data.targets.find(v => v.type === 'modloader');
+      const forgelaoder = data.targets.find(v => v.type === 'laoder');
       const mcVersion = data.targets.find(v => v.type === 'game').version;
       dispatch(
         addToQueue(localInstanceName, {
-          modloader: {
-            name: forgeModloader.name,
-            version: forgeModloader.version
+          laoder: {
+            name: forgelaoder.name,
+            version: forgelaoder.version
           },
           source: {
             name: FTB,
@@ -224,27 +224,27 @@ const InstanceName = ({
       );
 
       if (version[0] === FORGE) {
-        const modloader = [
+        const laoder = [
           version[0],
           manifest.minecraft.version,
           convertcurseForgeToCanonical(
-            manifest.minecraft.modLoaders.find(v => v.primary).id,
+            manifest.minecraft.laoders.find(v => v.primary).id,
             manifest.minecraft.version,
             forgeManifest
           )
         ];
-        dispatch(addToQueue(localInstanceName, modloader, manifest));
+        dispatch(addToQueue(localInstanceName, laoder, manifest));
       } else if (version[0] === FABRIC) {
-        const modloader = [
+        const laoder = [
           version[0],
           manifest.minecraft.version,
-          manifest.minecraft.modLoaders[0].yarn,
-          manifest.minecraft.modLoaders[0].loader
+          manifest.minecraft.laoders[0].yarn,
+          manifest.minecraft.laoders[0].loader
         ];
-        dispatch(addToQueue(localInstanceName, modloader, manifest));
+        dispatch(addToQueue(localInstanceName, laoder, manifest));
       } else if (version[0] === VANILLA) {
-        const modloader = [version[0], manifest.minecraft.version];
-        dispatch(addToQueue(localInstanceName, modloader, manifest));
+        const laoder = [version[0], manifest.minecraft.version];
+        dispatch(addToQueue(localInstanceName, laoder, manifest));
       }
     } else if (isVanilla) {
       dispatch(addToQueue(localInstanceName, [version[0], version[2]]));

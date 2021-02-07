@@ -208,7 +208,7 @@ const InstanceManager = ({ instanceName }) => {
   }, []);
 
   useEffect(() => {
-    if ((instance?.modloader || []).slice(3, 5).length === 2) {
+    if ((instance?.laoder || []).slice(3, 5).length === 2) {
       fse
         .readJson(path.join(instancesPath, instanceName, 'manifest.json'))
         .then(setManifest)
@@ -257,10 +257,10 @@ const InstanceManager = ({ instanceName }) => {
             {Object.entries(menuEntries).map(([k, tab]) => {
               if (
                 (tab.name === menuEntries.mods.name &&
-                  instance?.modloader[0] !== FORGE &&
-                  instance?.modloader[0] !== FABRIC) ||
+                  instance?.laoder[0] !== FORGE &&
+                  instance?.laoder[0] !== FABRIC) ||
                 (tab.name === menuEntries.modpack.name &&
-                  !instance?.modloader[3])
+                  !instance?.laoder[3])
               ) {
                 return null;
               }
@@ -279,7 +279,7 @@ const InstanceManager = ({ instanceName }) => {
         <Content>
           <ContentComponent
             instanceName={instanceName}
-            modpackId={instance?.modloader[3]}
+            modpackId={instance?.laoder[3]}
             background={background}
             manifest={manifest}
           />
