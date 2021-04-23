@@ -12,7 +12,8 @@ import RootElectron from './Root-Electron';
 import ModalsManager from './common/components/ModalsManager';
 
 import 'typeface-roboto';
-import 'inter-ui';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import '@fontsource/averia-sans-libre';
 import ErrorBoundary from './app/desktop/ErrorBoundary';
 
 const Root =
