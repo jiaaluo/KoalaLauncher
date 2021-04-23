@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import pMap from 'p-map';
 import { get7zPath } from '../../../../app/desktop/utils';
 import { FABRIC, VANILLA, FORGE } from '../../../utils/constants';
+import { updateInstanceConfig } from '../../../reducers/actions';
 
 /**
  *
@@ -134,7 +135,16 @@ export default function ThirdStep({
             const match = selectedFiles.find(
               file => mod.fileName === path.basename(file)
             );
-            if (match && mod.projectID) return true;
+            if (
+              match &&
+              mod.projectID &&
+              mod?.fileName &&
+              fse.pathExists(
+                path.join(instancesPath, instanceName, mod.fileName)
+              )
+            ) {
+              return true;
+            }
             return false;
           })
         : selectedFiles;
@@ -187,6 +197,13 @@ export default function ThirdStep({
 
       setIsCompleted(true);
     };
+
+    dispatch(
+      updateInstanceConfig(instanceName, prev => ({
+        ...prev,
+        exporter: { lastPath: filePath, version: packVersion }
+      }))
+    );
 
     workOnFiles();
   }, [page]);

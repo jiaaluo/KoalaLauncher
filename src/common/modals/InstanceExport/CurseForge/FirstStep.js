@@ -213,6 +213,7 @@ export default function FirstStep({
                         <Input
                           type="text"
                           name="inputPackVersion"
+                          value={packVersion}
                           defaultValue={packVersion}
                           maxLength={10}
                           allowClear="true"
