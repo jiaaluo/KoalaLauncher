@@ -6,7 +6,7 @@ export default {
     electronStoreOpts: {
       name: 'config',
       // This is used to ensure integrity, not for security reasons
-      encryptionKey: 'GDLauncher',
+      encryptionKey: 'KoalaLauncher',
       fileExtension: ''
     }
   }),

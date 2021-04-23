@@ -124,7 +124,7 @@ const Home = () => {
             padding: 0 120px;
           `}
         >
-          {account.selectedProfile.name}, welcome to GDLauncher!
+          {account.selectedProfile.name}, welcome to KoalaLauncher!
         </div>
       </div>
       <div
