@@ -30,7 +30,7 @@ import * as ActionTypes from './actionTypes';
 import {
   NEWS_URL,
   MC_RESOURCES_URL,
-  GDL_LEGACYJAVAFIXER_MOD_URL,
+  LJF_URL,
   FORGE,
   FMLLIBS_OUR_BASE_URL,
   FMLLIBS_FORGE_BASE_URL,
@@ -357,7 +357,7 @@ export function downloadJavaLegacyFixer() {
     const state = getState();
     await downloadFile(
       path.join(_getDataStorePath(state), '__JLF__.jar'),
-      GDL_LEGACYJAVAFIXER_MOD_URL
+      LJF_URL
     );
   };
 }
@@ -2662,17 +2662,10 @@ export function launchInstance(instanceName) {
 
     ps.on('close', async code => {
       clearInterval(playTimer);
-      if (!ps.killed) {
-        ps.kill('SIGKILL');
-      }
-      await new Promise(resolve => setTimeout(resolve, 200));
-      ipcRenderer.invoke('show-window');
-      dispatch(removeStartedInstance(instanceName));
-      await fse.remove(instanceJLFPath);
-      if (process.platform === 'win32') fse.remove(symLinkDirPath);
-      if (code !== 0 && errorLogs) {
+      if (code !== 0) {
         dispatch(
           openModal('InstanceCrashed', {
+            instanceName,
             code,
             errorLogs: errorLogs?.toString('utf8')
           })

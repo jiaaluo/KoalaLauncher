@@ -7,13 +7,14 @@ import {
   MC_MANIFEST_URL,
   FABRIC_APIS,
   JAVA_MANIFEST_URL,
-  IMGUR_CLIENT_ID,
+  IMGUR_API_KEY,
   FORGESVC_CATEGORIES,
   MICROSOFT_LIVE_LOGIN_URL,
   MICROSOFT_XBOX_LOGIN_URL,
   MICROSOFT_XSTS_AUTH_URL,
   MINECRAFT_SERVICES_URL,
-  FTB_API_URL
+  FTB_API_URL,
+  PASTEBIN_API_KEY
 } from './utils/constants';
 import { sortByDate } from './utils';
 
@@ -164,10 +165,29 @@ export const imgurPost = (image, onProgress) => {
 
   return axios.post('https://api.imgur.com/3/image', bodyFormData, {
     headers: {
-      Authorization: `Client-ID ${IMGUR_CLIENT_ID}`
+      Authorization: `Client-ID ${IMGUR_API_KEY}`
     },
     ...(onProgress && { onUploadProgress: onProgress })
   });
+};
+
+export const pasteBinPost = code => {
+  const bodyFormData = new FormData();
+  bodyFormData.append('api_dev_key', PASTEBIN_API_KEY);
+  bodyFormData.append('api_option', 'paste');
+  bodyFormData.append('api_paste_code', code);
+
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  };
+
+  return axios.post(
+    'https://pastebin.com/api/api_post.php',
+    bodyFormData,
+    config.headers
+  );
 };
 
 export const mcInvalidate = (accessToken, clientToken) => {
