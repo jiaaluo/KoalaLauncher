@@ -9,6 +9,8 @@ import { ipcRenderer } from 'electron';
 import path from 'path';
 import crypto from 'crypto';
 import { exec, spawn } from 'child_process';
+import gt from 'semver/functions/gt';
+import coerce from 'semver/functions/coerce';
 import {
   MC_LIBRARIES_URL,
   FABRIC,
@@ -450,9 +452,12 @@ export const getJVMArguments112 = (
 
   args.push(...mcArgs);
 
-  if (resolution) {
-    args.push(`--width ${resolution.width}`);
-    args.push(`--height ${resolution.height}`);
+  // TODO: find a replacement for 1.5.2 and below. This doesn't work with older versions of mc and breaks username UUID.
+  if (gt(coerce(mcJson.id), coerce('1.5.2'))) {
+    if (resolution) {
+      args.push(`--width ${resolution.width}`);
+      args.push(`--height ${resolution.height}`);
+    }
   }
 
   return args;
