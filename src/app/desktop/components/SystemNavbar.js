@@ -172,7 +172,7 @@ const SystemNavbar = () => {
               href="https://gdevs.io/"
               rel="noopener noreferrer"
               css={`
-                margin-top: 5px;
+                margin-top: 2px;
                 -webkit-app-region: no-drag;
               `}
             >

@@ -31,15 +31,14 @@ import { convertMinutesToHumanTime } from '../../../../common/utils';
 import { FABRIC, FORGE, VANILLA } from '../../../../common/utils/constants';
 
 const Container = styled.div`
-  position: relative;
-  width: 180px;
-  height: 100px;
+  position: flex;
+  width: 155px;
+  height: 155px;
   transform: ${p =>
     p.isHovered && !p.installing
       ? 'scale3d(1.1, 1.1, 1.1)'
       : 'scale3d(1, 1, 1)'};
-  margin-right: 20px;
-  margin-top: 20px;
+  margin: 20px;
   transition: transform 150ms ease-in-out;
   &:hover {
     ${p => (p.installing ? '' : 'transform: scale3d(1.1, 1.1, 1.1);')}
@@ -76,13 +75,13 @@ const InstanceContainer = styled.div`
   font-size: 20px;
   overflow: hidden;
   height: 100%;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
     url('${props => props.background}') center no-repeat;
   background-position: center;
   color: ${props => props.theme.palette.text.secondary};
   font-weight: 600;
   background-size: cover;
-  border-radius: 4px;
+  border-radius: 25px;
   margin: 10px;
 `;
 
@@ -94,22 +93,21 @@ const HoverContainer = styled.div`
   align-items: center;
   cursor: pointer;
   font-size: 18px;
-  margin: 10px;
+  margin: 5px;
   padding: 10px;
   text-align: center;
   font-weight: 800;
-  border-radius: 4px;
+  border-radius: 32px;
   transition: opacity 150ms ease-in-out;
-  width: 100%;
-  height: 100%;
+  width: 105%;
+  height: 105%;
   opacity: ${p => (p.installing || p.isHovered ? '1' : '0')};
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(12px);
   will-change: opacity;
   background: ${p => transparentize(0.5, p.theme.palette.grey[800])};
   &:hover {
     opacity: 1;
   }
-
   .spinner:before {
     animation: 1.5s linear infinite ${Spinner};
     animation-play-state: inherit;
@@ -128,17 +126,17 @@ const HoverContainer = styled.div`
 
 const MCVersion = styled.div`
   position: absolute;
-  right: 5px;
-  top: 5px;
-  font-size: 11px;
+  center;
+  top: 10px;
+  font-size: 14px;
   color: ${props => props.theme.palette.text.third};
 `;
 
 const TimePlayed = styled.div`
   position: absolute;
-  left: 5px;
-  top: 5px;
-  font-size: 11px;
+  center;
+  bottom: 10px;
+  font-size: 14px;
   color: ${props => props.theme.palette.text.third};
 `;
 

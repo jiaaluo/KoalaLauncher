@@ -39,6 +39,8 @@ export default function FirstStep({
     path.join(instancePath, '.mixin.out'),
     path.join(instancePath, '.fabric'),
     path.join(instancePath, 'screenshots'),
+    path.join(instancePath, 'backups'),
+    path.join(instancePath, 'mods/memory_repo'),
     path.join(instancePath, 'crash-reports'),
     path.join(instancePath, 'manifest.json')
   ];
