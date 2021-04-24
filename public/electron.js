@@ -197,7 +197,7 @@ function createWindow() {
     minHeight: 700,
     show: true,
     frame: false,
-    backgroundColor: '#1B2533',
+    backgroundColor: '#6c5d53',
     webPreferences: {
       experimentalFeatures: true,
       nodeIntegration: true,
