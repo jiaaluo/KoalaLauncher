@@ -90,7 +90,7 @@ const Content = ({
                         cursor: pointer;
                       `}
                     />
-                    Vanilla
+                    Custom
                   </Radio.Button>
                   <Radio.Button value={1}>
                     <img

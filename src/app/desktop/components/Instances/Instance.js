@@ -214,20 +214,7 @@ const Instance = ({ instanceName }) => {
           onClick={startInstance}
           isHovered={isHovered || isPlaying}
         >
-          <InstanceContainer installing={isInQueue} background={background}>
-            <TimePlayed>
-              <FontAwesomeIcon
-                icon={faClock}
-                css={`
-                  margin-right: 5px;
-                `}
-              />
-
-              {convertMinutesToHumanTime(instance.timePlayed)}
-            </TimePlayed>
-            <MCVersion>{instance.loader?.mcVersion}</MCVersion>
-            {instanceName}
-          </InstanceContainer>
+          <InstanceContainer installing={isInQueue} background={background} />
           <HoverContainer
             installing={isInQueue}
             isHovered={isHovered || isPlaying}
@@ -278,7 +265,20 @@ const Instance = ({ instanceName }) => {
                   </div>
                 )}
                 {isInQueue && 'In Queue'}
-                {!isInQueue && !isPlaying && 'PLAY'}
+                <TimePlayed>
+                  <FontAwesomeIcon
+                    icon={faClock}
+                    css={`
+                      margin-right: 5px;
+                    `}
+                  />
+
+                  {convertMinutesToHumanTime(instance.timePlayed)}
+                </TimePlayed>
+                <MCVersion>
+                  <b>Minecraft {instance.loader?.mcVersion}</b>
+                </MCVersion>
+                {instanceName}
               </>
             )}
           </HoverContainer>
